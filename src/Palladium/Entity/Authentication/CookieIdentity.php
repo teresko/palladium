@@ -20,12 +20,18 @@
      protected $type = Identity::TYPE_COOKIE;
 
 
+     /**
+      * @codeCoverageIgnore
+      */
      public function setSeries($series)
      {
          $this->series = $series;
      }
 
 
+     /**
+      * @codeCoverageIgnore
+      */
      public function getSeries()
      {
          return $this->series;
@@ -65,6 +71,7 @@
 
 
      /**
+      * @codeCoverageIgnore
       * @return string
       */
      public function getKey()
@@ -107,6 +114,9 @@
      }
 
 
+     /**
+      * @codeCoverageIgnore
+      */
      public function setHash($hash)
      {
          $this->hash = $hash;

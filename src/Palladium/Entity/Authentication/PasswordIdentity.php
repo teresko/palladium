@@ -31,6 +31,9 @@ class PasswordIdentity extends Identity
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getIdentifier()
     {
         return $this->identifier;

@@ -59,6 +59,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getId()
     {
         return $this->identityId;
@@ -75,12 +78,18 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getUserId()
     {
         return $this->userId;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getType()
     {
         return $this->type;
@@ -97,6 +106,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getExpiresOn()
     {
         return $this->expiresOn;
@@ -113,6 +125,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getStatus()
     {
         return $this->status;
@@ -125,6 +140,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getStatusChangedOn()
     {
         return $this->statusChangedOn;
@@ -150,18 +168,27 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getToken()
     {
         return $this->token;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function setTokenAction($tokenAction)
     {
         $this->tokenAction = $tokenAction;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getTokenAction()
     {
         return $this->tokenAction;
@@ -178,6 +205,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getTokenEndOfLife()
     {
         return $this->tokenExpiresOn;
@@ -202,6 +232,9 @@ class Identity implements Identifiable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getLastUsed()
     {
         return $this->usedOn;
