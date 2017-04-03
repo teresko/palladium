@@ -1,0 +1,5 @@
+services:
+
+    palladium.component.mapper_factory:
+        class: Palladium\Component\MapperFactory
+        arguments: ['@db', '%tables%']

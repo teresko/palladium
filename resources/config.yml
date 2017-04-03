@@ -1,0 +1,5 @@
+imports:
+
+    - {resource: dependencies/components.yml}
+    - {resource: dependencies/logging.yml}
+    - {resource: dependencies/services.yml}

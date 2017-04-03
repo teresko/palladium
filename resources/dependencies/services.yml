@@ -1,0 +1,17 @@
+services:
+
+    palladium.service.auth.identification:
+        class: 'Palladium\Service\Authentication\Identification'
+        arguments: ['@palladium.component.mapper_factory', '@palladium.logging.auth']
+
+    palladium.service.auth.recovery:
+        class: 'Palladium\Service\Authentication\Recovery'
+        arguments: ['@palladium.component.mapper_factory', '@palladium.logging.auth']
+
+    palladium.service.auth.signup:
+        class: 'Palladium\Service\Authentication\SignUp'
+        arguments: ['@palladium.component.mapper_factory', '@palladium.logging.auth']
+
+    palladium.service.users.catalog:
+        class: 'Palladium\Service\Community\Catalog'
+        arguments: ['@palladium.component.mapper_factory']

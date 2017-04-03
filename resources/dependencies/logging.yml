@@ -1,0 +1,29 @@
+services:
+
+    palladium.monolog.handler.auth_violation:
+        class: Palladium\Handler\Logging\AuthViolationLog
+        arguments: ['@palladium.component.mapper_factory', !php/const:Monolog\Logger::ERROR, false]
+
+    palladium.monolog.handler.auth_issue:
+        class: Palladium\Handler\Logging\AuthIssueLog
+        arguments: ['@palladium.component.mapper_factory', !php/const:Monolog\Logger::WARNING, false]
+
+    palladium.monolog.handler.auth:
+        class: Palladium\Handler\Logging\AuthLog
+        arguments: ['@palladium.component.mapper_factory', !php/const:Monolog\Logger::INFO, false]
+
+    palladium.monolog.processor.webrequest:
+        class: Palladium\Processor\Logging\WebRequest
+
+    palladium.monolog.processor.userdata:
+        class: Palladium\Processor\Logging\UserData
+
+    palladium.logging.auth:
+        class: Monolog\Logger
+        arguments: [authentication]
+        calls:
+            - [pushProcessor, ['@palladium.monolog.processor.webrequest']]
+            - [pushProcessor, ['@palladium.monolog.processor.userdata']]
+            - [pushHandler, ['@palladium.monolog.handler.auth']]
+            - [pushHandler, ['@palladium.monolog.handler.auth_issue']]
+            - [pushHandler, ['@palladium.monolog.handler.auth_violation']]
