@@ -155,3 +155,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 # Created by .ignore support plugin (hsz.mobi)
+
+
+# Don't version the test coverage reports
+/tests/report/*
+!/tests/report/.gitkeep
