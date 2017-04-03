@@ -1,15 +1,15 @@
 <?php
 
-namespace Service\Authentication;
+namespace Palladium\Service\Authentication;
 
 /**
  * Application logic for password reset handling
  */
 
-use Mapper\Authentication as Mapper;
-use Entity\Authentication as Entity;
-use Exception\Authentication\IdentityNotFound;
-use Exception\Authentication\IdentityNotVerified;
+use Palladium\Mapper\Authentication as Mapper;
+use Palladium\Entity\Authentication as Entity;
+use Palladium\Exception\Authentication\IdentityNotFound;
+use Palladium\Exception\Authentication\IdentityNotVerified;
 
 class Recovery extends Locator
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapper\Authentication;
+namespace Palladium\Mapper\Authentication;
 
 /**
  * SQL code repsonsible for locating all of the identities, that have been associated
@@ -9,8 +9,8 @@ namespace Mapper\Authentication;
  */
 
 
-use Component\SqlMapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Authentication as Entity;
 
 class IdentityCollection extends SqlMapper
 {

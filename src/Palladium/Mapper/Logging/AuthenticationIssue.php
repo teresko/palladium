@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapper\Logging;
+namespace Palladium\Mapper\Logging;
 
-use Component\SqlMapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Authentication as Entity;
 
 
 class AuthenticationIssue extends SqlMapper

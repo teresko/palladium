@@ -1,6 +1,6 @@
 <?php
 
-namespace Component;
+namespace Palladium\Component;
 
 abstract class DataMapper
 {

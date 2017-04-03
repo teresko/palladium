@@ -1,15 +1,16 @@
 <?php
 
-namespace Service\Authentication;
+namespace Palladium\Service\Authentication;
 
 /**
  * Purely written dumping grownd for shared methods of Serive\Authentication namespace
  */
 
+use Palladium\Component\MapperFactory;
+use Palladium\Mapper\Authentication as Mapper;
+use Palladium\Entity\Authentication as Entity;
+
 use Monolog\Logger;
-use Component\MapperFactory;
-use Mapper\Authentication as Mapper;
-use Entity\Authentication as Entity;
 
 
 abstract class Locator

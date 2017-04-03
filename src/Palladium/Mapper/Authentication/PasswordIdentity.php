@@ -1,14 +1,13 @@
 <?php
 
-namespace Mapper\Authentication;
+namespace Palladium\Mapper\Authentication;
 
 /**
  * SQL logic for authentication attemps using username/password
  */
 
-
-use Component\SqlMapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Authentication as Entity;
 
 class PasswordIdentity extends SqlMapper
 {

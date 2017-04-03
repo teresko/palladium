@@ -1,12 +1,12 @@
 <?php
 
-namespace Service\Community;
+namespace Palladium\Service\Community;
 
-use Component\MapperFactory;
-use Entity\Community as Entity;
-use Mapper\Community as Mapper;
+use Palladium\Component\MapperFactory;
+use Palladium\Entity\Community as Entity;
+use Palladium\Mapper\Community as Mapper;
 
-use Exception\Community\DuplicatedClient;
+use Palladium\Exception\Community\DuplicatedClient;
 
 class Catalog
 {

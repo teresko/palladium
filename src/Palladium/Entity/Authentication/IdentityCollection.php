@@ -1,8 +1,8 @@
 <?php
 
-namespace Entity\Authentication;
+namespace Palladium\Entity\Authentication;
 
-use Component\Collection;
+use Palladium\Component\Collection;
 
 class IdentityCollection extends Collection
 {

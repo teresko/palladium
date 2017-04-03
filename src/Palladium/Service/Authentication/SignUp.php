@@ -1,16 +1,16 @@
 <?php
 
-namespace Service\Authentication;
+namespace Palladium\Service\Authentication;
 
 /**
  * Code for creating new identities
  */
 
-use Mapper\Authentication as Mapper;
-use Exception\Authentication\IdentityDuplicated;
-use Exception\Authentication\UserNotFound;
-use Exception\Authentication\IdentityNotFound;
-use Exception\Authentication\TokenNotFound;
+use Palladium\Mapper\Authentication as Mapper;
+use Palladium\Exception\Authentication\IdentityDuplicated;
+use Palladium\Exception\Authentication\UserNotFound;
+use Palladium\Exception\Authentication\IdentityNotFound;
+use Palladium\Exception\Authentication\TokenNotFound;
 
 
 class SignUp extends Locator

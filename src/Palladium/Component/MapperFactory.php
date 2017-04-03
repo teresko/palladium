@@ -1,10 +1,10 @@
 <?php
 
-namespace Component;
+namespace Palladium\Component;
 
 use RuntimeException;
 use PDO;
-use Component\SqlMapper;
+use Palladium\Component\SqlMapper;
 
 class MapperFactory
 {

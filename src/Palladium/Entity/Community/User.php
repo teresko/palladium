@@ -1,8 +1,8 @@
 <?php
 
-namespace Entity\Community;
+namespace Palladium\Entity\Community;
 
-use Component\Identifiable;
+use Palladium\Component\Identifiable;
 
 class User implements Identifiable
 {

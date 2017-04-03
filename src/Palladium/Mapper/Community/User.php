@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapper\Community;
+namespace Palladium\Mapper\Community;
 
-use Component\SqlMapper;
-use Entity\Community as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Community as Entity;
 
 class User extends SqlMapper
 {

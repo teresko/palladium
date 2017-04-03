@@ -1,9 +1,9 @@
 <?php
 
-namespace Component;
+namespace Palladium\Component;
 
-use Component\Collection;
-use Component\Identifiable;
+use Palladium\Component\Collection;
+use Palladium\Component\Identifiable;
 
 /**
  * Class for handling sets of domain entities.

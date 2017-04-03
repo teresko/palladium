@@ -1,6 +1,6 @@
 <?php
 
-namespace Service\Authentication;
+namespace Palladium\Service\Authentication;
 
 /**
  * Retrieval and handling of identities for registered users
@@ -8,18 +8,18 @@ namespace Service\Authentication;
 
 use RuntimeException;
 
-use Component\MapperFactory;
-use Mapper\Authentication as Mapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\MapperFactory;
+use Palladium\Mapper\Authentication as Mapper;
+use Palladium\Entity\Authentication as Entity;
 
-use Exception\Authentication\IdentityDuplicated;
-use Exception\Authentication\IdentityNotFound;
-use Exception\Authentication\EmailNotFound;
-use Exception\Authentication\PasswordNotMatch;
-use Exception\Authentication\CompromisedCookie;
-use Exception\Authentication\DenialOfServiceAttempt;
-use Exception\Authentication\IdentityExpired;
-use Exception\Community\UserNotFound;
+use Palladium\Exception\Authentication\IdentityDuplicated;
+use Palladium\Exception\Authentication\IdentityNotFound;
+use Palladium\Exception\Authentication\EmailNotFound;
+use Palladium\Exception\Authentication\PasswordNotMatch;
+use Palladium\Exception\Authentication\CompromisedCookie;
+use Palladium\Exception\Authentication\DenialOfServiceAttempt;
+use Palladium\Exception\Authentication\IdentityExpired;
+use Palladium\Exception\Community\UserNotFound;
 
 
 class Identification extends Locator

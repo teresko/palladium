@@ -1,11 +1,11 @@
 <?php
 
-namespace Entity\Authentication;
+namespace Palladium\Entity\Authentication;
 
 use RuntimeException;
-use Exception\Authentication\IdentityMalformed;
-use Exception\Authentication\InvalidPassword;
-use Exception\Authentication\InvalidEmail;
+use Palladium\Exception\Authentication\IdentityMalformed;
+use Palladium\Exception\Authentication\InvalidPassword;
+use Palladium\Exception\Authentication\InvalidEmail;
 
 
 class PasswordIdentity extends Identity

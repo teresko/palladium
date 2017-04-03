@@ -1,14 +1,14 @@
 <?php
 
-namespace Mapper\Authentication;
+namespace Palladium\Mapper\Authentication;
 
 /**
  * All of the SQL code related to the storage and retrieval of cookie-based identities.
  * Probably need some cleanup in `store()` method
  */
 
-use Component\SqlMapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Authentication as Entity;
 
 class CookieIdentity extends SqlMapper
 {

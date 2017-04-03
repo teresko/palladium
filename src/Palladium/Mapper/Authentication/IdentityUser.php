@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapper\Authentication;
+namespace Palladium\Mapper\Authentication;
 
-use Component\SqlMapper;
-use Entity\Authentication as Entity;
+use Palladium\Component\SqlMapper;
+use Palladium\Entity\Authentication as Entity;
 
 class IdentityUser extends SqlMapper
 {

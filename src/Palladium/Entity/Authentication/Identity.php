@@ -1,13 +1,13 @@
 <?php
 
-namespace Entity\Authentication;
+namespace Palladium\Entity\Authentication;
 
 /**
  * Abstraction, that contains information about user's authentication details
  */
 
-use Component\Identifiable;
-use Exception\Authentication\InvalidToken;
+use Palladium\Component\Identifiable;
+use Palladium\Exception\Authentication\InvalidToken;
 
 class Identity implements Identifiable
 {

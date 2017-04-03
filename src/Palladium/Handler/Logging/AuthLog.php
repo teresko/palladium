@@ -1,9 +1,9 @@
 <?php
 
-namespace Handler\Logging;
+namespace Palladium\Handler\Logging;
 
-use Component\MapperFactory;
-use Mapper\Logging\AuthenticationHistory;
+use Palladium\Component\MapperFactory;
+use Palladium\Mapper\Logging\AuthenticationHistory;
 
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;

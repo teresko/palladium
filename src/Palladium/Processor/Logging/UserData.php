@@ -1,6 +1,6 @@
 <?php
 
-namespace Processor\Logging;
+namespace Palladium\Processor\Logging;
 
 class UserData
 {

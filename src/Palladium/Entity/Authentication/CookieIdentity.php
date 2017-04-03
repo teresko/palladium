@@ -1,6 +1,6 @@
 <?php
 
- namespace Entity\Authentication;
+ namespace Palladium\Entity\Authentication;
 
 
  class CookieIdentity extends Identity
