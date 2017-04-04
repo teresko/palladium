@@ -3,7 +3,6 @@
 namespace Palladium\Entity\Authentication;
 
 use RuntimeException;
-use Palladium\Exception\Authentication\IdentityMalformed;
 use Palladium\Exception\Authentication\InvalidPassword;
 use Palladium\Exception\Authentication\InvalidEmail;
 
@@ -55,7 +54,7 @@ class PasswordIdentity extends Identity
 
     public function getHash()
     {
-        if ($this->key !== null && $this->hash === null) {
+        if (null !== $this->key && null === $this->hash) {
             $this->hash = $this->createHash($this->key);
         }
 
@@ -65,14 +64,18 @@ class PasswordIdentity extends Identity
 
     private function createHash($key)
     {
-        $this->hash = password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
+        $hash = password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
 
-        return $this->hash;
+        return $hash;
     }
 
 
     public function setHash($hash)
     {
+        if (null === $hash) {
+            $this->hash = null;
+            return;
+        }
         $this->hash = (string) $hash;
     }
 
@@ -91,7 +94,7 @@ class PasswordIdentity extends Identity
 
     public function validate()
     {
-        if (filter_var($this->identifier, FILTER_VALIDATE_EMAIL) === false) {
+        if (false === filter_var($this->identifier, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidEmail;
         }
 
