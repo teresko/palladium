@@ -51,10 +51,7 @@
 
      public function generateNewSeries()
      {
-         // @TODO: uncommend on php7
-         // $this->series = bin2hex(random_bytes(self::SERIES_SIZE));
-
-         $this->series = bin2hex(openssl_random_pseudo_bytes(self::SERIES_SIZE));
+         $this->series = bin2hex(random_bytes(self::SERIES_SIZE));
      }
 
 
@@ -85,10 +82,7 @@
       */
       public function generateNewKey()
       {
-        // @TODO: uncommend on php7
-          // $this->key = bin2hex(random_bytes(self::KEY_SIZE));
-
-          $this->key = bin2hex(openssl_random_pseudo_bytes(self::KEY_SIZE));
+          $this->key = bin2hex(random_bytes(self::KEY_SIZE));
           $this->hash = null;
       }
 
