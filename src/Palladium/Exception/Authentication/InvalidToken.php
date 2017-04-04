@@ -1,6 +1,6 @@
 <?php
 
-namespace Exception\Authentication;
+namespace Palladium\Exception\Authentication;
 
 use Palladium\Component\AppException as Exception;
 

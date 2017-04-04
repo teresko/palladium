@@ -1,6 +1,6 @@
 <?php
 
-namespace Exception\Community;
+namespace Palladium\Exception\Community;
 
 use Palladium\Component\AppException as Exception;
 
