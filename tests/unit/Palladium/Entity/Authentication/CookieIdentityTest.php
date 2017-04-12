@@ -121,9 +121,34 @@ final class CookieIdentityTest extends TestCase
     {
         $instance = new CookieIdentity;
         $instance->setKey('alpha');
+        $this->assertTrue($instance->matchKey('alpha'));
 
-        $generated = $instance->getHash();
+        $hash = $instance->getHash();
 
-        $this->assertTrue($generated);
+        $instance = new CookieIdentity;
+        $instance->setHash($hash);
+        $this->assertTrue($instance->matchKey('alpha'));
+    }
+
+
+    public function test_Generation_of_New_Random_Key()
+    {
+        $instance = new CookieIdentity;
+        $this->assertNull($instance->getKey());
+        $this->assertNull($instance->getHash());
+
+        $instance->generateNewKey();
+        $this->assertNotNull($instance->getKey());
+        $this->assertNotNull($instance->getHash());
+    }
+
+
+    public function test_Generation_of_New_Random_Series()
+    {
+        $instance = new CookieIdentity;
+        $this->assertNull($instance->getSeries());
+
+        $instance->generateNewSeries();
+        $this->assertNotNull($instance->getSeries());
     }
 }
