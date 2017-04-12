@@ -2,12 +2,10 @@
 
  namespace Palladium\Entity\Authentication;
 
+ use Palladium\Exception\Authentication\InvalidCookieToken;
 
  class CookieIdentity extends Identity
  {
-
-     const HASH_ALGO = PASSWORD_BCRYPT;
-     const HASH_COST = 12;
 
      const SERIES_SIZE = 16;
      const KEY_SIZE = 32;
@@ -20,12 +18,14 @@
      protected $type = Identity::TYPE_COOKIE;
 
 
-     /**
-      * @codeCoverageIgnore
-      */
      public function setSeries($series)
      {
-         $this->series = $series;
+         if (empty($series) && 0 !== $series) {
+             $this->series = null;
+             return;
+         }
+
+         $this->series = (string) $series;
      }
 
 
@@ -62,8 +62,14 @@
       */
      public function setKey($key)
      {
-         $this->key = (string) $key;
          $this->hash = null;
+
+         if (empty($key) && 0 !== $key) {
+             $this->key = null;
+             return;
+         }
+
+         $this->key = (string) $key;
      }
 
 
@@ -94,7 +100,7 @@
        */
      public function getHash()
      {
-         if ($this->key !== null && $this->hash === null) {
+         if (null !== $this->key && null === $this->hash) {
              $this->hash = $this->makeHash($this->key);
          }
 
@@ -108,12 +114,14 @@
      }
 
 
-     /**
-      * @codeCoverageIgnore
-      */
      public function setHash($hash)
      {
-         $this->hash = $hash;
+         if (empty($hash) && 0 !== $hash) {
+             $this->hash = null;
+             return;
+         }
+
+         $this->hash = (string) $hash;
      }
 
 
@@ -144,7 +152,11 @@
       */
      public function setCollapsedValue($value)
      {
-         list($userId, $series, $key) = explode('|', $value . '||');
+         if (empty($value) || substr_count($value, '|') !== 2) {
+             throw new InvalidCookieToken;
+         }
+
+         list($userId, $series, $key) = explode('|', $value);
          $this->setUserId($userId);
          $this->setSeries($series);
          $this->setKey($key);
