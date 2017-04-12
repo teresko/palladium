@@ -48,16 +48,15 @@ class PasswordIdentity extends Identity
     public function setKey($key)
     {
         $this->key = (string) $key;
-        $this->hash = null;
+        $this->hash = $this->createHash($key);
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getHash()
     {
-        if (null !== $this->key && null === $this->hash) {
-            $this->hash = $this->createHash($this->key);
-        }
-
         return $this->hash;
     }
 

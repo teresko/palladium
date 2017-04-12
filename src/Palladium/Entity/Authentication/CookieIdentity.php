@@ -69,7 +69,10 @@
              return;
          }
 
-         $this->key = (string) $key;
+         $key = (string) $key;
+
+         $this->key = $key;
+         $this->hash = $this->makeHash($key);
      }
 
 
@@ -88,22 +91,17 @@
       */
       public function generateNewKey()
       {
-          $this->key = bin2hex(random_bytes(self::KEY_SIZE));
-          $this->hash = null;
+          $key = bin2hex(random_bytes(self::KEY_SIZE));
+          $this->key = $key;
+          $this->hash = $this->makeHash($key);
       }
 
 
       /**
-       * Lets you retrieve key's hash, which, if hash is not set, gets created.
-       *
-       * @return string
+       * @codeCoverageIgnore
        */
      public function getHash()
      {
-         if (null !== $this->key && null === $this->hash) {
-             $this->hash = $this->makeHash($this->key);
-         }
-
          return $this->hash;
      }
 
