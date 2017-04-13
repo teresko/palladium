@@ -22,11 +22,11 @@ class Identity implements Identifiable
     const ACTION_RESET = 2;
 
     const STATUS_ANY = null;
-    const STATUS_NEW = 0;       // not veriefoed user
-    const STATUS_ACTIVE = 1;    // this is the "good" state
-    const STATUS_DISCARDED = 2; // user logged out or changed password
-    const STATUS_BLOCKED = 3;   // someone tried to us an invalid auth cookie
-    const STATUS_EXPIRED = 4;
+    const STATUS_NEW = 1;       // not veriefoed user
+    const STATUS_ACTIVE = 2;    // this is the "good" state
+    const STATUS_DISCARDED = 3; // user logged out or changed password
+    const STATUS_BLOCKED = 4;   // someone tried to us an invalid auth cookie
+    const STATUS_EXPIRED = 5;
 
     const TYPE_ANY = null;
     const TYPE_PASSWORD = 1;
@@ -136,7 +136,11 @@ class Identity implements Identifiable
 
     public function setStatusChangedOn($timestamp)
     {
-        $this->statusChangedOn = (int) $timestamp;
+        $data = (int) $timestamp;
+
+        if ($data > 0) {
+            $this->statusChangedOn = $data;
+        }
     }
 
 
@@ -161,10 +165,7 @@ class Identity implements Identifiable
 
     public function generateToken()
     {
-        // @TODO: uncommend on php7
-        // $this->token = bin2hex(random_bytes(Identity::TOKEN_SIZE));
-
-        $this->token = bin2hex(openssl_random_pseudo_bytes(Identity::TOKEN_SIZE));
+        $this->token = bin2hex(random_bytes(Identity::TOKEN_SIZE));
     }
 
 
@@ -177,12 +178,16 @@ class Identity implements Identifiable
     }
 
 
-    /**
-     * @codeCoverageIgnore
-     */
     public function setTokenAction($tokenAction)
     {
-        $this->tokenAction = $tokenAction;
+        $data = (int) $tokenAction;
+
+        if ($data > 0) {
+            $this->tokenAction = $data;
+            return;
+        }
+
+        $this->tokenAction = null;
     }
 
 
