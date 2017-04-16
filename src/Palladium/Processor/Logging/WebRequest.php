@@ -4,15 +4,13 @@ namespace Palladium\Processor\Logging;
 
 class WebRequest
 {
-    public function __construct($serverData = null)
+    public function __construct(array $serverData = null)
     {
         if (null === $serverData) {
-            $this->serverData = &$_SERVER;
-        } elseif (is_array($serverData) || $serverData instanceof \ArrayAccess) {
-            $this->serverData = $serverData;
-        } else {
-            throw new \UnexpectedValueException('$serverData must be an array or object implementing ArrayAccess.');
+            $serverData = &$_SERVER;
         }
+
+        $this->serverData = $serverData;
     }
 
 
