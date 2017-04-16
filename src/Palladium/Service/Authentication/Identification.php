@@ -35,8 +35,7 @@ class Identification extends Locator
         if ($identity->getId() === null) {
             // hardening against timeing based side-channel attacks
             $identity->setKey('');
-            $identity->getHash();
-            // end of hardening code
+
             $this->logger->warning('acount not found', [
                 'input' => [
                     'identifier' => $identifier,
