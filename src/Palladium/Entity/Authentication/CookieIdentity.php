@@ -20,7 +20,7 @@
 
      public function setSeries($series)
      {
-         if (empty($series) && 0 !== $series) {
+         if (empty($series)) {
              $this->series = null;
              return;
          }
@@ -64,14 +64,12 @@
      {
          $this->hash = null;
 
-         if (empty($key) && 0 !== $key) {
+         if (empty($key)) {
              $this->key = null;
              return;
          }
 
-         $key = (string) $key;
-
-         $this->key = $key;
+         $this->key = (string) $key;
          $this->hash = $this->makeHash($key);
      }
 
@@ -112,9 +110,12 @@
      }
 
 
+     /**
+      * @param string $hash
+      */
      public function setHash($hash)
      {
-         if (empty($hash) && 0 !== $hash) {
+         if (empty($hash)) {
              $this->hash = null;
              return;
          }

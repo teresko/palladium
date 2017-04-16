@@ -35,7 +35,7 @@ final class CookieIdentityTest extends TestCase
         return [
             ['', null],
             [234, '234'],
-            [0, '0'],
+            [0, null],
             ['alpha', 'alpha'],
         ];
     }
