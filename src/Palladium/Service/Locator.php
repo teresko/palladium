@@ -6,7 +6,7 @@ namespace Palladium\Service;
  * Purely written dumping grownd for shared methods of Serive\Authentication namespace
  */
 
-use Palladium\Component\MapperFactory;
+use Palladium\Component\CanCreateMapper;
 use Palladium\Mapper\Authentication as Mapper;
 use Palladium\Entity\Authentication as Entity;
 
@@ -20,7 +20,7 @@ abstract class Locator
     protected $logger;
 
 
-    public function __construct(MapperFactory $mapperFactory, Psr\Log\LoggerInterface $logger)
+    public function __construct(CanCreateMapper $mapperFactory, Psr\Log\LoggerInterface $logger)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;

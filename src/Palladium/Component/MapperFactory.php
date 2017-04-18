@@ -6,7 +6,7 @@ use RuntimeException;
 use PDO;
 use Palladium\Component\SqlMapper;
 
-class MapperFactory
+class MapperFactory implements CanCreateMapper
 {
 
     private $connection;
@@ -35,18 +35,18 @@ class MapperFactory
      *
      * @return SqlMapper
      */
-    public function create($name)
+    public function create(string $className)
     {
-        if (!array_key_exists($name, $this->cache)) {
+        if (!array_key_exists($className, $this->cache)) {
 
-            if (!class_exists($name)) {
-                throw new RuntimeException("Mapper not found. Attempted to load '{$name}'.");
+            if (!class_exists($className)) {
+                throw new RuntimeException("Mapper not found. Attempted to load '{$className}'.");
             }
 
-            $this->cache[$name] = new $name($this->connection, $this->config);
+            $this->cache[$className] = new $className($this->connection, $this->config);
         }
 
-        return $this->cache[$name];
+        return $this->cache[$className];
     }
 
 }
