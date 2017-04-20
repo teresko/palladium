@@ -5,7 +5,7 @@
 
 
     "require": {
-        "php": ">=7.0",
+        "php": ">=5.5",
         "psr/log": "1.*"
     },
     "autoload": {
