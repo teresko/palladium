@@ -39,7 +39,7 @@ final class PasswordIdentityTest extends TestCase
     {
         $instance = new PasswordIdentity;
 
-        $instance->setKey('alpha');
+        $instance->setPassword('alpha');
         $this->assertTrue(password_verify('alpha', $instance->getHash()));
     }
 
@@ -77,7 +77,7 @@ final class PasswordIdentityTest extends TestCase
 
         $instance = new PasswordIdentity;
         $instance->setIdentifier('alpha@example.com');
-        $instance->setKey('bad');
+        $instance->setPassword('bad');
 
         $instance->validate();
     }
@@ -87,7 +87,7 @@ final class PasswordIdentityTest extends TestCase
     {
         $instance = new PasswordIdentity;
         $instance->setIdentifier('alpha@example.com');
-        $instance->setKey('password');
+        $instance->setPassword('password');
 
         $this->assertNull($instance->validate());
     }

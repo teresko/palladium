@@ -16,12 +16,12 @@ use Palladium\Exception\TokenNotFound;
 class SignUp extends Locator
 {
 
-    public function createPasswordIdentity($identifier, $key)
+    public function createPasswordIdentity($identifier, $password)
     {
         $identity = new \Entity\Authentication\PasswordIdentity;
 
         $identity->setIdentifier($identifier);
-        $identity->setKey($key);
+        $identity->setPassword($password);
         $identity->setStatus(\Entity\Authentication\Identity::STATUS_NEW);
 
         $identity->generateToken();

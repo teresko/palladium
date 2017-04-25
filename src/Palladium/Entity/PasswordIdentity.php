@@ -18,7 +18,7 @@ class PasswordIdentity extends Identity
 
 
     private $identifier;
-    private $key;
+    private $password;
     private $hash;
 
     protected $type = Identity::TYPE_PASSWORD;
@@ -45,10 +45,10 @@ class PasswordIdentity extends Identity
     }
 
 
-    public function setKey($key)
+    public function setPassword($password)
     {
-        $this->key = (string) $key;
-        $this->hash = $this->createHash($key);
+        $this->password = (string) $password;
+        $this->hash = $this->createHash($password);
     }
 
 
@@ -61,9 +61,9 @@ class PasswordIdentity extends Identity
     }
 
 
-    private function createHash($key)
+    private function createHash($password)
     {
-        $hash = password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
+        $hash = password_hash($password, self::HASH_ALGO, ['cost' => self::HASH_COST]);
 
         return $hash;
     }
@@ -79,9 +79,9 @@ class PasswordIdentity extends Identity
     }
 
 
-    public function matchKey($key)
+    public function matchKey($password)
     {
-        return password_verify($key, $this->hash);
+        return password_verify($password, $this->hash);
     }
 
 
@@ -97,7 +97,7 @@ class PasswordIdentity extends Identity
             throw new InvalidEmail;
         }
 
-        if (strlen($this->key) < self::MIN_LENGTH || strlen($this->key) > self::MAX_LENGTH) {
+        if (strlen($this->password) < self::MIN_LENGTH || strlen($this->password) > self::MAX_LENGTH) {
             throw new InvalidPassword;
         }
     }
