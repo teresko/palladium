@@ -6,10 +6,11 @@ namespace Palladium\Entity;
  * Abstraction, that contains information about user's authentication details
  */
 
-use Palladium\Component\Identifiable;
+use Palladium\Contract\HasId;
 use Palladium\Exception\InvalidToken;
 
-class Identity implements Identifiable
+
+class Identity implements HasId
 {
 
     const TOKEN_SIZE = 16;

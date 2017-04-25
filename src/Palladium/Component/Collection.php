@@ -3,7 +3,7 @@
 namespace Palladium\Component;
 
 use Palladium\Component\Collection;
-use Palladium\Component\Identifiable;
+use Palladium\Contract\HasId;
 
 /**
  * Class for handling sets of domain entities.
@@ -37,7 +37,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
      *
      * @param array $parameters
      *
-     * @return Identifiable
+     * @return HasId
      */
     public function addBlueprint(array $parameters)
     {
@@ -65,9 +65,9 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     /**
      * Method for adding already existing domain entity to the collection.
      *
-     * @param Identifiable $entity
+     * @param HasId $entity
      */
-    public function addEntity(Identifiable $entity)
+    public function addEntity(HasId $entity)
     {
         $this->pool[] = $entity;
 
@@ -125,9 +125,9 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     /**
      * Removes an entity from collection.
      *
-     * @param Identifiable $entity
+     * @param HasId $entity
      */
-    public function removeEntity(Identifiable $entity)
+    public function removeEntity(HasId $entity)
     {
         $key = $entity->getId();
 
@@ -143,7 +143,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
      * Method for retrieving the last added entity from the collection.
      * If collection is empty, it returns `null`
      *
-     * @return Identifiable|null
+     * @return HasId|null
      */
     public function getLastEntity()
     {

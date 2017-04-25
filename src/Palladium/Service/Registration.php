@@ -7,26 +7,37 @@ namespace Palladium\Service;
  */
 
 use Palladium\Mapper\Authentication as Mapper;
+use Palladium\Entity\Authentication as Entity;
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\TokenNotFound;
 
+use Palladium\Contract\CanCreateMapper;
+use Psr\Log\LoggerInterface;
 
-class SignUp extends Locator
+class Registration
 {
+
+    private $mapperFactory;
+    private $logger;
+
+
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    {
+        $this->mapperFactory = $mapperFactory;
+        $this->logger = $logger;
+    }
+
 
     public function createEmailIdentity($identifier, $password)
     {
-        $identity = new \Entity\Authentication\EmailIdentity;
+        $identity = new Entity\EmailIdentity;
 
         $identity->setIdentifier($identifier);
         $identity->setPassword($password);
-        $identity->setStatus(\Entity\Authentication\Identity::STATUS_NEW);
 
-        $identity->generateToken();
-        $identity->setTokenAction(\Entity\Authentication\Identity::ACTION_VERIFY);
-        $identity->setTokenEndOfLife(time() + \Entity\Authentication\Identity::TOKEN_LIFESPAN);
+        $this->prepareNewIdentity($identity);
 
         $identity->validate();
 
@@ -50,7 +61,17 @@ class SignUp extends Locator
     }
 
 
-    public function bindIdentityToUser(\Entity\Authentication\Identity $identity, \Entity\Community\User $user)
+    public function prepareNewIdentity(Entity\EmailIdentity $identity)
+    {
+        $identity->setStatus(Identity::STATUS_NEW);
+
+        $identity->generateToken();
+        $identity->setTokenAction(Identity::ACTION_VERIFY);
+        $identity->setTokenEndOfLife(time() + Identity::TOKEN_LIFESPAN);
+    }
+
+
+    public function bindIdentityToUser(Identity $identity, HasId $user)
     {
         if ($user->getId() === null) {
             throw new UserNotFound;
@@ -79,8 +100,8 @@ class SignUp extends Locator
 
     public function verifyEmailIdentity($token)
     {
-        $identity = new \Entity\Authentication\EmailIdentity;
-        $this->retrieveIdenityByToken($identity, $token, \Entity\Authentication\Identity::ACTION_VERIFY);
+        $identity = new Entity\EmailIdentity;
+        $this->retrieveIdenityByToken($identity, $token, Identity::ACTION_VERIFY);
 
         if ($identity->getId() === null) {
             $this->logger->warning('no identity with given verification token', [
@@ -92,7 +113,7 @@ class SignUp extends Locator
             throw new TokenNotFound;
         }
 
-        $identity->setStatus(\Entity\Authentication\Identity::STATUS_ACTIVE);
+        $identity->setStatus(Identity::STATUS_ACTIVE);
         $identity->clearToken();
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
@@ -107,6 +128,19 @@ class SignUp extends Locator
                 'identity' => $identity->getId(),
             ],
         ]);
+    }
+
+
+    private function retrieveIdenityByToken(Entity\Identity $identity, $token, $action = Entity\Identity::ACTION_ANY)
+    {
+        $identity->setToken($token);
+        $identity->setTokenAction($action);
+        $identity->setTokenEndOfLife(time());
+
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->fetch($identity);
+
+        return $identity;
     }
 
 }

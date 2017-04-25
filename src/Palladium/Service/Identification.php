@@ -28,18 +28,18 @@ class Identification extends Locator
     private $currentCookie;
 
 
-    public function loginWithPassword($identifier, $key)
+    public function loginWithPassword($identifier, $password)
     {
         $identity = $this->retrieveEmailIdenityByIdentifier($identifier);
 
         if ($identity->getId() === null) {
             // hardening against timeing based side-channel attacks
-            $identity->setKey('');
+            $identity->setPassword('');
 
             $this->logger->warning('acount not found', [
                 'input' => [
                     'identifier' => $identifier,
-                    'key' => md5($key),
+                    'key' => md5($password),
                 ],
                 'account' => [
                     'user' => null,
@@ -50,11 +50,11 @@ class Identification extends Locator
             throw new EmailNotFound;
         }
 
-        if ($identity->matchKey($key) === false) {
+        if ($identity->matchKey($password) === false) {
             $this->logger->warning('wrong password', [
                 'input' => [
                     'identifier' => $identifier,
-                    'key' => md5($key),
+                    'key' => md5($password),
                 ],
                 'account' => [
                     'user' => $identity->getUserId(),
