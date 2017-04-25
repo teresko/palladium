@@ -30,7 +30,7 @@ class Identification extends Locator
 
     public function loginWithPassword($identifier, $key)
     {
-        $identity = $this->retrievePasswordIdenityByIdentifier($identifier);
+        $identity = $this->retrieveEmailIdenityByIdentifier($identifier);
 
         if ($identity->getId() === null) {
             // hardening against timeing based side-channel attacks
@@ -91,7 +91,7 @@ class Identification extends Locator
     }
 
 
-    private function createCookieIdentity(Entity\PasswordIdentity $identity)
+    private function createCookieIdentity(Entity\EmailIdentity $identity)
     {
         $cookie = new Entity\CookieIdentity;
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
@@ -277,7 +277,7 @@ class Identification extends Locator
 
         $identity = $list->getLastEntity();
 
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($identity->matchKey($oldKey) === false) {
             $this->logger->warning('wrong password', [

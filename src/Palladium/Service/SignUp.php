@@ -16,9 +16,9 @@ use Palladium\Exception\TokenNotFound;
 class SignUp extends Locator
 {
 
-    public function createPasswordIdentity($identifier, $password)
+    public function createEmailIdentity($identifier, $password)
     {
-        $identity = new \Entity\Authentication\PasswordIdentity;
+        $identity = new \Entity\Authentication\EmailIdentity;
 
         $identity->setIdentifier($identifier);
         $identity->setPassword($password);
@@ -30,7 +30,7 @@ class SignUp extends Locator
 
         $identity->validate();
 
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($mapper->exists($identity)) {
             $this->logger->warning('email already registered', [
@@ -77,9 +77,9 @@ class SignUp extends Locator
     }
 
 
-    public function verifyPasswordIdentity($token)
+    public function verifyEmailIdentity($token)
     {
-        $identity = new \Entity\Authentication\PasswordIdentity;
+        $identity = new \Entity\Authentication\EmailIdentity;
         $this->retrieveIdenityByToken($identity, $token, \Entity\Authentication\Identity::ACTION_VERIFY);
 
         if ($identity->getId() === null) {
@@ -95,7 +95,7 @@ class SignUp extends Locator
         $identity->setStatus(\Entity\Authentication\Identity::STATUS_ACTIVE);
         $identity->clearToken();
 
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->store($identity);
 
         $this->logger->info('identity verified', [

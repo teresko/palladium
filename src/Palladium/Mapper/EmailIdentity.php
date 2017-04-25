@@ -9,13 +9,13 @@ namespace Palladium\Mapper;
 use Palladium\Component\SqlMapper;
 use Palladium\Entity\Authentication as Entity;
 
-class PasswordIdentity extends SqlMapper
+class EmailIdentity extends SqlMapper
 {
 
     /**
-     * @param Entity\PasswordIdentity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function exists(Entity\PasswordIdentity $entity)
+    public function exists(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -40,9 +40,9 @@ class PasswordIdentity extends SqlMapper
 
 
     /**
-     * @param Entity\PasswordIdentity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function fetch(Entity\PasswordIdentity $entity)
+    public function fetch(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -75,9 +75,9 @@ class PasswordIdentity extends SqlMapper
 
 
     /**
-     * @param Entity\PasswordIdentity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function store(Entity\PasswordIdentity $entity)
+    public function store(Entity\EmailIdentity $entity)
     {
         if ($entity->getId() === null) {
             $this->createIdentity($entity);
@@ -88,7 +88,7 @@ class PasswordIdentity extends SqlMapper
     }
 
 
-    private function createIdentity(Entity\PasswordIdentity $entity)
+    private function createIdentity(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -113,7 +113,7 @@ class PasswordIdentity extends SqlMapper
     }
 
 
-    private function updateIdentity(Entity\PasswordIdentity $entity)
+    private function updateIdentity(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 

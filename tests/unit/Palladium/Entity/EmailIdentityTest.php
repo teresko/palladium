@@ -7,13 +7,13 @@ use Palladium\Exception\InvalidPassword;
 use Palladium\Exception\InvalidEmail;
 
 /**
- * @covers Palladium\Entity\PasswordIdentity
+ * @covers Palladium\Entity\EmailIdentity
  */
-final class PasswordIdentityTest extends TestCase
+final class EmailIdentityTest extends TestCase
 {
     public function test_Identifier_Assignment_Type_Cast()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
 
         $instance->setIdentifier('alpha');
         $this->assertSame('alpha', $instance->getIdentifier());
@@ -25,7 +25,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_Retrieval_of_Fingerprint()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setIdentifier('alpha');
 
         $this->assertSame(
@@ -37,7 +37,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_Hash_Retrieval_for_a_Given_Key()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
 
         $instance->setPassword('alpha');
         $this->assertTrue(password_verify('alpha', $instance->getHash()));
@@ -46,7 +46,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_Hash_Assignment()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $this->assertNull($instance->getHash());
 
         $instance->setHash('alpha');
@@ -64,7 +64,7 @@ final class PasswordIdentityTest extends TestCase
     {
         $this->expectException(InvalidEmail::class);
 
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setIdentifier('no.an.email');
 
         $instance->validate();
@@ -75,7 +75,7 @@ final class PasswordIdentityTest extends TestCase
     {
         $this->expectException(InvalidPassword::class);
 
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setIdentifier('alpha@example.com');
         $instance->setPassword('bad');
 
@@ -85,7 +85,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_Successful_Validation()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setIdentifier('alpha@example.com');
         $instance->setPassword('password');
 
@@ -95,7 +95,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_for_Old_Hash()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setHash('$1$beta$ocWFwI6Cax/SdMiwWXYoQ/');
 
         $this->assertTrue($instance->isOldHash());
@@ -107,7 +107,7 @@ final class PasswordIdentityTest extends TestCase
 
     public function test_Key_Matching()
     {
-        $instance = new PasswordIdentity;
+        $instance = new EmailIdentity;
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $this->assertTrue($instance->matchKey('alpha'));

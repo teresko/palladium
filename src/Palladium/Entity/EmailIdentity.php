@@ -7,7 +7,7 @@ use Palladium\Exception\InvalidPassword;
 use Palladium\Exception\InvalidEmail;
 
 
-class PasswordIdentity extends Identity
+class EmailIdentity extends Identity
 {
 
     const HASH_ALGO = PASSWORD_BCRYPT;

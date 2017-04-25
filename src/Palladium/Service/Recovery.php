@@ -16,7 +16,7 @@ class Recovery extends Locator
 
     public function markForReset($identifier)
     {
-        $identity = $this->retrievePasswordIdenityByIdentifier($identifier);
+        $identity = $this->retrieveEmailIdenityByIdentifier($identifier);
 
         if ($identity->getId() === null) {
             $this->logger->warning('acount not found', [
@@ -46,7 +46,7 @@ class Recovery extends Locator
         $identity->setTokenAction(Entity\Identity::ACTION_RESET);
         $identity->setTokenEndOfLife(time() + Entity\Identity::TOKEN_LIFESPAN);
 
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->store($identity);
 
         $this->logger->info('request password reset', [
@@ -61,7 +61,7 @@ class Recovery extends Locator
 
     public function resetIdentityPassword($token, $key)
     {
-        $identity = new Entity\PasswordIdentity;
+        $identity = new Entity\EmailIdentity;
         $this->retrieveIdenityByToken($identity, $token, Entity\Identity::ACTION_RESET);
 
         if ($identity->getId() === null) {
@@ -79,7 +79,7 @@ class Recovery extends Locator
         $identity->clearToken();
 
 
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->store($identity);
 
         $this->discardAllUserCookies($identity->getUserId());

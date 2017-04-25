@@ -40,10 +40,10 @@ abstract class Locator
     }
 
 
-    protected function retrievePasswordIdenityByIdentifier($identifier)
+    protected function retrieveEmailIdenityByIdentifier($identifier)
     {
-        $identity = new Entity\PasswordIdentity;
-        $mapper = $this->mapperFactory->create(Mapper\PasswordIdentity::class);
+        $identity = new Entity\EmailIdentity;
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         $identity->setIdentifier($identifier);
 
