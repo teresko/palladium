@@ -6,8 +6,8 @@ namespace Palladium\Service;
  * Code for creating new identities
  */
 
-use Palladium\Mapper\Authentication as Mapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Mapper as Mapper;
+use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
@@ -63,15 +63,15 @@ class Registration
 
     public function prepareNewIdentity(Entity\EmailIdentity $identity)
     {
-        $identity->setStatus(Identity::STATUS_NEW);
+        $identity->setStatus(Entity\Identity::STATUS_NEW);
 
         $identity->generateToken();
-        $identity->setTokenAction(Identity::ACTION_VERIFY);
-        $identity->setTokenEndOfLife(time() + Identity::TOKEN_LIFESPAN);
+        $identity->setTokenAction(Entity\Identity::ACTION_VERIFY);
+        $identity->setTokenEndOfLife(time() + Entity\Identity::TOKEN_LIFESPAN);
     }
 
 
-    public function bindIdentityToUser(Identity $identity, HasId $user)
+    public function bindIdentityToUser(Entity\Identity $identity, HasId $user)
     {
         if ($user->getId() === null) {
             throw new UserNotFound;
@@ -101,7 +101,7 @@ class Registration
     public function verifyEmailIdentity($token)
     {
         $identity = new Entity\EmailIdentity;
-        $this->retrieveIdenityByToken($identity, $token, Identity::ACTION_VERIFY);
+        $this->retrieveIdenityByToken($identity, $token, Entity\Identity::ACTION_VERIFY);
 
         if ($identity->getId() === null) {
             $this->logger->warning('no identity with given verification token', [
@@ -113,7 +113,7 @@ class Registration
             throw new TokenNotFound;
         }
 
-        $identity->setStatus(Identity::STATUS_ACTIVE);
+        $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->clearToken();
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
