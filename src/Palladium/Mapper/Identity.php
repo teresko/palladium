@@ -63,4 +63,10 @@ class Identity extends SqlMapper implements CanPersistIdentity
             $this->applyValues($entity, $data);
         }
     }
+
+
+    /**
+     * @param Entity\Identity $entity
+     */
+    public function fetch(Entity\Identity $entity) {}
 }
