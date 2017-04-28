@@ -7,16 +7,16 @@ namespace Palladium\Mapper;
  */
 
 use Palladium\Component\SqlMapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Entity as Entity;
 use Palladium\Contract\CanPersistIdentity;
 
 class EmailIdentity extends SqlMapper implements CanPersistIdentity
 {
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\Identity $entity
      */
-    public function exists(Entity\EmailIdentity $entity)
+    public function exists(Entity\Identity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -25,13 +25,14 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
                  WHERE type = :type
                    AND fingerprint = :fingerprint
                    AND identifier = :identifier
-                   AND (expires_on IS NULL OR expires_on > NOW())";
+                   AND (expires_on IS NULL OR expires_on > :now)";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', Entity\Identity::TYPE_PASSWORD);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':now', time());
 
         $statement->execute();
         $data = $statement->fetch();
@@ -41,19 +42,19 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\Identity $entity
      */
-    public function fetch(Entity\EmailIdentity $entity)
+    public function fetch(Entity\Identity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
-        $sql = "SELECT identity_id                      AS id,
-                       user_id                          AS userId,
-                       hash                             AS hash,
-                       status                           AS status,
-                       token                            AS token,
-                       token_action                     AS tokenAction,
-                       UNIX_TIMESTAMP(token_expires_on) AS tokenEndOfLife
+        $sql = "SELECT identity_id      AS id,
+                       user_id          AS userId,
+                       hash             AS hash,
+                       status           AS status,
+                       token            AS token,
+                       token_action     AS tokenAction,
+                       token_expires_on AS tokenEndOfLife
                   FROM $table
                  WHERE type = :type
                    AND fingerprint = :fingerprint
@@ -76,9 +77,9 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\Identity $entity
      */
-    public function store(Entity\EmailIdentity $entity)
+    public function store(Entity\Identity $entity)
     {
         if ($entity->getId() === null) {
             $this->createIdentity($entity);
@@ -89,13 +90,13 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
     }
 
 
-    private function createIdentity(Entity\EmailIdentity $entity)
+    private function createIdentity(Entity\Identity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
         $sql = "INSERT INTO {$table}
-                       (type, status, identifier, fingerprint, hash, token, token_action, token_expires_on )
-                VALUES (:type, :status, :identifier, :fingerprint, :hash, :token, :action, FROM_UNIXTIME(:token_eol))";
+                       (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on )
+                VALUES (:type, :status, :identifier, :fingerprint, :hash, :created, :token, :action, :token_eol)";
 
         $statement = $this->connection->prepare($sql);
 
@@ -107,6 +108,8 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
         $statement->bindValue(':token', $entity->getToken());
         $statement->bindValue(':action', $entity->getTokenAction());
         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
+        $statement->bindValue(':created', time());
+
 
         $statement->execute();
 
@@ -114,17 +117,17 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
     }
 
 
-    private function updateIdentity(Entity\EmailIdentity $entity)
+    private function updateIdentity(Entity\Identity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
         $sql = "UPDATE {$table}
                    SET hash = :hash,
                        status = :status,
-                       expires_on = FROM_UNIXTIME(:expires),
+                       expires_on = :expires,
                        token = :token,
                        token_action = :action,
-                       token_expires_on = FROM_UNIXTIME(:token_eol)
+                       token_expires_on = :token_eol
                  WHERE identity_id = :id";
 
          $statement = $this->connection->prepare($sql);

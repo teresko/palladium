@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+define('FIXTURE_PATH', __DIR__ . '/fixture');
 
 spl_autoload_register(function ($class) {
     if (strpos($class, 'Mock') !== 0) {
