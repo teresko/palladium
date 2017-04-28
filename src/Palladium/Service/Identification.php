@@ -9,8 +9,8 @@ namespace Palladium\Service;
 use RuntimeException;
 
 use Palladium\Component\MapperFactory;
-use Palladium\Mapper\Authentication as Mapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Mapper as Mapper;
+use Palladium\Entity as Entity;
 
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\IdentityNotFound;
@@ -21,39 +21,30 @@ use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Exception\Community\UserNotFound;
 
+use Palladium\Contract\CanCreateMapper;
+use Psr\Log\LoggerInterface;
 
-class Identification extends Locator
+class Identification
 {
 
     private $currentCookie;
 
+    private $mapperFactory;
+    private $logger;
 
-    public function loginWithPassword($identifier, $password)
+
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
-        $identity = $this->retrieveEmailIdenityByIdentifier($identifier);
+        $this->mapperFactory = $mapperFactory;
+        $this->logger = $logger;
+    }
 
-        if ($identity->getId() === null) {
-            // hardening against timeing based side-channel attacks
-            $identity->setPassword('');
-
-            $this->logger->warning('acount not found', [
-                'input' => [
-                    'identifier' => $identifier,
-                    'key' => md5($password),
-                ],
-                'account' => [
-                    'user' => null,
-                    'identity' => null,
-                ],
-            ]);
-
-            throw new EmailNotFound;
-        }
-
+    public function loginWithPassword(Entity\EmailIdentity $identity, $password)
+    {
         if ($identity->matchKey($password) === false) {
             $this->logger->warning('wrong password', [
                 'input' => [
-                    'identifier' => $identifier,
+                    'identifier' => $identity->getIdentifier(),
                     'key' => md5($password),
                 ],
                 'account' => [
@@ -70,7 +61,7 @@ class Identification extends Locator
 
         $this->logger->info('login successful', [
             'input' => [
-                'identifier' => $identifier,
+                'identifier' => $identity->getIdentifier(),
             ],
             'account' => [
                 'user' => $identity->getUserId(),
@@ -79,6 +70,8 @@ class Identification extends Locator
         ]);
 
         $this->currentCookie = $cookie;
+
+        return $cookie;
     }
 
 
@@ -202,29 +195,6 @@ class Identification extends Locator
         $mapper->fetch($cookie);
 
         return $cookie;
-    }
-
-
-    public function retrieveEmailIdenityByIdentifier($identifier)
-    {
-        $identity = new Entity\EmailIdentity;
-        $identity->setIdentifier($identifier);
-
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->fetch($identity);
-
-        if ($identity->getId() === null) {
-            $this->logger->warning('acount not found', [
-                'input' => [
-                    'identifier' => $identifier,
-                ],
-            ]);
-
-            throw new IdentityNotFound;
-        }
-
-
-        return $identity;
     }
 
 
