@@ -20,7 +20,9 @@ final class CombinedTest extends TestCase
 
     protected function setUp()
     {
-        unlink(FIXTURE_PATH . '/live.sqlite');
+        if (file_exists(FIXTURE_PATH . '/live.sqlite')) {
+            unlink(FIXTURE_PATH . '/live.sqlite');
+        }
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();

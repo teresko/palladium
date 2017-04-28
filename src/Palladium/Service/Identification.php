@@ -252,24 +252,8 @@ class Identification
     }
 
 
-    public function changeUserPassword($userId, $oldKey, $newKey)
+    public function changeUserPassword(Entity\EmailIdentity $identity, $oldKey, $newKey)
     {
-        $list = $this->retrieveIdenitiesByUserId($userId, Entity\Identity::TYPE_PASSWORD);
-
-        if (count($list) !== 1) {
-            $this->logger->warning('acount not found', [
-                'input' => [
-                    'user' => $userId,
-                    'old-key' => md5($oldKey),
-                    'new-key' => md5($newKey),
-                ],
-            ]);
-
-            throw new IdentityNotFound;
-        }
-
-        $identity = $list->getLastEntity();
-
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($identity->matchKey($oldKey) === false) {
@@ -290,8 +274,6 @@ class Identification
 
         $identity->setKey($newKey);
         $mapper->store($identity);
-
-        $this->discardAllUserCookies($identity->getUserId());
 
         $this->logger->info('password changed', [
             'account' => [
