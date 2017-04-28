@@ -36,6 +36,7 @@ final class RecoveryTest extends TestCase
         $instance->markForReset($affected);
 
         $this->assertNotNull($affected->getToken());
+        $this->assertSame(Identity::ACTION_RESET, $affected->getTokenAction());
     }
 
 
