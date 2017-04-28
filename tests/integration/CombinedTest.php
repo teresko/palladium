@@ -17,27 +17,36 @@ final class CombinedTest extends TestCase
     private $registration;
 
 
+
     protected function setUp()
     {
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
 
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
         $connection = new PDO('sqlite:' . FIXTURE_PATH . '/live.sqlite');
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->registration = new Registration(
-            new MapperFactory($connection, [
-                'accounts' => [
-                    'identities' => 'identities',
-                ],
-            ]),
-            $this->getMockBuilder(LoggerInterface::class)->getMock()
-        );
+        $factory = new MapperFactory($connection, [
+            'accounts' => [
+                'identities' => 'identities',
+            ],
+        ]);
+
+
+        $this->registration = new Registration($factory, $logger);
     }
 
 
     public function test_Initialization_of_Password_Reset_Process()
     {
         $identity = $this->registration->createEmailIdentity('test@example.com', 'password');
+        $this->assertSame(1, $identity->getId());
+
+        $token = $identity->getToken();
+
+
+        $identity = $this->registration->verifyEmailIdentity($token);
         $this->assertSame(1, $identity->getId());
     }
 

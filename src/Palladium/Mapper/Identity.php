@@ -7,7 +7,7 @@ namespace Palladium\Mapper;
  */
 
 use Palladium\Component\SqlMapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Entity as Entity;
 use Palladium\Contract\CanPersistIdentity;
 
 class Identity extends SqlMapper implements CanPersistIdentity
@@ -21,7 +21,7 @@ class Identity extends SqlMapper implements CanPersistIdentity
         $table = $this->config['accounts']['identities'];
 
         $sql = "UPDATE $table
-                   SET used_on = FROM_UNIXTIME(:used)
+                   SET used_on = :used
                  WHERE identity_id = :id";
 
         $statement = $this->connection->prepare($sql);
@@ -39,15 +39,15 @@ class Identity extends SqlMapper implements CanPersistIdentity
     {
         $table = $this->config['accounts']['identities'];
 
-        $sql = "SELECT identity_id                      AS id,
-                       user_id                          AS userId,
-                       status                           AS status,
-                       hash                             AS hash,
-                       UNIX_TIMESTAMP(token_expires_on) AS tokenEndOfLife
+        $sql = "SELECT identity_id      AS id,
+                       user_id          AS userId,
+                       status           AS status,
+                       hash             AS hash,
+                       token_expires_on AS tokenEndOfLife
                   FROM $table
                  WHERE token = :token
                    AND token_action = :action
-                   AND token_expires_on > FROM_UNIXTIME(:expires)";
+                   AND token_expires_on > :expires";
 
         $statement = $this->connection->prepare($sql);
 

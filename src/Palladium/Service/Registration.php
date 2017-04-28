@@ -126,6 +126,8 @@ class Registration
                 'identity' => $identity->getId(),
             ],
         ]);
+
+        return $identity;
     }
 
 
