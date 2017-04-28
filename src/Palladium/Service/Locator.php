@@ -13,7 +13,7 @@ use Palladium\Entity\Authentication as Entity;
 use Monolog\Logger;
 
 
-abstract class Locator
+class Locator
 {
 
     protected $mapperFactory;

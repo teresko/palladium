@@ -205,6 +205,29 @@ class Identification extends Locator
     }
 
 
+    public function retrieveEmailIdenityByIdentifier($identifier)
+    {
+        $identity = new Entity\EmailIdentity;
+        $identity->setIdentifier($identifier);
+
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+        $mapper->fetch($identity);
+
+        if ($identity->getId() === null) {
+            $this->logger->warning('acount not found', [
+                'input' => [
+                    'identifier' => $identifier,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
+
+
+        return $identity;
+    }
+
+
     public function discardCookie($userId, $series, $key)
     {
         $identity = $this->retrieveIdenityByCookie($userId, $series, Entity\Identity::STATUS_ACTIVE);
