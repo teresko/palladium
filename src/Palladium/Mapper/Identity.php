@@ -68,5 +68,5 @@ class Identity extends SqlMapper implements CanPersistIdentity
     /**
      * @param Entity\Identity $entity
      */
-    public function fetch(Entity\Identity $entity) {}
+    public function exists(Entity\Identity $entity) {}
 }
