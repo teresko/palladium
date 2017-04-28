@@ -8,8 +8,9 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\SqlMapper;
 use Palladium\Entity\Authentication as Entity;
+use Palladium\Contract\CanPersistIdentity;
 
-class Identity extends SqlMapper
+class Identity extends SqlMapper implements CanPersistIdentity
 {
 
     /**

@@ -14,6 +14,7 @@ use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\TokenNotFound;
 
 use Palladium\Contract\CanCreateMapper;
+use Palladium\Contract\HasId;
 use Psr\Log\LoggerInterface;
 
 class Registration
@@ -79,14 +80,11 @@ class Registration
 
         $identity->setUserId($user->getId());
 
-        $identity->validate();
-
         $mapper = $this->mapperFactory->create(Mapper\IdentityUser::class);
         $mapper->store($identity);
 
         $this->logger->info('new identity registered', [
             'input' => [
-                'identifier' => $identity->getIdentifier(),
             ],
             'account' => [
                 'user' => $identity->getUserId(),
