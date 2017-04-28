@@ -20,6 +20,7 @@ final class CombinedTest extends TestCase
 
     protected function setUp()
     {
+        unlink(FIXTURE_PATH . '/live.sqlite');
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -48,11 +49,5 @@ final class CombinedTest extends TestCase
 
         $identity = $this->registration->verifyEmailIdentity($token);
         $this->assertSame(1, $identity->getId());
-    }
-
-
-    protected function tearDown()
-    {
-        unlink(FIXTURE_PATH . '/live.sqlite');
     }
 }

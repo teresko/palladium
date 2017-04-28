@@ -160,3 +160,6 @@ Temporary Items
 # Don't version the test coverage reports
 /tests/report/*
 !/tests/report/.gitkeep
+
+# Don't version the database used in integration tests
+/tests/fixture/live.sqlite
