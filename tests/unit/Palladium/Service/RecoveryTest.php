@@ -7,10 +7,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Palladium\Contract\CanCreateMapper;
 use Palladium\Contract\HasId;
-use Palladium\Contract\CanPersistIdentity;
 
-use Palladium\Entity\EmailIdentity;
-use Palladium\Entity\Identity;
+use Palladium\Entity;
+use Palladium\Mapper;
 use Palladium\Exception\IdentityNotVerified;
 
 /**
@@ -21,8 +20,11 @@ final class RecoveryTest extends TestCase
 
     public function test_Initialization_of_Password_Reset_Process()
     {
-        $mapper = $this->getMockBuilder(CanPersistIdentity::class)->getMock();
-        $mapper->expects($this->once())->method('store')->will($this->returnValue(true));
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));
@@ -30,13 +32,13 @@ final class RecoveryTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
 
-        $affected = new EmailIdentity;
+        $affected = new Entity\EmailIdentity;
 
         $instance = new Recovery($factory, $logger);
         $instance->markForReset($affected);
 
         $this->assertNotNull($affected->getToken());
-        $this->assertSame(Identity::ACTION_RESET, $affected->getTokenAction());
+        $this->assertSame(Entity\Identity::ACTION_RESET, $affected->getTokenAction());
     }
 
 
@@ -49,8 +51,8 @@ final class RecoveryTest extends TestCase
         $logger->expects($this->once())->method('warning');
 
 
-        $affected = new EmailIdentity;
-        $affected->setStatus(Identity::STATUS_NEW);
+        $affected = new Entity\EmailIdentity;
+        $affected->setStatus(Entity\Identity::STATUS_NEW);
 
         $instance = new Recovery($factory, $logger);
         $instance->markForReset($affected);
@@ -59,7 +61,10 @@ final class RecoveryTest extends TestCase
 
     public function test_Completion_of_Password_Reset()
     {
-        $mapper = $this->getMockBuilder(CanPersistIdentity::class)->getMock();
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
         $mapper->expects($this->once())->method('store')->will($this->returnValue(true));
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
@@ -67,7 +72,7 @@ final class RecoveryTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new EmailIdentity;
+        $affected = new Entity\EmailIdentity;
         $affected->setToken('12345678901234567890123456789012');
 
         $instance = new Recovery($factory, $logger);

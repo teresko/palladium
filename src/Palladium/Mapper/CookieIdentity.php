@@ -9,9 +9,8 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\SqlMapper;
 use Palladium\Entity\Authentication as Entity;
-use Palladium\Contract\CanPersistIdentity;
 
-class CookieIdentity extends SqlMapper implements CanPersistIdentity
+class CookieIdentity extends SqlMapper
 {
 
     /**

@@ -8,15 +8,14 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\SqlMapper;
 use Palladium\Entity as Entity;
-use Palladium\Contract\CanPersistIdentity;
 
-class EmailIdentity extends SqlMapper implements CanPersistIdentity
+class EmailIdentity extends SqlMapper
 {
 
     /**
-     * @param Entity\Identity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function exists(Entity\Identity $entity)
+    public function exists(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -29,7 +28,7 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\Identity::TYPE_PASSWORD);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':now', time());
@@ -42,9 +41,9 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
 
     /**
-     * @param Entity\Identity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function fetch(Entity\Identity $entity)
+    public function fetch(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -77,9 +76,9 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
 
     /**
-     * @param Entity\Identity $entity
+     * @param Entity\EmailIdentity $entity
      */
-    public function store(Entity\Identity $entity)
+    public function store(Entity\EmailIdentity $entity)
     {
         if ($entity->getId() === null) {
             $this->createIdentity($entity);
@@ -90,7 +89,7 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
     }
 
 
-    private function createIdentity(Entity\Identity $entity)
+    private function createIdentity(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 
@@ -100,8 +99,8 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\Identity::TYPE_PASSWORD);
-        $statement->bindValue(':status', Entity\Identity::STATUS_NEW);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
+        $statement->bindValue(':status', Entity\EmailIdentity::STATUS_NEW);
         $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
@@ -117,7 +116,7 @@ class EmailIdentity extends SqlMapper implements CanPersistIdentity
     }
 
 
-    private function updateIdentity(Entity\Identity $entity)
+    private function updateIdentity(Entity\EmailIdentity $entity)
     {
         $table = $this->config['accounts']['identities'];
 

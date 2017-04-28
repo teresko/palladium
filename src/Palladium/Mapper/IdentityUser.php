@@ -3,7 +3,7 @@
 namespace Palladium\Mapper;
 
 use Palladium\Component\SqlMapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Entity as Entity;
 
 class IdentityUser extends SqlMapper
 {

@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Palladium\Contract\CanCreateMapper;
 use Palladium\Contract\HasId;
-use Palladium\Contract\CanPersistIdentity;
 
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\UserNotFound;
-use Palladium\Entity\Identity;
+use Palladium\Entity;
+use Palladium\Mapper;
 
 /**
  * @covers Palladium\Service\Registration
@@ -23,7 +23,10 @@ final class RegistrationTest extends TestCase
     {
         $this->expectException(IdentityDuplicated::class);
 
-        $mapper = $this->getMockBuilder(CanPersistIdentity::class)->getMock();
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
         $mapper->expects($this->once())->method('exists')->will($this->returnValue(true));
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
@@ -40,7 +43,10 @@ final class RegistrationTest extends TestCase
 
     public function test_Creation_of_Email_Identity()
     {
-        $mapper = $this->getMockBuilder(CanPersistIdentity::class)->getMock();
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
         $mapper->expects($this->once())->method('exists')->will($this->returnValue(false));
         $mapper->expects($this->once())->method('store');
 
@@ -53,7 +59,7 @@ final class RegistrationTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $this->assertInstanceOf(Identity::class, $instance->createEmailIdentity('foo@example.com', 'password'));
+        $this->assertInstanceOf(Entity\Identity::class, $instance->createEmailIdentity('foo@example.com', 'password'));
     }
 
 
@@ -66,13 +72,16 @@ final class RegistrationTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $instance->bindIdentityToUser(new Identity, new \Mock\User(null));
+        $instance->bindIdentityToUser(new Entity\Identity, new \Mock\User(null));
     }
 
 
     public function test_Binding_of_User()
     {
-        $mapper = $this->getMockBuilder(CanPersistIdentity::class)->getMock();
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityUser::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
         $mapper->expects($this->once())->method('store');
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
@@ -83,7 +92,7 @@ final class RegistrationTest extends TestCase
 
 
         $instance = new Registration($factory, $logger);
-        $affected = new Identity;
+        $affected = new Entity\Identity;
         $instance->bindIdentityToUser($affected,  new \Mock\User(42));
         $this->assertSame(42, $affected->getUserId());
     }
