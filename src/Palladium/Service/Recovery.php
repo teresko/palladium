@@ -6,28 +6,30 @@ namespace Palladium\Service;
  * Application logic for password reset handling
  */
 
-use Palladium\Mapper\Authentication as Mapper;
-use Palladium\Entity\Authentication as Entity;
+use Palladium\Mapper as Mapper;
+use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\IdentityNotVerified;
 
-class Recovery extends Locator
+use Palladium\Contract\CanCreateMapper;
+use Psr\Log\LoggerInterface;
+
+class Recovery
 {
 
-    public function markForReset($identifier)
+    protected $mapperFactory;
+    protected $logger;
+
+
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
-        $identity = $this->retrieveEmailIdenityByIdentifier($identifier);
+        $this->mapperFactory = $mapperFactory;
+        $this->logger = $logger;
+    }
 
-        if ($identity->getId() === null) {
-            $this->logger->warning('acount not found', [
-                'input' => [
-                    'identifier' => $identifier,
-                ],
-            ]);
 
-            throw new IdentityNotFound;
-        }
-
+    public function markForReset(Entity\EmailIdentity $identity)
+    {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
             $this->logger->warning('account not verified', [
                 'input' => [
@@ -54,35 +56,19 @@ class Recovery extends Locator
                 'identifier' => $identifier,
             ],
         ]);
-
-        // send email
     }
 
 
-    public function resetIdentityPassword($token, $key)
+
+    public function resetIdentityPassword(Entity\EmailIdentity $identity, $password)
     {
-        $identity = new Entity\EmailIdentity;
-        $this->retrieveIdenityByToken($identity, $token, Entity\Identity::ACTION_RESET);
+        $token = $identity->getToken();
 
-        if ($identity->getId() === null) {
-            $this->logger->warning('no account with given reset token', [
-                'input' => [
-                    'token' => $token,
-                    'key' => md5($key),
-                ],
-            ]);
-
-            throw new IdentityNotFound;
-        }
-
-        $identity->setKey($key);
+        $identity->setPassword($password);
         $identity->clearToken();
-
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->store($identity);
-
-        $this->discardAllUserCookies($identity->getUserId());
 
         $this->logger->info('password reset successful', [
             'input' => [
@@ -90,6 +76,4 @@ class Recovery extends Locator
             ],
         ]);
     }
-
-
 }
