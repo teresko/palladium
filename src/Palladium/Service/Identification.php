@@ -115,14 +115,7 @@ class Identification
             throw new IdentityExpired;
         }
 
-        if ($identity->matchKey($key) === false) {
-            $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
-            $mapper->store($identity);
-
-            $this->logCookieError($identity, 'compromised cookie');
-
-            throw new CompromisedCookie;
-        }
+        $this->checkCookieKey($identity, $key);
 
         $identity->generateNewKey();
         $identity->setLastUsed(time());
@@ -150,14 +143,7 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
 
-        if ($identity->matchKey($key) === false) {
-            $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
-            $mapper->store($identity);
-
-            $this->logCookieError($identity, 'compromised cookie');
-
-            throw new CompromisedCookie;
-        }
+        $this->checkCookieKey($identity, $key);
 
         $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
         $mapper->store($identity);
@@ -169,6 +155,28 @@ class Identification
             ],
         ]);
 
+    }
+
+
+    /**
+     * Verify that the cookie based identity matches the key and,
+     * if verification is failed, disable this given identity
+     *
+     * @param string $key
+     * @throws \Palladium\Exception\CompromisedCookie if key does not match
+     */
+    private function checkCookieKey(Entity\CookieIdentity $identity, $key)
+    {
+        if ($identity->matchKey($key) === true) {
+            return;
+        }
+
+        $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
+        $mapper->store($identity);
+
+        $this->logCookieError($identity, 'compromised cookie');
+
+        throw new CompromisedCookie;
     }
 
 
