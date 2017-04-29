@@ -31,15 +31,9 @@ class Identification
     public function loginWithPassword(Entity\EmailIdentity $identity, $password)
     {
         if ($identity->matchPassword($password) === false) {
-            $this->logger->warning('wrong password', [
-                'input' => [
-                    'identifier' => $identity->getIdentifier(),
-                    'key' => md5($password),
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
+            $this->logWrongPasswordWarning($identity, [
+                'identifier' => $identity->getIdentifier(),
+                'key' => md5($password),
             ]);
 
             throw new PasswordNotMatch;
@@ -209,6 +203,32 @@ class Identification
     }
 
 
+    public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
+    {
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+
+        if ($identity->matchPassword($oldPassword) === false) {
+            $this->logWrongPasswordWarning($identity, [
+                'user' => $identity->getUserId(),
+                'old-key' => md5($oldPassword),
+                'new-key' => md5($newPassword),
+            ]);
+
+            throw new PasswordNotMatch;
+        }
+
+        $identity->setPassword($newPassword);
+        $mapper->store($identity);
+
+        $this->logger->info('password changed', [
+            'account' => [
+                'user' => $identity->getUserId(),
+                'identity' => $identity->getId(),
+            ],
+        ]);
+    }
+
+
     /**
      * @param string $message
      */
@@ -228,34 +248,18 @@ class Identification
     }
 
 
-    public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
+    /**
+     * @param string $message
+     */
+    private function logWrongPasswordWarning(Entity\EmailIdentity $identity, $input)
     {
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-
-        if ($identity->matchPassword($oldPassword) === false) {
-            $this->logger->warning('wrong password', [
-                'input' => [
-                    'user' => $identity->getUserId(),
-                    'old-key' => md5($oldPassword),
-                    'new-key' => md5($newPassword),
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
-
-            throw new PasswordNotMatch;
-        }
-
-        $identity->setPassword($newPassword);
-        $mapper->store($identity);
-
-        $this->logger->info('password changed', [
+        $this->logger->warning('wrong password', [
+            'input' => $input,
             'account' => [
                 'user' => $identity->getUserId(),
                 'identity' => $identity->getId(),
             ],
         ]);
     }
+
 }
