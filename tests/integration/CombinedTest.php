@@ -70,8 +70,11 @@ final class CombinedTest extends TestCase
     {
         $token = self::$hold;
 
-        $identity = $this->registration->verifyEmailIdentity($token);
-        $this->assertSame(1, $identity->getId());
+        $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+        $this->assertSame(\Palladium\Entity\Identity::STATUS_NEW, $identity->getStatus());
+
+        $this->registration->verifyEmailIdentity($identity);
+        $this->assertSame(\Palladium\Entity\Identity::STATUS_ACTIVE, $identity->getStatus());
 
         self::$hold = null;
     }

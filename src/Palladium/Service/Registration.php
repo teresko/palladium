@@ -36,10 +36,9 @@ class Registration
 
         $identity->setIdentifier($identifier);
         $identity->setPassword($password);
+        $identity->validate();
 
         $this->prepareNewIdentity($identity);
-
-        $identity->validate();
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
@@ -54,8 +53,6 @@ class Registration
         }
 
         $mapper->store($identity);
-
-        // process not ended, no point in logging
 
         return $identity;
     }
@@ -95,15 +92,12 @@ class Registration
     }
 
 
-    public function verifyEmailIdentity($token)
+    public function verifyEmailIdentity(Entity\EmailIdentity $identity)
     {
-        $identity = new Entity\EmailIdentity;
-        $this->retrieveIdenityByToken($identity, $token, Entity\Identity::ACTION_VERIFY);
-
         if ($identity->getId() === null) {
             $this->logger->warning('no identity with given verification token', [
                 'input' => [
-                    'token' => $token,
+                    'token' => $identity->getToken(),
                 ],
             ]);
 
@@ -118,7 +112,7 @@ class Registration
 
         $this->logger->info('identity verified', [
             'input' => [
-                'token' => $token,
+                'token' => $identity->getToken(),
             ],
             'account' => [
                 'user' => $identity->getUserId(),
@@ -128,18 +122,4 @@ class Registration
 
         return $identity;
     }
-
-
-    private function retrieveIdenityByToken(Entity\Identity $identity, $token, $action = Entity\Identity::ACTION_ANY)
-    {
-        $identity->setToken($token);
-        $identity->setTokenAction($action);
-        $identity->setTokenEndOfLife(time());
-
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->fetch($identity);
-
-        return $identity;
-    }
-
 }
