@@ -30,7 +30,7 @@ class Identification
 
     public function loginWithPassword(Entity\EmailIdentity $identity, $password)
     {
-        if ($identity->matchKey($password) === false) {
+        if ($identity->matchPassword($password) === false) {
             $this->logger->warning('wrong password', [
                 'input' => [
                     'identifier' => $identity->getIdentifier(),
@@ -228,16 +228,16 @@ class Identification
     }
 
 
-    public function changeUserPassword(Entity\EmailIdentity $identity, $oldKey, $newKey)
+    public function changeUserPassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
     {
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
-        if ($identity->matchKey($oldKey) === false) {
+        if ($identity->matchPassword($oldPassword) === false) {
             $this->logger->warning('wrong password', [
                 'input' => [
                     'user' => $identity->getUserId(),
-                    'old-key' => md5($oldKey),
-                    'new-key' => md5($newKey),
+                    'old-key' => md5($oldPassword),
+                    'new-key' => md5($newPassword),
                 ],
                 'account' => [
                     'user' => $identity->getUserId(),
@@ -248,7 +248,7 @@ class Identification
             throw new PasswordNotMatch;
         }
 
-        $identity->setPassword($newKey);
+        $identity->setPassword($newPassword);
         $mapper->store($identity);
 
         $this->logger->info('password changed', [

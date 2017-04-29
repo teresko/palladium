@@ -110,6 +110,6 @@ final class EmailIdentityTest extends TestCase
         $instance = new EmailIdentity;
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
-        $this->assertTrue($instance->matchKey('alpha'));
+        $this->assertTrue($instance->matchPassword('alpha'));
     }
 }
