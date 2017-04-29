@@ -10,6 +10,9 @@ use Psr\Log\LoggerInterface;
 use PDO;
 use Mock;
 
+/**
+ * @coversNothing
+ */
 final class CombinedTest extends TestCase
 {
 
