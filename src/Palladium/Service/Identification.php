@@ -6,16 +6,12 @@ namespace Palladium\Service;
  * Retrieval and handling of identities for registered users
  */
 
-use RuntimeException;
-
 use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
-
 use Palladium\Exception\PasswordNotMatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
-
 use Palladium\Contract\CanCreateMapper;
 use Psr\Log\LoggerInterface;
 
@@ -151,21 +147,6 @@ class Identification
     }
 
 
-    private function retrieveIdenityByCookie($userId, $series, $status = Entity\Identity::STATUS_ANY)
-    {
-        $cookie = new Entity\CookieIdentity;
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-
-        $cookie->setUserId($userId);
-        $cookie->setSeries($series);
-        $cookie->setStatus($status);
-
-        $mapper->fetch($cookie);
-
-        return $cookie;
-    }
-
-
     public function logout(Entity\CookieIdentity $identity, $key)
     {
         if ($identity->getId() === null) {
@@ -197,6 +178,9 @@ class Identification
     }
 
 
+    /**
+     * @param string $message
+     */
     private function logCookieError(Entity\CookieIdentity $identity, $message)
     {
         $this->logger->error($message, [
