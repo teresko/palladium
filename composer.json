@@ -1,8 +1,18 @@
 {
-    "name": "backend/palladium",
+    "name": "teresko/palladium",
     "type": "library",
+    "homepage": "https://github.com/teresko/palladium",
+    "license": "BSD-3-Clause",
     "description": "User authentication and registration component",
+    "keywords": ["authentication", "registration", "login", "account", "auth"],
 
+    "authors": [
+        {
+        "name": "Mārtiņš Tereško",
+        "email": "martins.teresko@gmail.com",
+        "role": "Developer"
+        }
+    ],
 
     "require": {
         "php": ">=7.0",
@@ -13,6 +23,7 @@
         "psr-4": { "": "src/" }
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "phpunit/phpunit": "^6.1"
     }
 }
