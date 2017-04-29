@@ -22,8 +22,6 @@ use Psr\Log\LoggerInterface;
 class Identification
 {
 
-    private $currentCookie;
-
     private $mapperFactory;
     private $logger;
 
@@ -64,8 +62,6 @@ class Identification
             ],
         ]);
 
-        $this->currentCookie = $cookie;
-
         return $cookie;
     }
 
@@ -102,10 +98,8 @@ class Identification
     }
 
 
-    public function authenticateWithCookie($userId, $series, $key)
+    public function loginWithCookie(Entity\CookieIdentity $identity, $key)
     {
-        $identity = $this->retrieveIdenityByCookie($userId, $series, Entity\Identity::STATUS_ACTIVE);
-
         if ($identity->getId() === null) {
             $this->logCookieError($identity, 'denial of service');
             throw new DenialOfServiceAttempt;
@@ -153,7 +147,7 @@ class Identification
             ],
         ]);
 
-        $this->currentCookie = $identity;
+        return $identity;
     }
 
 
@@ -172,10 +166,8 @@ class Identification
     }
 
 
-    public function discardCookie($userId, $series, $key)
+    public function logout(Entity\CookieIdentity $identity, $key)
     {
-        $identity = $this->retrieveIdenityByCookie($userId, $series, Entity\Identity::STATUS_ACTIVE);
-
         if ($identity->getId() === null) {
             $this->logCookieError($identity, 'denial of service');
             throw new DenialOfServiceAttempt;
@@ -250,24 +242,5 @@ class Identification
                 'identity' => $identity->getId(),
             ],
         ]);
-    }
-
-
-    public function getCurrentCookie()
-    {
-        if (null === $this->currentCookie) {
-            return new Entity\CookieIdentity;
-        }
-
-        return $this->currentCookie;
-    }
-
-
-    public function discardCurrentCookie()
-    {
-        $cookie = new Entity\CookieIdentity;
-        $cookie->setExpiresOn(time());
-
-        $this->currentCookie = $cookie;
     }
 }

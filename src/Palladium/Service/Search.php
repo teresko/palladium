@@ -51,4 +51,19 @@ class Search
 
         return $identity;
     }
+
+
+
+    public function findCookieIdenity($userId, $series)
+    {
+        $cookie = new Entity\CookieIdentity;
+        $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
+        $cookie->setUserId($userId);
+        $cookie->setSeries($series);
+
+        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
+        $mapper->fetch($cookie);
+
+        return $cookie;
+    }
 }

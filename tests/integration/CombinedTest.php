@@ -91,8 +91,48 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
-        $this->assertSame(4, $identity->getUserId()); // from Registration phase
+        $this->assertSame(4, $cookie->getUserId()); // from Registration phase
 
-        self::$hold = $identity->getCollapsedValue();
+        self::$hold = [
+            'user' => $cookie->getUserId(),
+            'series' => $cookie->getSeries(),
+            'key' => $cookie->getKey(),
+        ];
     }
+
+
+    /**
+     * @depends test_User_Login_with_Password
+     */
+    public function test_User_Login_with_Cookie()
+    {
+        $parts = self::$hold;
+
+        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $cookie = $this->identification->loginWithCookie($identity, $parts['key']);
+
+        $this->assertSame(4, $cookie->getUserId()); // from Registration phase
+
+        self::$hold = [
+            'user' => $cookie->getUserId(),
+            'series' => $cookie->getSeries(),
+            'key' => $cookie->getKey(),
+        ];
+    }
+
+
+    /**
+     * @depends test_User_Login_with_Cookie
+     */
+    public function test_User_Logout()
+    {
+        $parts = self::$hold;
+
+        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $this->identification->logout($identity, $parts['key']);
+
+        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $this->assertNull($identity->getId());
+    }
+
 }
