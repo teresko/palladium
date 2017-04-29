@@ -87,8 +87,6 @@ class Registration
                 'identity' => $identity->getId(),
             ],
         ]);
-
-        // @TODO: add mail later
     }
 
 
