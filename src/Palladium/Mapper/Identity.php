@@ -62,10 +62,4 @@ class Identity extends SqlMapper
             $this->applyValues($entity, $data);
         }
     }
-
-
-    /**
-     * @param Entity\Identity $entity
-     */
-    public function exists(Entity\Identity $entity) {}
 }
