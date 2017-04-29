@@ -157,5 +157,23 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
         $this->recovery->resetIdentityPassword($identity, 'foobar');
         $this->identification->discardRelatedCookies($identity);
+
+        $cookie = $this->identification->loginWithPassword($identity, 'foobar');
+        $this->assertSame(4, $cookie->getUserId());
+
+        self::$hold = null;
+    }
+
+
+    /**
+     * @depends test_Setting_New_Password
+     */
+    public function test_Changing_Password_for_Identity()
+    {
+        $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
+        $this->identification->changePassword($identity, 'foobar', 'password');
+
+        $cookie = $this->identification->loginWithPassword($identity, 'password');
+        $this->assertSame(4, $cookie->getUserId());
     }
 }

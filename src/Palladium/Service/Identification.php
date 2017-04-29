@@ -228,7 +228,7 @@ class Identification
     }
 
 
-    public function changeUserPassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
+    public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
     {
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
