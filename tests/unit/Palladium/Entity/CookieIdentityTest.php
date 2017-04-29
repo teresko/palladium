@@ -11,13 +11,6 @@ use Palladium\Exception\InvalidCookieToken;
 final class CookieIdentityTest extends TestCase
 {
 
-    public function test_Collapsed_Value_for_Empty_Identity()
-    {
-        $instance = new CookieIdentity;
-        $this->assertNull($instance->getCollapsedValue());
-    }
-
-
     /**
      * @dataProvider provide_Assignment_of_Params
      */
@@ -62,46 +55,6 @@ final class CookieIdentityTest extends TestCase
 
         $instance->setHash($param);
         $this->assertSame($expected, $instance->getHash());
-    }
-
-
-    public function test_Collapsed_Value_for_Populated_Identity()
-    {
-        $instance = new CookieIdentity;
-        $instance->setId(1);
-        $instance->setUserId(42);
-        $instance->setSeries('alpha');
-        $instance->setKey('beta');
-        $this->assertSame('42|alpha|beta', $instance->getCollapsedValue());
-    }
-
-
-    public function test_Data_Extraction_from_Collapsed_Value_when_Null()
-    {
-        $this->expectException(InvalidCookieToken::class);
-
-        $instance = new CookieIdentity;
-        $instance->setCollapsedValue(null);
-    }
-
-
-    public function test_Data_Extraction_from_Collapsed_Value_when_Random_Crap()
-    {
-        $this->expectException(InvalidCookieToken::class);
-
-        $instance = new CookieIdentity;
-        $instance->setCollapsedValue('asdasdasd');
-    }
-
-
-    public function test_Data_Extraction_from_Collapsed_Value_when_Correct_Token()
-    {
-        $instance = new CookieIdentity;
-        $instance->setCollapsedValue('42|alpha|beta');
-
-        $this->assertSame(42, $instance->getUserId());
-        $this->assertSame('alpha', $instance->getSeries());
-        $this->assertSame('beta', $instance->getKey());
     }
 
 

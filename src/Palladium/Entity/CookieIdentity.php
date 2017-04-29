@@ -128,36 +128,4 @@ class CookieIdentity extends Identity
     {
         return  $this->makeHash($key) === $this->hash;
     }
-
-
-    /**
-     * Retrieves the identification token in a compact form.
-     *
-     * @return string|null
-     */
-    public function getCollapsedValue()
-    {
-        if (null === $this->getId()) {
-            return null;
-        }
-        return $this->getUserId() . '|' . $this->getSeries() . '|' . $this->getKey();
-    }
-
-
-    /**
-     * Populates the instance from the identification token.
-     *
-     * @param string $value
-     */
-    public function setCollapsedValue($value)
-    {
-        if (empty($value) || substr_count($value, '|') !== 2) {
-            throw new InvalidCookieToken;
-        }
-
-        list($userId, $series, $key) = explode('|', $value);
-        $this->setUserId($userId);
-        $this->setSeries($series);
-        $this->setKey($key);
-    }
 }
