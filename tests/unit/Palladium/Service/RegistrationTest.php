@@ -10,6 +10,7 @@ use Palladium\Contract\HasId;
 
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\UserNotFound;
+use Palladium\Exception\TokenNotFound;
 use Palladium\Entity;
 use Palladium\Mapper;
 
@@ -63,7 +64,7 @@ final class RegistrationTest extends TestCase
     }
 
 
-    public function test_Failutre_of_User_Binding()
+    public function test_Failure_of_User_Binding()
     {
         $this->expectException(UserNotFound::class);
 
@@ -96,5 +97,55 @@ final class RegistrationTest extends TestCase
         $instance->bindIdentityToUser($affected,  new \Mock\User(42));
         $this->assertSame(42, $affected->getUserId());
     }
+
+
+    public function test_Verification_of_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityUser::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+
+        $instance = new Registration($factory, $logger);
+        $affected = new Entity\EmailIdentity;
+        $affected->setId(2);
+        $affected->setStatus(Entity\Identity::STATUS_NEW);
+
+        $instance->verifyEmailIdentity($affected);
+        $this->assertSame(Entity\Identity::STATUS_ACTIVE, $affected->getStatus());
+    }
+
+
+    public function test_Fasilure_of_Identity_Verification()
+    {
+        $this->expectException(TokenNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityUser::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning');
+
+
+        $instance = new Registration($factory, $logger);
+        $affected = new Entity\EmailIdentity;
+        $affected->setId(null);
+
+        $instance->verifyEmailIdentity($affected);
+    }
+
 
 }
