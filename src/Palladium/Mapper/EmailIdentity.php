@@ -17,10 +17,8 @@ class EmailIdentity extends SqlMapper
      */
     public function exists(Entity\EmailIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT 1
-                  FROM {$table}
+                  FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
                    AND identifier = :identifier
@@ -45,8 +43,6 @@ class EmailIdentity extends SqlMapper
      */
     public function fetch(Entity\EmailIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT identity_id      AS id,
                        user_id          AS userId,
                        hash             AS hash,
@@ -54,7 +50,7 @@ class EmailIdentity extends SqlMapper
                        token            AS token,
                        token_action     AS tokenAction,
                        token_expires_on AS tokenEndOfLife
-                  FROM $table
+                  FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
                    AND identifier = :identifier";
@@ -91,9 +87,7 @@ class EmailIdentity extends SqlMapper
 
     private function createIdentity(Entity\EmailIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
-        $sql = "INSERT INTO {$table}
+        $sql = "INSERT INTO {$this->table}
                        (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on )
                 VALUES (:type, :status, :identifier, :fingerprint, :hash, :created, :token, :action, :token_eol)";
 
@@ -118,9 +112,7 @@ class EmailIdentity extends SqlMapper
 
     private function updateIdentity(Entity\EmailIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
-        $sql = "UPDATE {$table}
+        $sql = "UPDATE {$this->table}
                    SET hash = :hash,
                        status = :status,
                        expires_on = :expires,

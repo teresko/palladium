@@ -17,9 +17,7 @@ class Identity extends SqlMapper
      */
     public function store(Entity\Identity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
-        $sql = "UPDATE $table
+        $sql = "UPDATE {$this->table}
                    SET used_on = :used
                  WHERE identity_id = :id";
 
@@ -36,14 +34,12 @@ class Identity extends SqlMapper
      */
     public function fetch(Entity\Identity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT identity_id      AS id,
                        user_id          AS userId,
                        status           AS status,
                        hash             AS hash,
                        token_expires_on AS tokenEndOfLife
-                  FROM $table
+                  FROM {$this->table}
                  WHERE token = :token
                    AND token_action = :action
                    AND token_expires_on > :expires";

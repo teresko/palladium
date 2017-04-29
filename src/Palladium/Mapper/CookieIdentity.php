@@ -18,10 +18,8 @@ class CookieIdentity extends SqlMapper
      */
     public function exists(Entity\CookieIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT 1
-                  FROM $table AS Identities
+                  FROM {$this->table} AS Identities
                  WHERE type = :type
                    AND user_id = :user
                    AND identifier = :series
@@ -47,12 +45,10 @@ class CookieIdentity extends SqlMapper
      */
     public function fetch(Entity\CookieIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT identity_id  AS id,
                        hash         AS hash,
                        expires_on   AS expiresOn
-                  FROM $table AS Identities
+                  FROM {$this->table} AS Identities
                  WHERE type = :type
                    AND user_id = :user
                    AND identifier = :series
@@ -90,8 +86,7 @@ class CookieIdentity extends SqlMapper
 
     private function createCookie(Entity\CookieIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-        $sql = "INSERT INTO {$table}
+        $sql = "INSERT INTO {$this->table}
                        (user_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
                 VALUES (:user, :type, :status, :series, :fingerprint, :hash, :created, :expires)";
 
@@ -114,10 +109,9 @@ class CookieIdentity extends SqlMapper
 
     private function updateCookie(Entity\CookieIdentity $entity)
     {
-        $table = $this->config['accounts']['identities'];
         $active = Entity\Identity::STATUS_ACTIVE;
 
-        $sql = "UPDATE {$table}
+        $sql = "UPDATE {$this->table}
                    SET status = :status,
                        hash = :hash,
                        used_on = :used,

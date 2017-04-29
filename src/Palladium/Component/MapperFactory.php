@@ -12,18 +12,18 @@ class MapperFactory implements CanCreateMapper
 
     private $connection;
     private $cache = [];
-    private $config = [];
+    private $table;
 
     /**
      * Creates new factory instance
      *
      * @param PDO $connection
-     * @param array $config A list of table name aliases
+     * @param string $table A list of table name aliases
      */
-    public function __construct(PDO $connection, array $config = [])
+    public function __construct(PDO $connection, string $table)
     {
         $this->connection = $connection;
-        $this->config = $config;
+        $this->table = $table;
     }
 
 
@@ -44,7 +44,7 @@ class MapperFactory implements CanCreateMapper
                 throw new RuntimeException("Mapper not found. Attempted to load '{$className}'.");
             }
 
-            $this->cache[$className] = new $className($this->connection, $this->config);
+            $this->cache[$className] = new $className($this->connection, $this->table);
         }
 
         return $this->cache[$className];

@@ -40,11 +40,7 @@ final class CombinedTest extends TestCase
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->connection = $connection;
 
-        $factory = new MapperFactory($connection, [
-            'accounts' => [
-                'identities' => 'identities',
-            ],
-        ]);
+        $factory = new MapperFactory($connection, 'identities');
 
 
         $this->identification = new Identification($factory, $logger);

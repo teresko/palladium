@@ -7,18 +7,18 @@ use PDO;
 abstract class SqlMapper extends DataMapper
 {
     protected $connection;
-    protected $config;
+    protected $table;
 
 
     /**
      * Creates new mapper instance
      *
      * @param PDO $connection
-     * @param array $config A list of table name aliases
+     * @param string $table A list of table name aliases
      */
-    public function __construct(PDO $connection, array $config)
+    public function __construct(PDO $connection, string $table)
     {
         $this->connection = $connection;
-        $this->config = $config;
+        $this->table = $table;
     }
 }

@@ -13,9 +13,7 @@ class IdentityUser extends SqlMapper
      */
     public function store(Entity\Identity $entity)
     {
-        $table = $this->config['accounts']['identities'];
-
-        $sql = "UPDATE $table
+        $sql = "UPDATE {$this->table}
                    SET user_id = :user
                  WHERE identity_id = :id";
 

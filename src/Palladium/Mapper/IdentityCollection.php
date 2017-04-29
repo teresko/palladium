@@ -28,9 +28,7 @@ class IdentityCollection extends SqlMapper
 
     private function updateStatus(Entity\IdentityCollection $collection)
     {
-        $table = $this->config['accounts']['identities'];
-
-        $sql = "UPDATE {$table}
+        $sql = "UPDATE {$this->table}
                    SET status = :status
                  WHERE identity_id = :id";
         $statement = $this->connection->prepare($sql);
@@ -48,10 +46,8 @@ class IdentityCollection extends SqlMapper
      */
     public function fetch(Entity\IdentityCollection $collection)
     {
-        $table = $this->config['accounts']['identities'];
-
         $sql = "SELECT identity_id  AS id
-                  FROM {$table}
+                  FROM {$this->table}
                  WHERE status = :status
                    AND user_id = :user
                    AND type = :type";
