@@ -141,11 +141,10 @@ class Identification
             throw new DenialOfServiceAttempt;
         }
 
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-
         $this->checkCookieKey($identity, $key);
-
         $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
+
+        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
 
         $this->logger->info('logout successful', [
@@ -172,6 +171,8 @@ class Identification
         }
 
         $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
+
+        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
 
         $this->logCookieError($identity, 'compromised cookie');
@@ -257,7 +258,7 @@ class Identification
 
 
     /**
-     * @param string $message
+     * @param array $input
      */
     private function logWrongPasswordWarning(Entity\EmailIdentity $identity, $input)
     {
