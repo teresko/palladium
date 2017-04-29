@@ -112,18 +112,7 @@ class Identification
         $identity = $this->retrieveIdenityByCookie($userId, $series, Entity\Identity::STATUS_ACTIVE);
 
         if ($identity->getId() === null) {
-            $this->logger->error('denial of service', [
-                'input' => [
-                    'user' => $userId,
-                    'series' => $series,
-                    'key' => $key,
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
-
+            $this->logCookieError($identity, 'denial of service');
             throw new DenialOfServiceAttempt;
         }
 
@@ -134,9 +123,9 @@ class Identification
             $mapper->store($identity);
             $this->logger->info('cookie expired', [
                 'input' => [
-                    'user' => $userId,
-                    'series' => $series,
-                    'key' => $key,
+                    'user' => $identity->getUserId(),
+                    'series' => $identity->getSeries(),
+                    'key' => $identity->getKey(),
                 ],
                 'account' => [
                     'user' => $identity->getUserId(),
@@ -151,17 +140,7 @@ class Identification
             $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
             $mapper->store($identity);
 
-            $this->logger->error('compromised cookie', [
-                'input' => [
-                    'user' => $userId,
-                    'series' => $series,
-                    'key' => $key,
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
+            $this->logCookieError($identity, 'compromised cookie');
 
             throw new CompromisedCookie;
         }
@@ -203,18 +182,7 @@ class Identification
         $identity = $this->retrieveIdenityByCookie($userId, $series, Entity\Identity::STATUS_ACTIVE);
 
         if ($identity->getId() === null) {
-            $this->logger->error('denial of service', [
-                'input' => [
-                    'user' => $userId,
-                    'series' => $series,
-                    'key' => $key,
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
-
+            $this->logCookieError($identity, 'denial of service');
             throw new DenialOfServiceAttempt;
         }
 
@@ -224,17 +192,7 @@ class Identification
             $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
             $mapper->store($identity);
 
-            $this->logger->error('compromised cookie', [
-                'input' => [
-                    'user' => $userId,
-                    'series' => $series,
-                    'key' => $key,
-                ],
-                'account' => [
-                    'user' => $identity->getUserId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
+            $this->logCookieError($identity, 'compromised cookie');
 
             throw new CompromisedCookie;
         }
@@ -252,6 +210,22 @@ class Identification
     }
 
 
+    private function logCookieError(Entity\CookieIdentity $identity, $message)
+    {
+        $this->logger->error($message, [
+            'input' => [
+                'user' => $identity->getUserId(),
+                'series' => $identity->getSeries(),
+                'key' => $identity->getKey(),
+            ],
+            'account' => [
+                'user' => $identity->getUserId(),
+                'identity' => $identity->getId(),
+            ],
+        ]);
+    }
+
+
     public function changeUserPassword(Entity\EmailIdentity $identity, $oldKey, $newKey)
     {
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
@@ -259,7 +233,7 @@ class Identification
         if ($identity->matchKey($oldKey) === false) {
             $this->logger->warning('wrong password', [
                 'input' => [
-                    'user' => $userId,
+                    'user' => $identity->getUserId(),
                     'old-key' => md5($oldKey),
                     'new-key' => md5($newKey),
                 ],
@@ -272,7 +246,7 @@ class Identification
             throw new PasswordNotMatch;
         }
 
-        $identity->setKey($newKey);
+        $identity->setPassword($newKey);
         $mapper->store($identity);
 
         $this->logger->info('password changed', [
