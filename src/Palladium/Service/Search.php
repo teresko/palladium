@@ -31,12 +31,23 @@ class Search
     }
 
 
-    public function retrieveIdenityByToken(Entity\Identity $identity)
+    public function findEmailIdenityByIdentifier($identifier)
     {
-        $identity->setTokenEndOfLife(time());
+        $identity = new Entity\EmailIdentity;
+        $identity->setIdentifier($identifier);
 
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->fetch($identity);
+
+        if ($identity->getId() === null) {
+            $this->logger->warning('acount not found', [
+                'input' => [
+                    'identifier' => $identifier,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
 
         return $identity;
     }

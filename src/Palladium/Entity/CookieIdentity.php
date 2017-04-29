@@ -160,4 +160,4 @@ class CookieIdentity extends Identity
         $this->setSeries($series);
         $this->setKey($key);
     }
- }
+}

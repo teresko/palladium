@@ -49,9 +49,9 @@ class CookieIdentity extends SqlMapper
     {
         $table = $this->config['accounts']['identities'];
 
-        $sql = "SELECT identity_id                  AS id,
-                       hash                         AS hash,
-                       UNIX_TIMESTAMP(expires_on)   AS expiresOn
+        $sql = "SELECT identity_id  AS id,
+                       hash         AS hash,
+                       expires_on   AS expiresOn
                   FROM $table AS Identities
                  WHERE type = :type
                    AND user_id = :user
@@ -92,8 +92,8 @@ class CookieIdentity extends SqlMapper
     {
         $table = $this->config['accounts']['identities'];
         $sql = "INSERT INTO {$table}
-                       (user_id, type, status, identifier, fingerprint, hash, expires_on)
-                VALUES (:user, :type, :status, :series, :fingerprint, :hash, FROM_UNIXTIME(:expires))";
+                       (user_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
+                VALUES (:user, :type, :status, :series, :fingerprint, :hash, :created, :expires)";
 
         $statement = $this->connection->prepare($sql);
 
@@ -104,6 +104,7 @@ class CookieIdentity extends SqlMapper
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':expires', $entity->getExpiresOn());
+        $statement->bindValue(':created', time());
 
         $statement->execute();
 
@@ -119,8 +120,8 @@ class CookieIdentity extends SqlMapper
         $sql = "UPDATE {$table}
                    SET status = :status,
                        hash = :hash,
-                       used_on = NOW(),
-                       expires_on = FROM_UNIXTIME(:expires)
+                       used_on = :used,
+                       expires_on = :expires
                  WHERE identity_id = :id
                    AND status = {$active}";
 
@@ -130,6 +131,7 @@ class CookieIdentity extends SqlMapper
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':expires', $entity->getExpiresOn());
+        $statement->bindValue(':used', time());
 
         $statement->execute();
     }
