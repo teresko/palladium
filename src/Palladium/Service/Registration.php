@@ -10,7 +10,6 @@ use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\UserNotFound;
-use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\TokenNotFound;
 
 use Palladium\Contract\CanCreateMapper;
