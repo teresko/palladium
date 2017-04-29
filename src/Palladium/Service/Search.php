@@ -53,6 +53,20 @@ class Search
     }
 
 
+    public function findEmailIdenityByToken($token, $action = Entity\Identity::ACTION_ANY)
+    {
+        $identity = new Entity\EmailIdentity;
+
+        $identity->setToken($token);
+        $identity->setTokenAction($action);
+        $identity->setTokenEndOfLife(time());
+
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->fetch($identity);
+
+        return $identity;
+    }
+
 
     public function findCookieIdenity($userId, $series)
     {

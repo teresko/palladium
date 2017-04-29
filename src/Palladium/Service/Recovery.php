@@ -56,6 +56,8 @@ class Recovery
                 'identifier' => $identity->getIdentifier(),
             ],
         ]);
+
+        return $identity->getToken();
     }
 
 

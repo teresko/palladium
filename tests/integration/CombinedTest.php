@@ -19,6 +19,7 @@ final class CombinedTest extends TestCase
     private $registration;
     private $identification;
     private $search;
+    private $recovery;
 
     private static $hold; // for passing data to the next test
 
@@ -29,10 +30,6 @@ final class CombinedTest extends TestCase
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
     }
 
-    public static function tearDownAfterClass()
-    {
-        // unlink(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
-    }
 
     protected function setUp()
     {
@@ -53,6 +50,7 @@ final class CombinedTest extends TestCase
         $this->identification = new Identification($factory, $logger);
         $this->registration = new Registration($factory, $logger);
         $this->search = new Search($factory, $logger);
+        $this->recovery = new Recovery($factory, $logger);
     }
 
 
@@ -72,7 +70,7 @@ final class CombinedTest extends TestCase
     /**
      * @depends test_User_Registration
      */
-    public function test_identify_Verification()
+    public function test_Identify_Verification()
     {
         $token = self::$hold;
 
@@ -84,7 +82,7 @@ final class CombinedTest extends TestCase
 
 
     /**
-     * @depends test_identify_Verification
+     * @depends test_Identify_Verification
      */
     public function test_User_Login_with_Password()
     {
@@ -133,6 +131,35 @@ final class CombinedTest extends TestCase
 
         $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
         $this->assertNull($identity->getId());
+
+        self::$hold = null;
     }
 
+
+    /**
+     * @depends test_Identify_Verification
+     */
+    public function test_Requesting_New_Password()
+    {
+        $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
+        $token = $this->recovery->markForReset($identity);
+
+        $this->assertNotNull($token);
+        $this->assertSame($token, $identity->getToken());
+
+        self::$hold = $token;
+    }
+
+
+    /**
+     * @depends test_Requesting_New_Password
+     */
+    public function test_Setting_New_Password()
+    {
+        $token = self::$hold;
+
+        $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
+        $this->recovery->resetIdentityPassword($identity, 'foobar');
+        $this->identification->discardRelatedCookies($identity);
+    }
 }
