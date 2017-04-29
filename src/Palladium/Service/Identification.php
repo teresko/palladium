@@ -8,18 +8,13 @@ namespace Palladium\Service;
 
 use RuntimeException;
 
-use Palladium\Component\MapperFactory;
 use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 
-use Palladium\Exception\IdentityDuplicated;
-use Palladium\Exception\IdentityNotFound;
-use Palladium\Exception\EmailNotFound;
 use Palladium\Exception\PasswordNotMatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
-use Palladium\Exception\Community\UserNotFound;
 
 use Palladium\Contract\CanCreateMapper;
 use Psr\Log\LoggerInterface;
@@ -118,7 +113,7 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
 
-        if ($identity->getExpiresOn() <  time()) {
+        if ($identity->getExpiresOn() < time()) {
             $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
             $mapper->store($identity);
             $this->logger->info('cookie expired', [

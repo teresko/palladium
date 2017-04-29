@@ -56,16 +56,16 @@ class IdentityCollection extends SqlMapper
                    AND user_id = :user
                    AND type = :type";
 
-       $statement = $this->connection->prepare($sql);
+        $statement = $this->connection->prepare($sql);
 
-       $statement->bindValue(':user', $collection->getUserId());
-       $statement->bindValue(':status', $collection->getStatus());
-       $statement->bindValue(':type', $collection->getType());
+        $statement->bindValue(':user', $collection->getUserId());
+        $statement->bindValue(':status', $collection->getStatus());
+        $statement->bindValue(':type', $collection->getType());
 
-       $statement->execute();
+        $statement->execute();
 
-       foreach ($statement as $parameters) {
-           $collection->addBlueprint($parameters);
-       }
+        foreach ($statement as $parameters) {
+            $collection->addBlueprint($parameters);
+        }
     }
 }

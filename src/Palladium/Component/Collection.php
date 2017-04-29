@@ -53,7 +53,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     /** code that does the actualy population of data from the given array in blueprint */
     private function populateEntity($instance, $parameters)
     {
-        foreach ((array)$parameters as $key => $value) {
+        foreach ((array) $parameters as $key => $value) {
             $method = 'set' . str_replace('_', '', $key);
             if (method_exists($instance, $method)) {
                 $instance->{$method}($value);
@@ -233,7 +233,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
     public function offsetGet($offset)
     {
-        if (isset($this->indexed[$offset])){
+        if (isset($this->indexed[$offset])) {
             return $this->indexed[$offset];
         }
 

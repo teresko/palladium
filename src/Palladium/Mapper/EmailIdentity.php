@@ -129,16 +129,16 @@ class EmailIdentity extends SqlMapper
                        token_expires_on = :token_eol
                  WHERE identity_id = :id";
 
-         $statement = $this->connection->prepare($sql);
+        $statement = $this->connection->prepare($sql);
 
-         $statement->bindValue(':id', $entity->getId());
-         $statement->bindValue(':hash', $entity->getHash());
-         $statement->bindValue(':status', $entity->getStatus());
-         $statement->bindValue(':expires', $entity->getExpiresOn());
-         $statement->bindValue(':token', $entity->getToken());
-         $statement->bindValue(':action', $entity->getTokenAction());
-         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
+        $statement->bindValue(':id', $entity->getId());
+        $statement->bindValue(':hash', $entity->getHash());
+        $statement->bindValue(':status', $entity->getStatus());
+        $statement->bindValue(':expires', $entity->getExpiresOn());
+        $statement->bindValue(':token', $entity->getToken());
+        $statement->bindValue(':action', $entity->getTokenAction());
+        $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
 
-         $statement->execute();
+        $statement->execute();
     }
 }
