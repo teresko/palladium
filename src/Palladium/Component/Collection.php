@@ -86,10 +86,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     private function replaceEntity(HasId $entity, $key)
     {
         if (isset($this->pool[$key])) {
-            $id = $this->pool[$key]->getId();
-
-            unset($this->indexed[$id]);
-            unset($this->map[$id]);
+            $this->removeIndexEntry($this->pool[$key]->getId());
         }
 
         $id = $entity->getId();
@@ -97,6 +94,13 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
         $this->pool[$key] = $entity;
         $this->indexed[$id] = $entity;
         $this->map[$id] = $key;
+    }
+
+
+    private function removeIndexEntry($key)
+    {
+        unset($this->indexed[$key]);
+        unset($this->map[$key]);
     }
 
 
@@ -148,9 +152,8 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
         $key = $entity->getId();
 
         if ($key !== null) {
-            unset($this->indexed[$key]);
             unset($this->pool[$this->map[$key]]);
-            unset($this->map[$key]);
+            $this->removeIndexEntry($key);
         }
     }
 
