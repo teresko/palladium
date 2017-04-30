@@ -44,7 +44,7 @@ class EmailIdentity extends SqlMapper
     public function fetch(Entity\EmailIdentity $entity)
     {
         $sql = "SELECT identity_id      AS id,
-                       user_id          AS userId,
+                       account_id       AS accountId,
                        hash             AS hash,
                        status           AS status,
                        token            AS token,

@@ -29,7 +29,7 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
         $affected = new Entity\EmailIdentity;
-        $affected->setUserId(3);
+        $affected->setAccountId(3);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $instance = new Identification($factory, $logger);
@@ -60,13 +60,13 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
         $affected = new Entity\EmailIdentity;
-        $affected->setUserId(3);
+        $affected->setAccountId(3);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $instance = new Identification($factory, $logger);
         $result = $instance->loginWithPassword($affected, 'alpha');
         $this->assertInstanceOf(Entity\CookieIdentity::class, $result);
-        $this->assertSame(3, $result->getUserId());
+        $this->assertSame(3, $result->getAccountId());
     }
 
 
@@ -123,14 +123,14 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\CookieIdentity;
         $affected->setId(7);
-        $affected->setUserId(3);
+        $affected->setAccountId(3);
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
         $affected->setExpiresOn(time() + 10000);
 
         $instance = new Identification($factory, $logger);
         $result = $instance->loginWithCookie($affected, 'alpha');
         $this->assertInstanceOf(Entity\CookieIdentity::class, $result);
-        $this->assertSame(3, $result->getUserId());
+        $this->assertSame(3, $result->getAccountId());
     }
 
 
@@ -152,7 +152,7 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\CookieIdentity;
         $affected->setId(7);
-        $affected->setUserId(3);
+        $affected->setAccountId(3);
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
         $affected->setExpiresOn(time() + 10000);
 

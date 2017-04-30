@@ -20,7 +20,7 @@ class IdentityCollection extends SqlMapper
      */
     public function store(Entity\IdentityCollection $collection)
     {
-        if ($collection->getUserId() !== null) {
+        if ($collection->getAccountId() !== null) {
             $this->updateStatus($collection);
         }
     }
@@ -49,12 +49,12 @@ class IdentityCollection extends SqlMapper
         $sql = "SELECT identity_id  AS id
                   FROM {$this->table}
                  WHERE status = :status
-                   AND user_id = :user
+                   AND account_id = :account
                    AND type = :type";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':user', $collection->getUserId());
+        $statement->bindValue(':account', $collection->getAccountId());
         $statement->bindValue(':status', $collection->getStatus());
         $statement->bindValue(':type', $collection->getType());
 

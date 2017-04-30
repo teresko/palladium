@@ -7,7 +7,7 @@ use Palladium\Component\Collection;
 class IdentityCollection extends Collection
 {
 
-    private $userId;
+    private $accountId;
     private $type;
     private $status;
 
@@ -24,18 +24,18 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    public function forUserId($userId)
+    public function forAccountId($accountId)
     {
-        $this->userId = (int) $userId;
+        $this->accountId = (int) $accountId;
     }
 
 
     /**
      * @codeCoverageIgnore
      */
-    public function getUserId()
+    public function getAccountId()
     {
-        return $this->userId;
+        return $this->accountId;
     }
 
 

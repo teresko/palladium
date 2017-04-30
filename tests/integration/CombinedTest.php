@@ -50,12 +50,12 @@ final class CombinedTest extends TestCase
     }
 
 
-    public function test_User_Registration()
+    public function test_Account_Registration()
     {
-        $user = new Mock\User(4);
+        $account = new Mock\Account(4);
 
         $identity = $this->registration->createEmailIdentity('test@example.com', 'password');
-        $this->registration->bindIdentityToUser($identity, $user);
+        $this->registration->bindAccountToIdentity($account, $identity);
 
         $this->assertSame(1, $identity->getId());
 
@@ -64,7 +64,7 @@ final class CombinedTest extends TestCase
 
 
     /**
-     * @depends test_User_Registration
+     * @depends test_Account_Registration
      */
     public function test_Identify_Verification()
     {
@@ -88,10 +88,10 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
-        $this->assertSame(4, $cookie->getUserId()); // from Registration phase
+        $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
 
         self::$hold = [
-            'user' => $cookie->getUserId(),
+            'account' => $cookie->getAccountId(),
             'series' => $cookie->getSeries(),
             'key' => $cookie->getKey(),
         ];
@@ -105,13 +105,13 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
         $cookie = $this->identification->loginWithCookie($identity, $parts['key']);
 
-        $this->assertSame(4, $cookie->getUserId()); // from Registration phase
+        $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
 
         self::$hold = [
-            'user' => $cookie->getUserId(),
+            'account' => $cookie->getAccountId(),
             'series' => $cookie->getSeries(),
             'key' => $cookie->getKey(),
         ];
@@ -125,10 +125,10 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
         $this->identification->logout($identity, $parts['key']);
 
-        $identity = $this->search->findCookieIdenity($parts['user'], $parts['series']);
+        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
         $this->assertNull($identity->getId());
 
         self::$hold = null;
@@ -162,7 +162,7 @@ final class CombinedTest extends TestCase
         $this->identification->discardRelatedCookies($identity);
 
         $cookie = $this->identification->loginWithPassword($identity, 'foobar');
-        $this->assertSame(4, $cookie->getUserId());
+        $this->assertSame(4, $cookie->getAccountId());
 
         self::$hold = null;
     }
@@ -177,6 +177,6 @@ final class CombinedTest extends TestCase
         $this->identification->changePassword($identity, 'foobar', 'password');
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');
-        $this->assertSame(4, $cookie->getUserId());
+        $this->assertSame(4, $cookie->getAccountId());
     }
 }

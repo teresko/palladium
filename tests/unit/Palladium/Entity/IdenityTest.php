@@ -41,12 +41,12 @@ final class IdentityTest extends TestCase
     /**
      * @dataProvider provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_UserId($number, $expected)
+    public function test_Assignment_of_AccountId($number, $expected)
     {
         $instance = new Identity;
-        $instance->setUserId($number);
+        $instance->setAccountId($number);
 
-        $this->assertSame($expected, $instance->getUserId());
+        $this->assertSame($expected, $instance->getAccountId());
     }
 
 

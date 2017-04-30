@@ -72,13 +72,13 @@ class Registration
     }
 
 
-    public function bindIdentityToUser(Entity\Identity $identity, HasId $user)
+    public function bindAccountToIdentity(HasId $user, Entity\Identity $identity)
     {
         if ($user->getId() === null) {
             throw new UserNotFound;
         }
 
-        $identity->setUserId($user->getId());
+        $identity->setAccountId($user->getId());
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityUser::class);
         $mapper->store($identity);
@@ -86,8 +86,8 @@ class Registration
         $this->logger->info('new identity registered', [
             'input' => [
             ],
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -116,8 +116,8 @@ class Registration
             'input' => [
                 'token' => $identity->getToken(),
             ],
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);

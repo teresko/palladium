@@ -64,7 +64,7 @@ final class RegistrationTest extends TestCase
     }
 
 
-    public function test_Failure_of_User_Binding()
+    public function test_Failure_of_Account_Binding()
     {
         $this->expectException(UserNotFound::class);
 
@@ -73,11 +73,11 @@ final class RegistrationTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $instance->bindIdentityToUser(new Entity\Identity, new \Mock\User(null));
+        $instance->bindAccountToIdentity(new \Mock\Account(null), new Entity\Identity);
     }
 
 
-    public function test_Binding_of_User()
+    public function test_Binding_of_Account()
     {
         $mapper = $this
                     ->getMockBuilder(Mapper\IdentityUser::class)
@@ -94,8 +94,8 @@ final class RegistrationTest extends TestCase
 
         $instance = new Registration($factory, $logger);
         $affected = new Entity\Identity;
-        $instance->bindIdentityToUser($affected,  new \Mock\User(42));
-        $this->assertSame(42, $affected->getUserId());
+        $instance->bindAccountToIdentity(new \Mock\Account(42), $affected);
+        $this->assertSame(42, $affected->getAccountId());
     }
 
 

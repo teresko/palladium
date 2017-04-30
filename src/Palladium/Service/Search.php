@@ -76,14 +76,14 @@ class Search
 
 
     /**
-     * @param int $userId
+     * @param int $accountId
      * @param string $series
      */
-    public function findCookieIdenity($userId, $series)
+    public function findCookieIdenity($accountId, $series)
     {
         $cookie = new Entity\CookieIdentity;
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
-        $cookie->setUserId($userId);
+        $cookie->setAccountId($accountId);
         $cookie->setSeries($series);
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);

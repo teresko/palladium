@@ -35,7 +35,7 @@ class Identity implements HasId
 
 
     private $identityId;
-    private $userId;
+    private $accountId;
     protected $type = self::TYPE_ANY;
 
     private $status;
@@ -69,12 +69,12 @@ class Identity implements HasId
     }
 
 
-    public function setUserId($userId)
+    public function setAccountId($accountId)
     {
-        $data = (int) $userId;
+        $data = (int) $accountId;
 
         if ($data > 0) {
-            $this->userId = $data;
+            $this->accountId = $data;
         }
     }
 
@@ -82,9 +82,9 @@ class Identity implements HasId
     /**
      * @codeCoverageIgnore
      */
-    public function getUserId()
+    public function getAccountId()
     {
-        return $this->userId;
+        return $this->accountId;
     }
 
 

@@ -244,7 +244,7 @@ class CollectionTest extends TestCase
     public function test_Addition_of_Entity()
     {
         $entity = $this
-                    ->getMockBuilder(\Mock\User::class)
+                    ->getMockBuilder(\Mock\Account::class)
                     ->setMethods(['setId', 'setAlpha', 'setBetaGamma'])
                     ->disableOriginalConstructor()
                     ->getMock();

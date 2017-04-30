@@ -21,14 +21,14 @@ class CookieIdentity extends SqlMapper
         $sql = "SELECT 1
                   FROM {$this->table} AS Identities
                  WHERE type = :type
-                   AND user_id = :user
+                   AND account_id = :account
                    AND identifier = :series
                    AND fingerprint = :fingerprint";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':user', $entity->getUserId());
+        $statement->bindValue(':account', $entity->getAccountId());
         $statement->bindValue(':series', $entity->getSeries());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
 
@@ -50,7 +50,7 @@ class CookieIdentity extends SqlMapper
                        expires_on   AS expiresOn
                   FROM {$this->table} AS Identities
                  WHERE type = :type
-                   AND user_id = :user
+                   AND account_id = :account
                    AND identifier = :series
                    AND fingerprint = :fingerprint
                    AND status = :status";
@@ -59,7 +59,7 @@ class CookieIdentity extends SqlMapper
 
         $statement->bindValue(':type', $entity->getType());
         $statement->bindValue(':status', $entity->getStatus());
-        $statement->bindValue(':user', $entity->getUserId());
+        $statement->bindValue(':account', $entity->getAccountId());
         $statement->bindValue(':series', $entity->getSeries());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
 
@@ -87,12 +87,12 @@ class CookieIdentity extends SqlMapper
     private function createCookie(Entity\CookieIdentity $entity)
     {
         $sql = "INSERT INTO {$this->table}
-                       (user_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
-                VALUES (:user, :type, :status, :series, :fingerprint, :hash, :created, :expires)";
+                       (account_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
+                VALUES (:account, :type, :status, :series, :fingerprint, :hash, :created, :expires)";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':user', $entity->getUserId());
+        $statement->bindValue(':account', $entity->getAccountId());
         $statement->bindValue(':type', $entity->getType());
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':series', $entity->getSeries());

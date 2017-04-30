@@ -31,12 +31,12 @@ class Recovery
     public function markForReset(Entity\EmailIdentity $identity)
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
-            $this->logger->warning('account not verified', [
+            $this->logger->warning('identity not verified', [
                 'input' => [
                     'identifier' => $identity->getIdentifier(),
                 ],
-                'account' => [
-                    'user' => $identity->getUserId(),
+                'user' => [
+                    'account' => $identity->getAccountId(),
                     'identity' => $identity->getId(),
                 ],
             ]);

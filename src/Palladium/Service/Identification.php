@@ -50,8 +50,8 @@ class Identification
             'input' => [
                 'identifier' => $identity->getIdentifier(),
             ],
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -74,7 +74,7 @@ class Identification
         $cookie = new Entity\CookieIdentity;
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
 
-        $cookie->setUserId($identity->getUserId());
+        $cookie->setAccountId($identity->getAccountId());
         $cookie->generateNewSeries();
 
         $cookie->generateNewKey();
@@ -104,12 +104,12 @@ class Identification
             $mapper->store($identity);
             $this->logger->info('cookie expired', [
                 'input' => [
-                    'user' => $identity->getUserId(),
+                    'account' => $identity->getAccountId(),
                     'series' => $identity->getSeries(),
                     'key' => $identity->getKey(),
                 ],
-                'account' => [
-                    'user' => $identity->getUserId(),
+                'user' => [
+                    'account' => $identity->getAccountId(),
                     'identity' => $identity->getId(),
                 ],
             ]);
@@ -126,8 +126,8 @@ class Identification
         $mapper->store($identity);
 
         $this->logger->info('cookie updated', [
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -153,8 +153,8 @@ class Identification
         $mapper->store($identity);
 
         $this->logger->info('logout successful', [
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -192,7 +192,7 @@ class Identification
          * @NOTE: this operation might require transaction
          * or a change in how store() is implemnted in IdentityCollection mapper
          */
-        $list = $this->retrieveIdenitiesByUserId($identity->getUserId(), Entity\Identity::TYPE_COOKIE);
+        $list = $this->retrieveIdenitiesByUserId($identity->getAccountId(), Entity\Identity::TYPE_COOKIE);
 
         foreach ($list as $identity) {
             $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
@@ -206,7 +206,7 @@ class Identification
     private function retrieveIdenitiesByUserId($userId, $type = Entity\Identity::TYPE_ANY, $status = Entity\Identity::STATUS_ACTIVE)
     {
         $collection = new Entity\IdentityCollection;
-        $collection->forUserId($userId);
+        $collection->forAccountId($userId);
         $collection->forType($type);
         $collection->forStatus($status);
 
@@ -227,7 +227,7 @@ class Identification
 
         if ($identity->matchPassword($oldPassword) === false) {
             $this->logWrongPasswordWarning($identity, [
-                'user' => $identity->getUserId(),
+                'account' => $identity->getAccountId(),
                 'old-key' => md5($oldPassword),
                 'new-key' => md5($newPassword),
             ]);
@@ -239,8 +239,8 @@ class Identification
         $mapper->store($identity);
 
         $this->logger->info('password changed', [
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -254,12 +254,12 @@ class Identification
     {
         $this->logger->error($message, [
             'input' => [
-                'user' => $identity->getUserId(),
+                'account' => $identity->getAccountId(),
                 'series' => $identity->getSeries(),
                 'key' => $identity->getKey(),
             ],
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
@@ -273,8 +273,8 @@ class Identification
     {
         $this->logger->warning('wrong password', [
             'input' => $input,
-            'account' => [
-                'user' => $identity->getUserId(),
+            'user' => [
+                'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
         ]);
