@@ -2,7 +2,7 @@
 
 namespace Palladium\Component;
 
-class AppException extends \Exception
+class Exception extends \Exception
 {
 
 }

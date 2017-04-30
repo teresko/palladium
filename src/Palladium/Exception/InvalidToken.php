@@ -2,7 +2,7 @@
 
 namespace Palladium\Exception;
 
-use Palladium\Component\AppException as Exception;
+use Palladium\Component\Exception as Exception;
 
 
 class InvalidToken extends Exception
