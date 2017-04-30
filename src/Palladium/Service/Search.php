@@ -31,6 +31,9 @@ class Search
     }
 
 
+    /**
+     * @param string $identifier
+     */
     public function findEmailIdenityByIdentifier($identifier)
     {
         $identity = new Entity\EmailIdentity;
@@ -53,6 +56,10 @@ class Search
     }
 
 
+    /**
+     * @param string $token
+     * @param int $action
+     */
     public function findEmailIdenityByToken($token, $action = Entity\Identity::ACTION_ANY)
     {
         $identity = new Entity\EmailIdentity;
@@ -68,6 +75,10 @@ class Search
     }
 
 
+    /**
+     * @param int $userId
+     * @param string $series
+     */
     public function findCookieIdenity($userId, $series)
     {
         $cookie = new Entity\CookieIdentity;

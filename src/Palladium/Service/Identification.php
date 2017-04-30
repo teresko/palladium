@@ -28,6 +28,10 @@ class Identification
         $this->logger = $logger;
     }
 
+
+    /**
+     * @param string $password
+     */
     public function loginWithPassword(Entity\EmailIdentity $identity, $password)
     {
         if ($identity->matchPassword($password) === false) {
@@ -88,6 +92,9 @@ class Identification
     }
 
 
+    /**
+     * @param string @key
+     */
     public function loginWithCookie(Entity\CookieIdentity $identity, $key)
     {
         if ($identity->getId() === null) {
@@ -134,6 +141,9 @@ class Identification
     }
 
 
+    /**
+     * @param string $key
+     */
     public function logout(Entity\CookieIdentity $identity, $key)
     {
         if ($identity->getId() === null) {
@@ -212,6 +222,10 @@ class Identification
     }
 
 
+    /**
+     * @param string $oldPassword
+     * @param string $newPassword
+     */
     public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
     {
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);

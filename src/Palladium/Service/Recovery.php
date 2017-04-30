@@ -61,7 +61,9 @@ class Recovery
     }
 
 
-
+    /**
+     * @param string $password
+     */
     public function resetIdentityPassword(Entity\EmailIdentity $identity, $password)
     {
         $token = $identity->getToken();

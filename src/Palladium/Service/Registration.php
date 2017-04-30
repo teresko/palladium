@@ -30,6 +30,10 @@ class Registration
     }
 
 
+    /**
+     * @param string $identifier
+     * @param string $password
+     */
     public function createEmailIdentity($identifier, $password)
     {
         $identity = new Entity\EmailIdentity;
