@@ -5,7 +5,7 @@ namespace Palladium\Component;
 use RuntimeException;
 use PDO;
 use PHPUnit\Framework\TestCase;
-
+use Mock\Mapper;
 
 /**
  * @covers Palladium\Component\MapperFactory
@@ -16,9 +16,9 @@ class MapperFactoryTest extends TestCase
     public function test_Creation_of_New_Mapper_Instance()
     {
         $instance = new MapperFactory(new PDO('sqlite::memory:'), 'alpha');
-        $result = $instance->create(\Mock\Mapper::class);
+        $result = $instance->create(Mapper::class);
 
-        $this->assertInstanceOf(\Mock\Mapper::class, $result);
+        $this->assertInstanceOf(Mapper::class, $result);
         $this->assertInstanceOf(PDO::class, $result->getConnection());
         $this->assertSame('alpha', $result->getTable());
     }
@@ -27,10 +27,10 @@ class MapperFactoryTest extends TestCase
     public function test_Reuse_of_Mapper_with_Same_Classname()
     {
         $instance = new MapperFactory(new PDO('sqlite::memory:'), 'alpha');
-        $result = $instance->create(\Mock\Mapper::class);
+        $result = $instance->create(Mapper::class);
 
-        $this->assertInstanceOf(\Mock\Mapper::class, $result);
-        $this->assertSame($result, $instance->create(\Mock\Mapper::class));
+        $this->assertInstanceOf(Mapper::class, $result);
+        $this->assertSame($result, $instance->create(Mapper::class));
     }
 
 

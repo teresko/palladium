@@ -28,7 +28,7 @@ class MapperFactory implements CanCreateMapper
 
 
     /**
-     * Methode for retrieving an SQL data mapper instance
+     * Method for retrieving an SQL data mapper instance
      *
      * @param string $className Fully qualified class name of the mapper
      *
