@@ -12,6 +12,8 @@ use Palladium\Entity;
 use Palladium\Mapper;
 use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
+use Palladium\Exception\CompromisedCookie;
+use Palladium\Exception\PasswordNotMatch;
 
 /**
  * @covers Palladium\Service\Identification
@@ -20,6 +22,22 @@ final class IdentificationTest extends TestCase
 {
 
     public function test_Logging_in_with_Password()
+    {
+        $this->expectException(PasswordNotMatch::class);
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $affected = new Entity\EmailIdentity;
+        $affected->setUserId(3);
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger);
+        $instance->loginWithPassword($affected, 'beta');
+    }
+
+
+    public function test_Failure_to_Login_with_Password()
     {
         $basic = $this
                     ->getMockBuilder(Mapper\Identity::class)
@@ -33,7 +51,6 @@ final class IdentificationTest extends TestCase
                     ->disableOriginalConstructor()
                     ->getMock();
         $cookie->expects($this->any())->method('store');
-        $cookie->expects($this->once())->method('exists')->will($this->returnValue(false));
 
         $factory = new Factory([
             Mapper\Identity::class => $basic,
@@ -57,7 +74,7 @@ final class IdentificationTest extends TestCase
     {
         $this->expectException(DenialOfServiceAttempt::class);
 
-        $factory = new Factory;
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
         $affected = new Entity\CookieIdentity;
@@ -117,6 +134,33 @@ final class IdentificationTest extends TestCase
     }
 
 
+    public function test_Logging_in_with_Cookie_Failure()
+    {
+        $this->expectException(CompromisedCookie::class);
+
+        $cookie = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $cookie->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\CookieIdentity::class => $cookie,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $affected = new Entity\CookieIdentity;
+        $affected->setId(7);
+        $affected->setUserId(3);
+        $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
+        $affected->setExpiresOn(time() + 10000);
+
+        $instance = new Identification($factory, $logger);
+        $result = $instance->loginWithCookie($affected, 'beta');
+    }
+
+
     public function test_Logout_of_Identity()
     {
         $cookie = $this
@@ -135,6 +179,21 @@ final class IdentificationTest extends TestCase
         $affected = new Entity\CookieIdentity;
         $affected->setId(99);
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
+
+        $instance = new Identification($factory, $logger);
+        $result = $instance->logout($affected, 'alpha');
+    }
+
+
+    public function test_Failure_to_Logout()
+    {
+        $this->expectException(DenialOfServiceAttempt::class);
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('error');
+
+        $affected = new Entity\CookieIdentity;
 
         $instance = new Identification($factory, $logger);
         $result = $instance->logout($affected, 'alpha');
@@ -187,5 +246,23 @@ final class IdentificationTest extends TestCase
         $result = $instance->changePassword($affected, 'alpha', 'password');
 
         $this->assertTrue($affected->matchPassword('password'));
+    }
+
+
+    public function test_Failure_to_Change_of_Password_for_Identity()
+    {
+        $this->expectException(PasswordNotMatch::class);
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning');
+
+        $affected = new Entity\EmailIdentity;
+        $affected->setId(99);
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger);
+        $instance->changePassword($affected, 'wrong', 'password');
     }
 }

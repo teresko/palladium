@@ -77,11 +77,6 @@ class Identification
         $cookie->setUserId($identity->getUserId());
         $cookie->generateNewSeries();
 
-        while ($mapper->exists($cookie)) {
-            // just a failsafe, to prevent violation of constraint
-            $cookie->generateNewSeries();
-        }
-
         $cookie->generateNewKey();
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
         $cookie->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
