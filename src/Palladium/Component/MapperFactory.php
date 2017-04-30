@@ -38,16 +38,18 @@ class MapperFactory implements CanCreateMapper
      */
     public function create(string $className)
     {
-        if (!array_key_exists($className, $this->cache)) {
-
-            if (!class_exists($className)) {
-                throw new RuntimeException("Mapper not found. Attempted to load '{$className}'.");
-            }
-
-            $this->cache[$className] = new $className($this->connection, $this->table);
+        if (array_key_exists($className, $this->cache)) {
+            return $this->cache[$className];
         }
 
-        return $this->cache[$className];
+        if (!class_exists($className)) {
+            throw new RuntimeException("Mapper not found. Attempted to load '{$className}'.");
+        }
+
+        $instance = new $className($this->connection, $this->table);
+        $this->cache[$className] = $instance;
+
+        return $instance;
     }
 
 }
