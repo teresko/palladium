@@ -19,9 +19,8 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
     private $pool = [];
     private $indexed = [];
-    private $volatile = [];
 
-    private $poolMap = [];
+    private $map = [];
 
     private $position = 0;
 
@@ -67,19 +66,37 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
      *
      * @param HasId $entity
      */
-    public function addEntity(HasId $entity)
+    public function addEntity(HasId $entity, $key = null)
     {
-        $this->pool[] = $entity;
 
-        $key = $entity->getId();
-
-        if ($key === null) {
-            $this->volatile[] = $entity;
+        if (is_null($key) === false) {
+            $this->replaceEntity($entity, $key);
             return;
         }
 
-        $this->indexed[$key] = $entity;
-        $this->poolMap[$key] = $this->retrieveLastPoolKey();
+        $id = $entity->getId();
+
+        $this->pool[] = $entity;
+
+        $this->indexed[$id] = $entity;
+        $this->map[$id] = $this->retrieveLastPoolKey();
+    }
+
+
+    private function replaceEntity(HasId $entity, $key)
+    {
+        if (isset($this->pool[$key])) {
+            $id = $this->pool[$key]->getId();
+
+            unset($this->indexed[$id]);
+            unset($this->map[$id]);
+        }
+
+        $id = $entity->getId();
+
+        $this->pool[$key] = $entity;
+        $this->indexed[$id] = $entity;
+        $this->map[$id] = $key;
     }
 
 
@@ -95,7 +112,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
      *
      * @return array
      */
-    public function getKeys()
+    public function getIds()
     {
         $keys = array_keys($this->indexed);
         sort($keys);
@@ -111,8 +128,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     public function replaceWith(Collection $replacement)
     {
         $this->pool = [];
-        $this->poolMap = [];
-        $this->volatile = [];
+        $this->map = [];
         $this->indexed = [];
 
         foreach ($replacement as $entity) {
@@ -133,26 +149,9 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
         if ($key !== null) {
             unset($this->indexed[$key]);
-            unset($this->pool[$this->poolMap[$key]]);
-            unset($this->poolMap[$key]);
+            unset($this->pool[$this->map[$key]]);
+            unset($this->map[$key]);
         }
-    }
-
-
-    /**
-     * Method for retrieving the last added entity from the collection.
-     * If collection is empty, it returns `null`
-     *
-     * @return HasId|null
-     */
-    public function getLastEntity()
-    {
-        $key = $this->retrieveLastPoolKey();
-        if ($key !== null) {
-            return $this->pool[$key];
-        }
-
-        return $this->buildEntity();
     }
 
 
@@ -163,8 +162,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     {
         $this->pool = [];
         $this->indexed = [];
-        $this->volatile = [];
-        $this->poolMap = [];
+        $this->map = [];
         $this->position = 0;
     }
 
@@ -189,6 +187,9 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function key()
     {
         return $this->position;
@@ -210,31 +211,26 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     // implementing ArrayAccess
     public function offsetSet($offset, $value)
     {
-        if (is_null($offset)) {
-            $this->indexed[$value->getId()] = $value;
-            return;
-        }
-
-        $this->indexed[$offset] = $value;
+        $this->addEntity($value, $offset);
     }
 
 
     public function offsetExists($offset)
     {
-        return isset($this->indexed[$offset]);
+        return isset($this->pool[$offset]);
     }
 
 
     public function offsetUnset($offset)
     {
-        unset($this->indexed[$offset]);
+        $this->removeEntity($this->pool[$offset]);
     }
 
 
     public function offsetGet($offset)
     {
-        if (isset($this->indexed[$offset])) {
-            return $this->indexed[$offset];
+        if (isset($this->pool[$offset])) {
+            return $this->pool[$offset];
         }
 
         return null;
@@ -245,10 +241,19 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
     public function setOffset($offset)
     {
-        $this->offset = (int) $offset;
+        $data = (int) $offset;
+
+        if ($data < 0) {
+            $data = 0;
+        }
+
+        $this->offset = $data;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getOffset()
     {
         return $this->offset;
@@ -257,10 +262,19 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
     public function setLimit($limit)
     {
-        $this->limit = (int) $limit;
+        $data = (int) $limit;
+
+        if ($data < 0) {
+            $data = 0;
+        }
+
+        $this->limit = $data;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getLimit()
     {
         return $this->limit;
@@ -269,10 +283,19 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
     public function setTotal($total)
     {
-        $this->total = (int) $total;
+        $data = (int) $total;
+
+        if ($data < 0) {
+            $data = 0;
+        }
+
+        $this->total = $data;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getTotal()
     {
         return $this->total;

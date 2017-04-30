@@ -28,4 +28,15 @@ class User implements HasId
         $this->value = $value;
     }
 
+
+    public function setAlpha($value)
+    {
+
+    }
+
+
+    public function setBetaGamma($value)
+    {
+
+    }
 }
