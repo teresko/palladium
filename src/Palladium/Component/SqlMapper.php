@@ -15,6 +15,8 @@ abstract class SqlMapper extends DataMapper
      *
      * @param PDO $connection
      * @param string $table A list of table name aliases
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(PDO $connection, string $table)
     {
