@@ -116,4 +116,76 @@ final class IdentificationTest extends TestCase
         $this->assertSame(3, $result->getUserId());
     }
 
+
+    public function test_Logout_of_Identity()
+    {
+        $cookie = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $cookie->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\CookieIdentity::class => $cookie,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+        $affected = new Entity\CookieIdentity;
+        $affected->setId(99);
+        $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
+
+        $instance = new Identification($factory, $logger);
+        $result = $instance->logout($affected, 'alpha');
+    }
+
+
+    public function test_Discardint_of_the_Related_Cookies()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityCollection::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('fetch')->will($this->returnCallback(function ($list) {
+            $list->addEntity(new Entity\Identity);
+        }));
+
+        $factory = new Factory([
+            Mapper\IdentityCollection::class => $mapper,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $affected = new Entity\Identity;
+
+        $instance = new Identification($factory, $logger);
+        $result = $instance->discardRelatedCookies($affected);
+    }
+
+
+    public function test_Changing_of_Password_for_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\EmailIdentity::class => $mapper,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+        $affected = new Entity\EmailIdentity;
+        $affected->setId(99);
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger);
+        $result = $instance->changePassword($affected, 'alpha', 'password');
+
+        $this->assertTrue($affected->matchPassword('password'));
+    }
 }
