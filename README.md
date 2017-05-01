@@ -1,10 +1,11 @@
 # Palladium
 
 [![Build Status](https://travis-ci.org/teresko/palladium.svg?branch=master)](https://travis-ci.org/teresko/palladium)
+[![Packagist Version](https://img.shields.io/packagist/v/teresko/palladium.svg)](https://packagist.org/packages/teresko/palladium)
 [![License](https://img.shields.io/packagist/l/teresko/palladium.svg)](https://github.com/teresko/palladium/blob/master/LICENSE.md)
 [![Code Climate](https://codeclimate.com/github/teresko/palladium/badges/gpa.svg)](https://codeclimate.com/github/teresko/palladium)
 [![Code Coverage](https://scrutinizer-ci.com/g/teresko/palladium/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/teresko/palladium/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/teresko/palladium/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/teresko/palladium/?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/teresko/palladium.svg)](https://scrutinizer-ci.com/g/teresko/palladium/?branch=master)
 
 
 Library for handling the user identification.
