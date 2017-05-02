@@ -81,7 +81,7 @@ class Registration
 
         $identity->setAccountId($user->getId());
 
-        $mapper = $this->mapperFactory->create(Mapper\IdentityUser::class);
+        $mapper = $this->mapperFactory->create(Mapper\IdentityAccount::class);
         $mapper->store($identity);
 
         $this->logger->info('new identity registered', [

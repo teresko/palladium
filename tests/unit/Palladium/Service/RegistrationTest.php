@@ -80,7 +80,7 @@ final class RegistrationTest extends TestCase
     public function test_Binding_of_Account()
     {
         $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityUser::class)
+                    ->getMockBuilder(Mapper\IdentityAccount::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper->expects($this->once())->method('store');
@@ -102,7 +102,7 @@ final class RegistrationTest extends TestCase
     public function test_Verification_of_Identity()
     {
         $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityUser::class)
+                    ->getMockBuilder(Mapper\IdentityAccount::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper->expects($this->once())->method('store');
