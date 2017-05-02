@@ -1,19 +1,9 @@
--- #code for removal of everything#
--- DROP TABLE `tap_common`.`identities`,  `tap_common`.`users`;
-
-
-CREATE TABLE `users` (
-    `user_id`               SERIAL PRIMARY KEY,
-    `created_on`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `name`                  TEXT
-    -- ADD SHIT LATER
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 CREATE TABLE `identities` (
     `identity_id`           SERIAL PRIMARY KEY,
-    `user_id`               BIGINT UNSIGNED NULL DEFAULT NULL,
+    `parent_id`             BIGINT UNSIGNED NULL DEFAULT NULL COMMENT '',
+    `account_id`            BIGINT UNSIGNED NULL DEFAULT NULL,
 
     `type`                  INT(1) UNSIGNED NOT NULL,
     `identifier`            TEXT NOT NULL COMMENT 'this is where email or access token goes',
@@ -30,7 +20,8 @@ CREATE TABLE `identities` (
     `token_expires_on`      TIMESTAMP NULL DEFAULT NULL,
     `token_action`          VARCHAR(15) NULL DEFAULT NULL,
 
-    KEY (`user_id`),
+    KEY (`parent_id`),
+    KEY (`account_id`),
     KEY (`type`),
     KEY (`status`),
     KEY (`fingerprint`),
@@ -39,8 +30,11 @@ CREATE TABLE `identities` (
     KEY (`token_expires_on`),
     KEY (`token_action`),
 
+    FOREIGN KEY `parentIdentity` (`parent_id`) REFERENCES `identities`(`identity_id`)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 
-    FOREIGN KEY `associatedUser` (`user_id`) REFERENCES `users`(`user_id`)
+    FOREIGN KEY `associatedAccount` (`account_id`) REFERENCES `users`(`account_id`)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
