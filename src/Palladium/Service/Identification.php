@@ -128,13 +128,7 @@ class Identification
         $identity->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
 
         $mapper->store($identity);
-
-        $this->logger->info('cookie updated', [
-            'user' => [
-                'account' => $identity->getAccountId(),
-                'identity' => $identity->getId(),
-            ],
-        ]);
+        $this->logExpectedBehaviour($identity, 'cookie updated');
 
         return $identity;
     }
@@ -156,13 +150,7 @@ class Identification
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
 
-        $this->logger->info('logout successful', [
-            'user' => [
-                'account' => $identity->getAccountId(),
-                'identity' => $identity->getId(),
-            ],
-        ]);
-
+        $this->logExpectedBehaviour($identity, 'logout successful');
     }
 
 
@@ -222,12 +210,7 @@ class Identification
         $identity->setPassword($newPassword);
         $mapper->store($identity);
 
-        $this->logger->info('password changed', [
-            'user' => [
-                'account' => $identity->getAccountId(),
-                'identity' => $identity->getId(),
-            ],
-        ]);
+        $this->logExpectedBehaviour($identity, 'password changed');
     }
 
 
@@ -257,6 +240,17 @@ class Identification
     {
         $this->logger->warning('wrong password', [
             'input' => $input,
+            'user' => [
+                'account' => $identity->getAccountId(),
+                'identity' => $identity->getId(),
+            ],
+        ]);
+    }
+
+
+    private function logExpectedBehaviour(Entity\Identity $identity, $message)
+    {
+        $this->logger->info($message, [
             'user' => [
                 'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),

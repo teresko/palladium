@@ -85,8 +85,6 @@ class Registration
         $mapper->store($identity);
 
         $this->logger->info('new identity registered', [
-            'input' => [
-            ],
             'user' => [
                 'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
