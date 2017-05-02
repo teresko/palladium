@@ -11,6 +11,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\SqlMapper;
 use Palladium\Entity as Entity;
+use PDOStatement;
 
 class IdentityCollection extends SqlMapper
 {
@@ -59,14 +60,9 @@ class IdentityCollection extends SqlMapper
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':account', $collection->getAccountId());
-        $statement->bindValue(':status', $collection->getStatus());
         $statement->bindValue(':type', $collection->getType());
 
-        $statement->execute();
-
-        foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $parameters) {
-            $collection->addBlueprint($parameters);
-        }
+        $this->populateCollection($collection, $statement);
     }
 
 
@@ -80,6 +76,13 @@ class IdentityCollection extends SqlMapper
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':parent', $collection->getParentId());
+
+        $this->populateCollection($collection, $statement);
+    }
+
+
+    private function populateCollection(Entity\IdentityCollection $collection, PDOStatement $statement)
+    {
         $statement->bindValue(':status', $collection->getStatus());
 
         $statement->execute();

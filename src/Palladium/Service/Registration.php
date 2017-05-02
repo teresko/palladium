@@ -32,6 +32,8 @@ class Registration
     /**
      * @param string $identifier
      * @param string $password
+     *
+     * @return Palladium\Entity\EmailIdentity
      */
     public function createEmailIdentity($identifier, $password)
     {

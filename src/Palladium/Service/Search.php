@@ -32,6 +32,8 @@ class Search
 
     /**
      * @param string $identifier
+     *
+     * @return Palladium\Entity\EmailIdentity
      */
     public function findEmailIdenityByIdentifier($identifier)
     {
@@ -58,6 +60,8 @@ class Search
     /**
      * @param string $token
      * @param int $action
+     *
+     * @return Palladium\Entity\EmailIdentity
      */
     public function findEmailIdenityByToken($token, $action = Entity\Identity::ACTION_ANY)
     {
@@ -87,6 +91,8 @@ class Search
     /**
      * @param int $accountId
      * @param string $series
+     *
+     * @return Palladium\Entity\CookieIdentity
      */
     public function findCookieIdenity($accountId, $series)
     {
@@ -102,24 +108,36 @@ class Search
     }
 
 
+    /**
+     * @return Palladium\Entity\IdentityCollection
+     */
     public function findIdentitiesByAccountId($accountId, $type = Entity\Identity::TYPE_ANY, $status = Entity\Identity::STATUS_ACTIVE)
     {
         $collection = new Entity\IdentityCollection;
         $collection->forAccountId($accountId);
         $collection->forType($type);
-        $collection->forStatus($status);
 
-        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
-        $mapper->fetch($collection);
-
-        return $collection;
+        return $this->fetchIdentitiesByStatus($collection, $status);
     }
 
 
+    /**
+     * @return Palladium\Entity\IdentityCollection
+     */
     public function findIdentitiesByParentId($parentId, $status = Entity\Identity::STATUS_ACTIVE)
     {
         $collection = new Entity\IdentityCollection;
         $collection->forParentId($parentId);
+
+        return $this->fetchIdentitiesByStatus($collection, $status);
+    }
+
+
+    /**
+     * @return Palladium\Entity\IdentityCollection
+     */
+    private function fetchIdentitiesByStatus(Entity\IdentityCollection $collection, $status)
+    {
         $collection->forStatus($status);
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);

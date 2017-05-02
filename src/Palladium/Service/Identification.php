@@ -31,6 +31,8 @@ class Identification
 
     /**
      * @param string $password
+     *
+     * @return Palladium\Entity\CookieIdentity
      */
     public function loginWithPassword(Entity\EmailIdentity $identity, $password)
     {
@@ -89,6 +91,8 @@ class Identification
 
     /**
      * @param string @key
+     *
+     * @return Palladium\Entity\CookieIdentity
      */
     public function loginWithCookie(Entity\CookieIdentity $identity, $key)
     {
