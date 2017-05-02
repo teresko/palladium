@@ -49,6 +49,8 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
 #### Registration of new email identity
 
 ```php
+<?php
+
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
 $identity = $registration->createEmailIdentity('foo@bar.com', 'password');
@@ -57,7 +59,105 @@ $registration->bindAccountToIdentity($account, $identity);
 
 If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assesed using&nbsp;`$instance->getToken()`.
 
-The `createEmailIdentity()` method can throw three exceptions: [InvalidEmail](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidEmail.php), [`InvalidPassword`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidPassword.php) and  [`IdentityDuplicated`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityDuplicated.php) (if email has already used for a another&nbsp;identity).
+The `createEmailIdentity()` method can throw three exceptions: [`InvalidEmail`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidEmail.php), [`InvalidPassword`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidPassword.php) and  [`IdentityDuplicated`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityDuplicated.php) (if email has already used for a another&nbsp;identity).
+
+#### Verification of email identity
+
+```php
+<?php
+
+$search = new \Palladium\Service\Search($factory, $logger);
+$registration = new \Palladium\Service\Registration($factory, $logger);
+
+$identity = $search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+$registration->verifyEmailIdentity($identity);
+```
+
+The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php), which then gets verified. If the identity is not found, the `findEmailIdenityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+
+#### Login with email and password
+
+```php
+<?php
+$search = new \Palladium\Service\Search($factory, $logger);
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$identity = $search->findEmailIdenityByIdentifier($email);
+$cookie = $identification->loginWithPassword($identity, $password);
+```
+
+#### Login using cookie
+
+```php
+<?php 
+$search = new \Palladium\Service\Search($factory, $logger);
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$identity = $search->findCookieIdenity($accountId, $series);
+$cookie = $identification->loginWithCookie($identity, $key);
+
+```
+
+#### Logout
+
+```php 
+<?php 
+$search = new \Palladium\Service\Search($factory, $logger);
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$identity = $search->findCookieIdenity($accountId, $series);
+$identification->logout($identity, $key);
+```
+
+#### Starting password reset
+
+```php 
+<?php
+$search = new \Palladium\Service\Search($factory, $logger);
+$recovery = new \Palladium\Service\Recovery($factory, $logger);
+
+$identity = $search->findEmailIdenityByIdentifier($email);
+$token = $recovery->markForReset($identity);
+```
+
+#### Resetting the password
+
+```php 
+<?php 
+$search = new \Palladium\Service\Search($factory, $logger);
+$recovery = new \Palladium\Service\Recovery($factory, $logger);
+
+$identity = $search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
+$recovery->resetIdentityPassword($identity, 'foobar');
+```
+
+#### Logging out all of the account's cookies
+
+```php
+<?php
+$identification = new \Palladium\Service\Identification($factory, $logger);
+$identification->discardRelatedCookies($identity);
+```
+
+#### Changing password of email identity
+
+```php 
+<?php
+$search = new \Palladium\Service\Search($factory, $logger);
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$identity = $search->findEmailIdenityByIdentifier($email);
+$identification->changePassword($identity, $oldPassword, $newPassword);
+```
+
+#### Locating a list of child identities
+
+```php 
+<?php 
+$search = new \Palladium\Service\Search($factory, $logger);
+$list = $search->findIdentitiesByParentId($identity->getParentId());
+```
+
 
 
 
