@@ -74,7 +74,7 @@ class Registration
     public function bindAccountToIdentity(HasId $user, Entity\Identity $identity)
     {
         if ($user->getId() === null) {
-            throw new UserNotFound;
+            throw new AccountNotFound;
         }
 
         $identity->setAccountId($user->getId());
