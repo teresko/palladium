@@ -100,4 +100,31 @@ class Search
 
         return $cookie;
     }
+
+
+    public function findIdentitiesByAccountId($accountId, $type = Entity\Identity::TYPE_ANY, $status = Entity\Identity::STATUS_ACTIVE)
+    {
+        $collection = new Entity\IdentityCollection;
+        $collection->forAccountId($accountId);
+        $collection->forType($type);
+        $collection->forStatus($status);
+
+        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
+        $mapper->fetch($collection);
+
+        return $collection;
+    }
+
+
+    public function findIdentitiesByParentId($parentId, $status = Entity\Identity::STATUS_ACTIVE)
+    {
+        $collection = new Entity\IdentityCollection;
+        $collection->forParentId($parentId);
+        $collection->forStatus($status);
+
+        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
+        $mapper->fetch($collection);
+
+        return $collection;
+    }
 }

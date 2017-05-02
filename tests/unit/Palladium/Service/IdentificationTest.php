@@ -206,9 +206,7 @@ final class IdentificationTest extends TestCase
                     ->getMockBuilder(Mapper\IdentityCollection::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('fetch')->will($this->returnCallback(function ($list) {
-            $list->addEntity(new Entity\Identity);
-        }));
+        $mapper->expects($this->once())->method('store');
 
         $factory = new Factory([
             Mapper\IdentityCollection::class => $mapper,
@@ -216,10 +214,16 @@ final class IdentificationTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new Entity\Identity;
+        $entity = new Entity\Identity;
+        $this->assertNull($entity->getStatus());
+
+        $list = new Entity\IdentityCollection;
+        $list->addEntity($entity);
 
         $instance = new Identification($factory, $logger);
-        $result = $instance->discardRelatedCookies($affected);
+        $instance->discardIdentities($list);
+
+        $this->assertNotNull($entity->getStatus());
     }
 
 
@@ -243,7 +247,7 @@ final class IdentificationTest extends TestCase
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $instance = new Identification($factory, $logger);
-        $result = $instance->changePassword($affected, 'alpha', 'password');
+        $instance->changePassword($affected, 'alpha', 'password');
 
         $this->assertTrue($affected->matchPassword('password'));
     }

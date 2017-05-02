@@ -186,34 +186,14 @@ class Identification
     }
 
 
-    public function discardRelatedCookies(Entity\Identity $identity)
+    public function discardIdentities(Entity\IdentityCollection $list)
     {
-        /**
-         * @NOTE: this operation might require transaction
-         * or a change in how store() is implemnted in IdentityCollection mapper
-         */
-        $list = $this->retrieveIdenitiesByUserId($identity->getAccountId(), Entity\Identity::TYPE_COOKIE);
-
         foreach ($list as $identity) {
             $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
         }
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
         $mapper->store($list);
-    }
-
-
-    private function retrieveIdenitiesByUserId($userId, $type = Entity\Identity::TYPE_ANY, $status = Entity\Identity::STATUS_ACTIVE)
-    {
-        $collection = new Entity\IdentityCollection;
-        $collection->forAccountId($userId);
-        $collection->forType($type);
-        $collection->forStatus($status);
-
-        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
-        $mapper->fetch($collection);
-
-        return $collection;
     }
 
 

@@ -101,7 +101,7 @@ final class SearchTest extends TestCase
     }
 
 
-    public function test_Failure_to_Find__Email_Identity_by_Token()
+    public function test_Failure_to_Find_Email_Identity_by_Token()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -155,5 +155,61 @@ final class SearchTest extends TestCase
             Entity\CookieIdentity::class,
             $instance->findCookieIdenity(123, '12345678901234567890123456789012')
         );
+    }
+
+
+    public function test_Looking_for_Identity_with_Given_Account_Id()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityCollection::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function($collection) {
+                $collection->addBlueprint(['id' => 1]);
+                $collection->addBlueprint(['id' => 2]);
+            }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $list = $instance->findIdentitiesByAccountId(4);
+        $this->assertSame([1, 2], $list->getIds());
+    }
+
+
+    public function test_Looking_for_Identity_with_Given_Parent_Id()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\IdentityCollection::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function($collection) {
+                $collection->addBlueprint(['id' => 7]);
+                $collection->addBlueprint(['id' => 3]);
+            }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $list = $instance->findIdentitiesByParentId(123);
+        $this->assertSame([3, 7], $list->getIds());
     }
 }

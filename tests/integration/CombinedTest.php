@@ -159,7 +159,9 @@ final class CombinedTest extends TestCase
 
         $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
         $this->recovery->resetIdentityPassword($identity, 'foobar');
-        $this->identification->discardRelatedCookies($identity);
+
+        $list = $this->search->findIdentitiesByParentId($identity->getId());
+        $this->identification->discardIdentities($list);
 
         $cookie = $this->identification->loginWithPassword($identity, 'foobar');
         $this->assertSame(4, $cookie->getAccountId());
