@@ -96,16 +96,6 @@ class Registration
 
     public function verifyEmailIdentity(Entity\EmailIdentity $identity)
     {
-        if ($identity->getId() === null) {
-            $this->logger->warning('no identity with given verification token', [
-                'input' => [
-                    'token' => $identity->getToken(),
-                ],
-            ]);
-
-            throw new TokenNotFound;
-        }
-
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->clearToken();
 

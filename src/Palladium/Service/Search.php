@@ -43,7 +43,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {
-            $this->logger->warning('acount not found', [
+            $this->logger->warning('identity not found', [
                 'input' => [
                     'identifier' => $identifier,
                 ],
@@ -70,6 +70,16 @@ class Search
 
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->fetch($identity);
+
+        if ($identity->getId() === null) {
+            $this->logger->warning('identity not found', [
+                'input' => [
+                    'token' => $token,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
 
         return $identity;
     }

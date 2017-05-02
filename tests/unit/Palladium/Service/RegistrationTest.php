@@ -122,30 +122,4 @@ final class RegistrationTest extends TestCase
         $instance->verifyEmailIdentity($affected);
         $this->assertSame(Entity\Identity::STATUS_ACTIVE, $affected->getStatus());
     }
-
-
-    public function test_Fasilure_of_Identity_Verification()
-    {
-        $this->expectException(TokenNotFound::class);
-
-        $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityUser::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->expects($this->once())->method('warning');
-
-
-        $instance = new Registration($factory, $logger);
-        $affected = new Entity\EmailIdentity;
-        $affected->setId(null);
-
-        $instance->verifyEmailIdentity($affected);
-    }
-
-
 }

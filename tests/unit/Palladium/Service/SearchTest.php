@@ -57,10 +57,7 @@ final class SearchTest extends TestCase
                     ->getMock();
         $mapper
             ->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnCallback(function(HasId $entity) {
-                // do nothing
-            }));
+            ->method('fetch');
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));
@@ -87,6 +84,34 @@ final class SearchTest extends TestCase
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\EmailIdentity::class,
+            $instance->findEmailIdenityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+        );
+    }
+
+
+    public function test_Failure_to_Find__Email_Identity_by_Token()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch');
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));
