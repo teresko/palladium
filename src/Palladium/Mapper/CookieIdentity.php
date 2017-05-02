@@ -12,34 +12,7 @@ use Palladium\Entity as Entity;
 
 class CookieIdentity extends SqlMapper
 {
-
-    /**
-     * @param Entity\CookieIdentity $entity
-     */
-    public function exists(Entity\CookieIdentity $entity)
-    {
-        $sql = "SELECT 1
-                  FROM {$this->table} AS Identities
-                 WHERE type = :type
-                   AND account_id = :account
-                   AND identifier = :series
-                   AND fingerprint = :fingerprint";
-
-        $statement = $this->connection->prepare($sql);
-
-        $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':account', $entity->getAccountId());
-        $statement->bindValue(':series', $entity->getSeries());
-        $statement->bindValue(':fingerprint', $entity->getFingerprint());
-
-        $statement->execute();
-
-        $data = $statement->fetch();
-
-        return empty($data) === false;
-    }
-
-
+    
     /**
      * @param Entity\CookieIdentity $entity
      */
