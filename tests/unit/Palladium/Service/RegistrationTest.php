@@ -9,7 +9,7 @@ use Palladium\Contract\CanCreateMapper;
 use Palladium\Contract\HasId;
 
 use Palladium\Exception\IdentityDuplicated;
-use Palladium\Exception\UserNotFound;
+use Palladium\Exception\AccountNotFound;
 use Palladium\Exception\TokenNotFound;
 use Palladium\Entity;
 use Palladium\Mapper;
@@ -66,7 +66,7 @@ final class RegistrationTest extends TestCase
 
     public function test_Failure_of_Account_Binding()
     {
-        $this->expectException(UserNotFound::class);
+        $this->expectException(AccountNotFound::class);
 
         $instance = new Registration(
             $this->getMockBuilder(CanCreateMapper::class)->getMock(),
