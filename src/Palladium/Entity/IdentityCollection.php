@@ -8,6 +8,7 @@ class IdentityCollection extends Collection
 {
 
     private $accountId;
+    private $parentId;
     private $type;
     private $status;
 
@@ -36,6 +37,24 @@ class IdentityCollection extends Collection
     public function getAccountId()
     {
         return $this->accountId;
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function forParentId($parentId)
+    {
+        $this->parentId = (int) $parentId;
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
     }
 
 

@@ -4,7 +4,7 @@ namespace Palladium\Mapper;
 
 /**
  * SQL code repsonsible for locating all of the identities, that have been associated
- * to a given user and discarding them in bulk.
+ * to a given account and discarding them in bulk.
  * Used mostly in case of password reset or, if cookie has been compromised.
  */
 
@@ -20,23 +20,16 @@ class IdentityCollection extends SqlMapper
      */
     public function store(Entity\IdentityCollection $collection)
     {
-        if ($collection->getAccountId() !== null) {
-            $this->updateStatus($collection);
-        }
-    }
-
-
-    private function updateStatus(Entity\IdentityCollection $collection)
-    {
         $sql = "UPDATE {$this->table}
                    SET status = :status
                  WHERE identity_id = :id";
         $statement = $this->connection->prepare($sql);
 
         foreach ($collection as $entity) {
-            $statement->bindValue(':id', $entity->getId());
-            $statement->bindValue(':status', $entity->getStatus());
-            $statement->execute();
+            $statement->execute([
+                ':id' => $entity->getId(),
+                ':status' => $entity->getStatus(),
+            ]);
         }
     }
 
@@ -45,6 +38,17 @@ class IdentityCollection extends SqlMapper
      * @param Entity\IdentityCollection $collection
      */
     public function fetch(Entity\IdentityCollection $collection)
+    {
+        if ($collection->getParentId() !== null) {
+            $this->fetchByParent($collection);
+            return;
+        }
+
+        $this->fetchByAccount($collection);
+    }
+
+
+    private function fetchByAccount(Entity\IdentityCollection $collection)
     {
         $sql = "SELECT identity_id  AS id
                   FROM {$this->table}
@@ -60,7 +64,27 @@ class IdentityCollection extends SqlMapper
 
         $statement->execute();
 
-        foreach ($statement as $parameters) {
+        foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $parameters) {
+            $collection->addBlueprint($parameters);
+        }
+    }
+
+
+    private function fetchByParent(Entity\IdentityCollection $collection)
+    {
+        $sql = "SELECT identity_id  AS id
+                  FROM {$this->table}
+                 WHERE status = :status
+                   AND parent_id = :parent";
+
+        $statement = $this->connection->prepare($sql);
+
+        $statement->bindValue(':parent', $collection->getParentId());
+        $statement->bindValue(':status', $collection->getStatus());
+
+        $statement->execute();
+
+        foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $parameters) {
             $collection->addBlueprint($parameters);
         }
     }
