@@ -35,6 +35,7 @@ class Identity implements HasId
 
 
     private $identityId;
+    private $parentId;
     private $accountId;
     protected $type = self::TYPE_ANY;
 
@@ -66,6 +67,25 @@ class Identity implements HasId
     public function getId()
     {
         return $this->identityId;
+    }
+
+
+    public function setParentId($parentId)
+    {
+        $data = (int) $parentId;
+
+        if ($data > 0) {
+            $this->parentId = $data;
+        }
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
     }
 
 

@@ -41,6 +41,18 @@ final class IdentityTest extends TestCase
     /**
      * @dataProvider provide_Assignment_of_Numeric
      */
+    public function test_Assignment_of_ParentId($number, $expected)
+    {
+        $instance = new Identity;
+        $instance->setParentId($number);
+
+        $this->assertSame($expected, $instance->getParentId());
+    }
+
+
+    /**
+     * @dataProvider provide_Assignment_of_Numeric
+     */
     public function test_Assignment_of_AccountId($number, $expected)
     {
         $instance = new Identity;

@@ -35,6 +35,7 @@ class Identity extends SqlMapper
     public function fetch(Entity\Identity $entity)
     {
         $sql = "SELECT identity_id      AS id,
+                       parent_id        AS parentId,
                        account_id       AS accountId,
                        status           AS status,
                        hash             AS hash,
