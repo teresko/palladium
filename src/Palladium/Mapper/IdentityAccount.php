@@ -2,10 +2,10 @@
 
 namespace Palladium\Mapper;
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 
-class IdentityAccount extends SqlMapper
+class IdentityAccount extends DataMapper
 {
 
     /**

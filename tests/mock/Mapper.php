@@ -2,9 +2,9 @@
 
 namespace Mock;
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 
-class Mapper extends SqlMapper
+class Mapper extends DataMapper
 {
     private $foo;
     private $bar;

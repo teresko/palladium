@@ -9,11 +9,11 @@ namespace Palladium\Mapper;
  */
 
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 use PDOStatement;
 
-class IdentityCollection extends SqlMapper
+class IdentityCollection extends DataMapper
 {
 
     /**

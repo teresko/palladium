@@ -4,7 +4,7 @@ namespace Palladium\Component;
 
 use RuntimeException;
 use PDO;
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Contract\CanCreateMapper;
 
 class MapperFactory implements CanCreateMapper
@@ -34,7 +34,7 @@ class MapperFactory implements CanCreateMapper
      *
      * @throws RuntimeException if mapper's class can't be found
      *
-     * @return SqlMapper
+     * @return DataMapper
      */
     public function create(string $className)
     {

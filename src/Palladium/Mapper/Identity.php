@@ -6,10 +6,10 @@ namespace Palladium\Mapper;
  * SQL code for locating identity data by token and updating last usage.
  */
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 
-class Identity extends SqlMapper
+class Identity extends DataMapper
 {
 
     /**

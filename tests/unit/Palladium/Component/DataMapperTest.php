@@ -4,6 +4,7 @@ namespace Palladium\Component;
 
 use PHPUnit\Framework\TestCase;
 
+use PDO;
 use Mock\Accopunt;
 
 /**
@@ -15,14 +16,14 @@ final class DataMapperTest extends TestCase
     {
 
         $entity = $this
-                    ->getMockBuilder(Account::class)
-                    ->setMethods(['setId', 'setAlpha', 'setBetaGamma'])
-                    ->disableOriginalConstructor()
-                    ->getMock();
+            ->getMockBuilder(Account::class)
+            ->setMethods(['setId', 'setAlpha', 'setBetaGamma'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $entity->expects($this->once())->method('setAlpha')->with($this->equalTo(12));
         $entity->expects($this->once())->method('setBetaGamma')->with($this->equalTo('test'));
 
-        $instance = $this->getMockForAbstractClass(DataMapper::class);
+        $instance = $this->getMockForAbstractClass(DataMapper::class, [new PDO('sqlite::memory:'), 'fake']);
 
         $instance->applyValues($entity, [
             'alpha' => 12,

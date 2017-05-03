@@ -6,10 +6,10 @@ namespace Palladium\Mapper;
  * SQL logic for authentication attemps using username/password
  */
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 
-class EmailIdentity extends SqlMapper
+class EmailIdentity extends DataMapper
 {
 
     /**

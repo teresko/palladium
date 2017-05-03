@@ -7,10 +7,10 @@ namespace Palladium\Mapper;
  * Probably need some cleanup in `store()` method
  */
 
-use Palladium\Component\SqlMapper;
+use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 
-class CookieIdentity extends SqlMapper
+class CookieIdentity extends DataMapper
 {
     
     /**
