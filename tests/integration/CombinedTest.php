@@ -70,7 +70,7 @@ final class CombinedTest extends TestCase
     {
         $token = self::$hold;
 
-        $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+        $identity = $this->search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
         $this->assertSame(\Palladium\Entity\Identity::STATUS_NEW, $identity->getStatus());
 
         $this->registration->verifyEmailIdentity($identity);
@@ -85,7 +85,7 @@ final class CombinedTest extends TestCase
      */
     public function test_User_Login_with_Password()
     {
-        $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
@@ -105,7 +105,7 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
+        $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $cookie = $this->identification->loginWithCookie($identity, $parts['key']);
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
@@ -125,10 +125,10 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
+        $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->identification->logout($identity, $parts['key']);
 
-        $identity = $this->search->findCookieIdenity($parts['account'], $parts['series']);
+        $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->assertNull($identity->getId());
 
         self::$hold = null;
@@ -140,7 +140,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Requesting_New_Password()
     {
-        $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
         $token = $this->recovery->markForReset($identity);
 
         $this->assertNotNull($token);
@@ -157,7 +157,7 @@ final class CombinedTest extends TestCase
     {
         $token = self::$hold;
 
-        $identity = $this->search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
+        $identity = $this->search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
         $this->recovery->resetIdentityPassword($identity, 'foobar');
 
         $list = $this->search->findIdentitiesByParentId($identity->getId());
@@ -175,7 +175,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Changing_Password_for_Identity()
     {
-        $identity = $this->search->findEmailIdenityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
         $this->identification->changePassword($identity, 'foobar', 'password');
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');

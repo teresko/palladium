@@ -34,6 +34,42 @@ class Identity extends DataMapper
      */
     public function fetch(Entity\Identity $entity)
     {
+        if ($entity->getId()) {
+            $this->fetchById($entity);
+            return;
+        }
+
+        $this->fetchByToken($entity);
+    }
+
+
+    private function fetchById(Entity\Identity $entity)
+    {
+        $sql = "SELECT identity_id      AS id,
+                       parent_id        AS parentId,
+                       account_id       AS accountId,
+                       status           AS status,
+                       hash             AS hash,
+                       token_expires_on AS tokenEndOfLife
+                  FROM {$this->table}
+                 WHERE identity_id = :id";
+
+        $statement = $this->connection->prepare($sql);
+
+        $statement->bindValue(':id', $entity->getId());
+
+        $statement->execute();
+
+        $data = $statement->fetch();
+
+        if ($data) {
+            $this->applyValues($entity, $data);
+        }
+    }
+
+
+    private function fetchByToken(Entity\Identity $entity)
+    {
         $sql = "SELECT identity_id      AS id,
                        parent_id        AS parentId,
                        account_id       AS accountId,

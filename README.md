@@ -69,11 +69,11 @@ The `createEmailIdentity()` method can throw three exceptions: [`InvalidEmail`](
 $search = new \Palladium\Service\Search($factory, $logger);
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
-$identity = $search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+$identity = $search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
 $registration->verifyEmailIdentity($identity);
 ```
 
-The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php), which then gets verified. If the identity is not found, the `findEmailIdenityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php), which then gets verified. If the identity is not found, the `findEmailIdentityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 #### Login with email and password
 
@@ -82,7 +82,7 @@ The `$token` value is used to locate the matching [`EmailIdentity`](https://gith
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findEmailIdenityByIdentifier($email);
+$identity = $search->findEmailIdentityByIdentifier($email);
 $cookie = $identification->loginWithPassword($identity, $password);
 ```
 
@@ -93,7 +93,7 @@ $cookie = $identification->loginWithPassword($identity, $password);
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findCookieIdenity($accountId, $series);
+$identity = $search->findCookieIdentity($accountId, $series);
 $cookie = $identification->loginWithCookie($identity, $key);
 
 ```
@@ -105,7 +105,7 @@ $cookie = $identification->loginWithCookie($identity, $key);
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findCookieIdenity($accountId, $series);
+$identity = $search->findCookieIdentity($accountId, $series);
 $identification->logout($identity, $key);
 ```
 
@@ -116,7 +116,7 @@ $identification->logout($identity, $key);
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
-$identity = $search->findEmailIdenityByIdentifier($email);
+$identity = $search->findEmailIdentityByIdentifier($email);
 $token = $recovery->markForReset($identity);
 ```
 
@@ -127,16 +127,8 @@ $token = $recovery->markForReset($identity);
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
-$identity = $search->findEmailIdenityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
+$identity = $search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
 $recovery->resetIdentityPassword($identity, 'foobar');
-```
-
-#### Logging out all of the account's cookies
-
-```php
-<?php
-$identification = new \Palladium\Service\Identification($factory, $logger);
-$identification->discardRelatedCookies($identity);
 ```
 
 #### Changing password of email identity
@@ -146,17 +138,21 @@ $identification->discardRelatedCookies($identity);
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findEmailIdenityByIdentifier($email);
+$identity = $search->findEmailIdentityByIdentifier($email);
 $identification->changePassword($identity, $oldPassword, $newPassword);
 ```
 
-#### Locating a list of child identities
+#### Logging out identites in bulk
 
-```php 
-<?php 
+```php
+<?php
 $search = new \Palladium\Service\Search($factory, $logger);
-$list = $search->findIdentitiesByParentId($identity->getParentId());
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$list = $search->findIdentitiesByParentId($identity->getId());
+$identification->discardIdentities($list);
 ```
+
 
 
 

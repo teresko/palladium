@@ -18,6 +18,61 @@ use Palladium\Exception\IdentityNotFound;
 final class SearchTest extends TestCase
 {
 
+    public function test_Looking_for_Identity_by_Id()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function(HasId $entity) {
+                $entity->setAccountId(1);
+            }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\Identity::class,
+            $instance->findIdentityById(12121)
+        );
+    }
+
+
+
+    public function test_Failure_to_Find_Identity_by_Id()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch');
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $instance->findIdentityById(42);
+    }
+
+
     public function test_Looking_for_Email_Identity_by_Identifier()
     {
         $mapper = $this
@@ -42,7 +97,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdenityByIdentifier('foo@example.com')
+            $instance->findEmailIdentityByIdentifier('foo@example.com')
         );
     }
 
@@ -68,7 +123,7 @@ final class SearchTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $instance->findEmailIdenityByIdentifier('foo@example.com');
+        $instance->findEmailIdentityByIdentifier('foo@example.com');
     }
 
 
@@ -96,7 +151,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdenityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
         );
     }
 
@@ -124,7 +179,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdenityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
         );
     }
 
@@ -153,7 +208,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\CookieIdentity::class,
-            $instance->findCookieIdenity(123, '12345678901234567890123456789012')
+            $instance->findCookieIdentity(123, '12345678901234567890123456789012')
         );
     }
 

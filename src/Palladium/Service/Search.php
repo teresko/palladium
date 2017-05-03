@@ -31,11 +31,42 @@ class Search
 
 
     /**
+     * Locates identity based on ID
+     *
+     * @param int $identityId
+     *
+     * @return Palladium\Entity\Identity
+     */
+    public function findIdentityById($identityId)
+    {
+        $identity = new Entity\Identity;
+        $identity->setId($identityId);
+
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->fetch($identity);
+
+        if ($identity->getAccountId() === null) {
+            $this->logger->warning('identity not found', [
+                'input' => [
+                    'id' => $identityId,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
+
+        return $identity;
+    }
+
+
+    /**
+     * Locates identity based on email address
+     *
      * @param string $identifier
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdenityByIdentifier($identifier)
+    public function findEmailIdentityByIdentifier($identifier)
     {
         $identity = new Entity\EmailIdentity;
         $identity->setIdentifier($identifier);
@@ -63,7 +94,7 @@ class Search
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdenityByToken($token, $action = Entity\Identity::ACTION_ANY)
+    public function findEmailIdentityByToken($token, $action = Entity\Identity::ACTION_ANY)
     {
         $identity = new Entity\EmailIdentity;
 
@@ -94,7 +125,7 @@ class Search
      *
      * @return Palladium\Entity\CookieIdentity
      */
-    public function findCookieIdenity($accountId, $series)
+    public function findCookieIdentity($accountId, $series)
     {
         $cookie = new Entity\CookieIdentity;
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
