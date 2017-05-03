@@ -109,6 +109,7 @@ final class CombinedTest extends TestCase
         $cookie = $this->identification->loginWithCookie($identity, $parts['key']);
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
+        $this->assertSame(1, $cookie->getParentId()); // from Registration phase
 
         self::$hold = [
             'account' => $cookie->getAccountId(),

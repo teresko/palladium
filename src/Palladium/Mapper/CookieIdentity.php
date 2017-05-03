@@ -12,13 +12,14 @@ use Palladium\Entity as Entity;
 
 class CookieIdentity extends DataMapper
 {
-    
+
     /**
      * @param Entity\CookieIdentity $entity
      */
     public function fetch(Entity\CookieIdentity $entity)
     {
         $sql = "SELECT identity_id  AS id,
+                       parent_id    AS parentId,
                        hash         AS hash,
                        expires_on   AS expiresOn
                   FROM {$this->table} AS Identities
@@ -60,12 +61,13 @@ class CookieIdentity extends DataMapper
     private function createCookie(Entity\CookieIdentity $entity)
     {
         $sql = "INSERT INTO {$this->table}
-                       (account_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
-                VALUES (:account, :type, :status, :identifier, :fingerprint, :hash, :created, :expires)";
+                       (account_id, parent_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
+                VALUES (:account, :parent, :type, :status, :identifier, :fingerprint, :hash, :created, :expires)";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':account', $entity->getAccountId());
+        $statement->bindValue(':parent', $entity->getParentId());
         $statement->bindValue(':type', $entity->getType());
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':identifier', $entity->getSeries());

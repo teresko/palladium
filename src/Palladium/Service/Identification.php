@@ -83,6 +83,15 @@ class Identification
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
         $cookie->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
 
+
+        $parentId = $identity->getParentId();
+
+        if (null === $parentId) {
+            $parentId = $identity->getId();
+        }
+
+        $cookie->setParentId($parentId);
+
         $mapper->store($cookie);
 
         return $cookie;
