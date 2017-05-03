@@ -74,12 +74,12 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
             return;
         }
 
-        $id = $entity->getId();
+        $entityId = $entity->getId();
 
         $this->pool[] = $entity;
 
-        $this->indexed[$id] = $entity;
-        $this->map[$id] = $this->retrieveLastPoolKey();
+        $this->indexed[$entityId] = $entity;
+        $this->map[$entityId] = $this->retrieveLastPoolKey();
     }
 
 
@@ -89,11 +89,11 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
             $this->removeIndexEntry($this->pool[$key]->getId());
         }
 
-        $id = $entity->getId();
+        $entityId = $entity->getId();
 
         $this->pool[$key] = $entity;
-        $this->indexed[$id] = $entity;
-        $this->map[$id] = $key;
+        $this->indexed[$entityId] = $entity;
+        $this->map[$entityId] = $key;
     }
 
 
@@ -138,7 +138,6 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
         foreach ($replacement as $entity) {
             $this->addEntity($entity);
         }
-
     }
 
 
