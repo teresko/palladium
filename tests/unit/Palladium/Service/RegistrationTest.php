@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
 use Palladium\Contract\CanCreateMapper;
-use Palladium\Contract\HasId;
 
 use Palladium\Exception\IdentityDuplicated;
 use Palladium\Exception\AccountNotFound;
@@ -64,19 +63,6 @@ final class RegistrationTest extends TestCase
     }
 
 
-    public function test_Failure_of_Account_Binding()
-    {
-        $this->expectException(AccountNotFound::class);
-
-        $instance = new Registration(
-            $this->getMockBuilder(CanCreateMapper::class)->getMock(),
-            $this->getMockBuilder(LoggerInterface::class)->getMock()
-        );
-
-        $instance->bindAccountToIdentity(new \Mock\Account(null), new Entity\Identity);
-    }
-
-
     public function test_Binding_of_Account()
     {
         $mapper = $this
@@ -94,7 +80,7 @@ final class RegistrationTest extends TestCase
 
         $instance = new Registration($factory, $logger);
         $affected = new Entity\Identity;
-        $instance->bindAccountToIdentity(new \Mock\Account(42), $affected);
+        $instance->bindAccountToIdentity(42, $affected);
         $this->assertSame(42, $affected->getAccountId());
     }
 

@@ -52,10 +52,8 @@ final class CombinedTest extends TestCase
 
     public function test_Account_Registration()
     {
-        $account = new Mock\Account(4);
-
         $identity = $this->registration->createEmailIdentity('test@example.com', 'password');
-        $this->registration->bindAccountToIdentity($account, $identity);
+        $this->registration->bindAccountToIdentity(4, $identity);
 
         $this->assertSame(1, $identity->getId());
 
@@ -85,7 +83,7 @@ final class CombinedTest extends TestCase
      */
     public function test_User_Login_with_Password()
     {
-        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
@@ -141,7 +139,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Requesting_New_Password()
     {
-        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
         $token = $this->recovery->markForReset($identity);
 
         $this->assertNotNull($token);
@@ -176,7 +174,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Changing_Password_for_Identity()
     {
-        $identity = $this->search->findEmailIdentityByIdentifier('test@example.com');
+        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
         $this->identification->changePassword($identity, 'foobar', 'password');
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');

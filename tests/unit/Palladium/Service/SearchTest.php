@@ -73,7 +73,7 @@ final class SearchTest extends TestCase
     }
 
 
-    public function test_Looking_for_Email_Identity_by_Identifier()
+    public function test_Looking_for_Email_Identity_by_Email_Address()
     {
         $mapper = $this
                     ->getMockBuilder(Mapper\EmailIdentity::class)
@@ -97,12 +97,12 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByIdentifier('foo@example.com')
+            $instance->findEmailIdentityByEmailAddress('foo@example.com')
         );
     }
 
 
-    public function test_Failure_to_Find_Email_Identity_by_Identifier()
+    public function test_Failure_to_Find_Email_Identity_by_Email_Address()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -123,7 +123,7 @@ final class SearchTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $instance->findEmailIdentityByIdentifier('foo@example.com');
+        $instance->findEmailIdentityByEmailAddress('foo@example.com');
     }
 
 

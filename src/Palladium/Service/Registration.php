@@ -30,16 +30,16 @@ class Registration
 
 
     /**
-     * @param string $identifier
+     * @param string $emailAddress
      * @param string $password
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function createEmailIdentity($identifier, $password)
+    public function createEmailIdentity(string $emailAddress, string $password)
     {
         $identity = new Entity\EmailIdentity;
 
-        $identity->setIdentifier($identifier);
+        $identity->setIdentifier($emailAddress);
         $identity->setPassword($password);
         $identity->validate();
 
@@ -50,7 +50,7 @@ class Registration
         if ($mapper->exists($identity)) {
             $this->logger->warning('email already registered', [
                 'input' => [
-                    'identifier' => $identifier,
+                    'identifier' => $emailAddress,
                 ],
             ]);
 
@@ -73,13 +73,9 @@ class Registration
     }
 
 
-    public function bindAccountToIdentity(HasId $user, Entity\Identity $identity)
+    public function bindAccountToIdentity(int $accountId, Entity\Identity $identity)
     {
-        if ($user->getId() === null) {
-            throw new AccountNotFound;
-        }
-
-        $identity->setAccountId($user->getId());
+        $identity->setAccountId($accountId);
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityAccount::class);
         $mapper->store($identity);

@@ -40,7 +40,7 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
  - mapper factory (that implements `Palladium\Contract\CanCreateMapper`)
  - logger (that implements `Psr\Log\LoggerInterface`)
 
- 
+
  This gives you an option to replace the default  [`MapperFactory`](https://github.com/teresko/palladium/blob/master/src/Palladium/Component/MapperFactory.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
 
 
@@ -57,7 +57,7 @@ $identity = $registration->createEmailIdentity('foo@bar.com', 'password');
 $registration->bindAccountToIdentity($account, $identity);
 ```
 
-If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assesed using&nbsp;`$instance->getToken()`.
+If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
 
 The `createEmailIdentity()` method can throw three exceptions: [`InvalidEmail`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidEmail.php), [`InvalidPassword`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidPassword.php) and  [`IdentityDuplicated`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityDuplicated.php) (if email has already used for a another&nbsp;identity).
 
@@ -82,14 +82,14 @@ The `$token` value is used to locate the matching [`EmailIdentity`](https://gith
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findEmailIdentityByIdentifier($email);
+$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $cookie = $identification->loginWithPassword($identity, $password);
 ```
 
 #### Login using cookie
 
 ```php
-<?php 
+<?php
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
@@ -100,8 +100,8 @@ $cookie = $identification->loginWithCookie($identity, $key);
 
 #### Logout
 
-```php 
-<?php 
+```php
+<?php
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
@@ -111,19 +111,19 @@ $identification->logout($identity, $key);
 
 #### Starting password reset
 
-```php 
+```php
 <?php
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
-$identity = $search->findEmailIdentityByIdentifier($email);
+$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $token = $recovery->markForReset($identity);
 ```
 
 #### Resetting the password
 
-```php 
-<?php 
+```php
+<?php
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
@@ -133,16 +133,16 @@ $recovery->resetIdentityPassword($identity, 'foobar');
 
 #### Changing password of email identity
 
-```php 
+```php
 <?php
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
-$identity = $search->findEmailIdentityByIdentifier($email);
+$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $identification->changePassword($identity, $oldPassword, $newPassword);
 ```
 
-#### Logging out identites in bulk
+#### Logging out identities in bulk
 
 ```php
 <?php

@@ -62,14 +62,14 @@ class Search
     /**
      * Locates identity based on email address
      *
-     * @param string $identifier
+     * @param string $emailAddress
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdentityByIdentifier($identifier)
+    public function findEmailIdentityByEmailAddress(string $emailAddress)
     {
         $identity = new Entity\EmailIdentity;
-        $identity->setIdentifier($identifier);
+        $identity->setIdentifier($emailAddress);
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->fetch($identity);
@@ -77,7 +77,7 @@ class Search
         if ($identity->getId() === null) {
             $this->logger->warning('identity not found', [
                 'input' => [
-                    'identifier' => $identifier,
+                    'identifier' => $emailAddress,
                 ],
             ]);
 
@@ -94,7 +94,7 @@ class Search
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdentityByToken($token, $action = Entity\Identity::ACTION_ANY)
+    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_ANY)
     {
         $identity = new Entity\EmailIdentity;
 
