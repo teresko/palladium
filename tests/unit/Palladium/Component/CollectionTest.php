@@ -5,7 +5,6 @@ namespace Palladium\Component;
 use Exception;
 use ReflectionClass;
 use PHPUnit\Framework\TestCase;
-use Palladium\Contract\HasId;
 
 
 /**
@@ -17,7 +16,8 @@ class CollectionTest extends TestCase
     private function buildItem($id)
     {
         $item = $this
-                    ->getMockBuilder(HasId::class)
+                    ->getMockBuilder(\Mock\Entity::class)
+                    ->disableOriginalConstructor()
                     ->getMock();
         $item->method('getId')->willReturn($id);
         return $item;
@@ -244,7 +244,7 @@ class CollectionTest extends TestCase
     public function test_Addition_of_Entity()
     {
         $entity = $this
-                    ->getMockBuilder(\Mock\Account::class)
+                    ->getMockBuilder(\Mock\Entity::class)
                     ->setMethods(['setId', 'setAlpha', 'setBetaGamma'])
                     ->disableOriginalConstructor()
                     ->getMock();

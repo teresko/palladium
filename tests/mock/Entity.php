@@ -5,7 +5,7 @@ namespace Mock;
 
 use Palladium\Contract\HasId;
 
-class Account implements HasId
+class Entity implements HasId
 {
 
     private $value;
