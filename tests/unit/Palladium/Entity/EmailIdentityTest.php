@@ -3,8 +3,6 @@
 namespace Palladium\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Palladium\Exception\InvalidPassword;
-use Palladium\Exception\InvalidEmail;
 
 /**
  * @covers Palladium\Entity\EmailIdentity
@@ -57,39 +55,6 @@ final class EmailIdentityTest extends TestCase
 
         $instance->setHash(null);
         $this->assertNull($instance->getHash());
-    }
-
-
-    public function test_Validation_with_invalid_Email()
-    {
-        $this->expectException(InvalidEmail::class);
-
-        $instance = new EmailIdentity;
-        $instance->setIdentifier('no.an.email');
-
-        $instance->validate();
-    }
-
-
-    public function test_Validation_with_invalid_Password()
-    {
-        $this->expectException(InvalidPassword::class);
-
-        $instance = new EmailIdentity;
-        $instance->setIdentifier('alpha@example.com');
-        $instance->setPassword('bad');
-
-        $instance->validate();
-    }
-
-
-    public function test_Successful_Validation()
-    {
-        $instance = new EmailIdentity;
-        $instance->setIdentifier('alpha@example.com');
-        $instance->setPassword('password');
-
-        $this->assertNull($instance->validate());
     }
 
 

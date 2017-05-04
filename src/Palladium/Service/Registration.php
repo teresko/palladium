@@ -41,7 +41,6 @@ class Registration
 
         $identity->setIdentifier($emailAddress);
         $identity->setPassword($password);
-        $identity->validate();
 
         $this->prepareNewIdentity($identity);
 

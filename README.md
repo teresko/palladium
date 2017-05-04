@@ -59,7 +59,7 @@ $registration->bindAccountToIdentity($account, $identity);
 
 If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
 
-The `createEmailIdentity()` method can throw three exceptions: [`InvalidEmail`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidEmail.php), [`InvalidPassword`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/InvalidPassword.php) and  [`IdentityDuplicated`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityDuplicated.php) (if email has already used for a another&nbsp;identity).
+The `createEmailIdentity()` method can throw  [`IdentityDuplicated`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityDuplicated.php) exception, if email has already used for a another&nbsp;identity.
 
 #### Verification of email identity
 

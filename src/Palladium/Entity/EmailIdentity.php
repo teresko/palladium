@@ -3,9 +3,6 @@
 namespace Palladium\Entity;
 
 use RuntimeException;
-use Palladium\Exception\InvalidPassword;
-use Palladium\Exception\InvalidEmail;
-
 
 class EmailIdentity extends Identity
 {
@@ -88,17 +85,5 @@ class EmailIdentity extends Identity
     public function isOldHash()
     {
         return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => self::HASH_COST]);
-    }
-
-
-    public function validate()
-    {
-        if (false === filter_var($this->identifier, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidEmail;
-        }
-
-        if (strlen($this->password) < self::MIN_LENGTH || strlen($this->password) > self::MAX_LENGTH) {
-            throw new InvalidPassword;
-        }
     }
 }
