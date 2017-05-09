@@ -12,12 +12,12 @@ CREATE TABLE `identities` (
 
     `hash`                  TEXT NULL DEFAULT NULL COMMENT 'stores password hash or access token hash',
 
-    `created_on`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `used_on`               TIMESTAMP NULL DEFAULT NULL,
-    `expires_on`            TIMESTAMP NULL DEFAULT NULL,
+    `created_on`            INT(11) NOT NULL DEFAULT,
+    `used_on`               INT(11) NULL DEFAULT NULL,
+    `expires_on`            INT(11) NULL DEFAULT NULL,
 
     `token`                 CHAR(32) NULL DEFAULT NULL COMMENT 'stores hex of 16 random bytes',
-    `token_expires_on`      TIMESTAMP NULL DEFAULT NULL,
+    `token_expires_on`      INT(11) NULL DEFAULT NULL,
     `token_action`          VARCHAR(15) NULL DEFAULT NULL,
 
     KEY (`parent_id`),
@@ -32,9 +32,9 @@ CREATE TABLE `identities` (
 
     FOREIGN KEY `parentIdentity` (`parent_id`) REFERENCES `identities`(`identity_id`)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
 
-    FOREIGN KEY `associatedAccount` (`account_id`) REFERENCES `users`(`account_id`)
+    FOREIGN KEY `associatedAccount` (`account_id`) REFERENCES `accounts`(`account_id`)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
