@@ -35,6 +35,8 @@ class Search
      *
      * @param int $identityId
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\Identity
      */
     public function findIdentityById($identityId)
@@ -64,6 +66,8 @@ class Search
      *
      * @param string $emailAddress
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\EmailIdentity
      */
     public function findEmailIdentityByEmailAddress(string $emailAddress)
@@ -91,6 +95,8 @@ class Search
     /**
      * @param string $token
      * @param int $action
+     *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
      *
      * @return Palladium\Entity\EmailIdentity
      */
@@ -123,6 +129,8 @@ class Search
      * @param int $accountId
      * @param string $series
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\CookieIdentity
      */
     public function findCookieIdentity($accountId, $series)
@@ -134,6 +142,17 @@ class Search
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->fetch($cookie);
+
+        if ($cookie->getId() === null) {
+            $this->logger->warning('identity not found', [
+                'input' => [
+                    'account' => $cookie->getAccountId(),
+                    'series' => $cookie->getSeries(),
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
 
         return $cookie;
     }

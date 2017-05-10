@@ -70,19 +70,6 @@ final class IdentificationTest extends TestCase
     }
 
 
-    public function test_Failed_Attemt_to_Login_with_Missing_Identity()
-    {
-        $this->expectException(DenialOfServiceAttempt::class);
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-
-        $affected = new Entity\CookieIdentity;
-        $instance = new Identification($factory, $logger);
-        $result = $instance->loginWithCookie($affected, 'alpha');
-    }
-
-
     public function test_Failed_Attemt_to_Login_with_Expired_Identity()
     {
         $this->expectException(IdentityExpired::class);
@@ -178,22 +165,8 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\CookieIdentity;
         $affected->setId(99);
+        $affected->setExpiresOn(time() + 10000);
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
-
-        $instance = new Identification($factory, $logger);
-        $result = $instance->logout($affected, 'alpha');
-    }
-
-
-    public function test_Failure_to_Logout()
-    {
-        $this->expectException(DenialOfServiceAttempt::class);
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->expects($this->once())->method('error');
-
-        $affected = new Entity\CookieIdentity;
 
         $instance = new Identification($factory, $logger);
         $result = $instance->logout($affected, 'alpha');

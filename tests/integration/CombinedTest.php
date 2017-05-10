@@ -127,6 +127,19 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->identification->logout($identity, $parts['key']);
 
+        $this->assertSame(4, $identity->getAccountId()); // from Registration phase
+    }
+
+
+    /**
+     * @depends test_User_Logout
+     */
+    public function test_User_Logout_Again()
+    {
+        $parts = self::$hold;
+
+        $this->expectException(\Palladium\Exception\IdentityNotFound::class);
+
         $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->assertNull($identity->getId());
 

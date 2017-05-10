@@ -101,20 +101,51 @@ class Identification
     /**
      * @param string @key
      *
+     * @throws \Palladium\Exception\CompromisedCookie if key does not match
+     * @throws \Palladium\Exception\IdentityExpired if cookie is too old
+     *
      * @return Palladium\Entity\CookieIdentity
      */
     public function loginWithCookie(Entity\CookieIdentity $identity, $key)
     {
-        if ($identity->getId() === null) {
-            $this->logCookieError($identity, 'denial of service');
-            throw new DenialOfServiceAttempt;
-        }
+        $this->checkCookieExpireTime($identity);
+        $this->checkCookieKey($identity, $key);
+
+        $identity->generateNewKey();
+        $identity->setLastUsed(time());
+        $identity->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
+        $mapper->store($identity);
 
+        $this->logExpectedBehaviour($identity, 'cookie updated');
+
+        return $identity;
+    }
+
+
+    /**
+     * @param string $key
+     */
+    public function logout(Entity\CookieIdentity $identity, $key)
+    {
+        $this->checkCookieExpireTime($identity);
+        $this->checkCookieKey($identity, $key);
+
+        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
+
+        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
+        $mapper->store($identity);
+
+        $this->logExpectedBehaviour($identity, 'logout successful');
+    }
+
+
+    private function checkCookieExpireTime(Entity\CookieIdentity $identity)
+    {
         if ($identity->getExpiresOn() < time()) {
             $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
-            $mapper->store($identity);
+
             $this->logger->info('cookie expired', [
                 'input' => [
                     'account' => $identity->getAccountId(),
@@ -127,39 +158,11 @@ class Identification
                 ],
             ]);
 
+            $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
+            $mapper->store($identity);
+
             throw new IdentityExpired;
         }
-
-        $this->checkCookieKey($identity, $key);
-
-        $identity->generateNewKey();
-        $identity->setLastUsed(time());
-        $identity->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
-
-        $mapper->store($identity);
-        $this->logExpectedBehaviour($identity, 'cookie updated');
-
-        return $identity;
-    }
-
-
-    /**
-     * @param string $key
-     */
-    public function logout(Entity\CookieIdentity $identity, $key)
-    {
-        if ($identity->getId() === null) {
-            $this->logCookieError($identity, 'denial of service');
-            throw new DenialOfServiceAttempt;
-        }
-
-        $this->checkCookieKey($identity, $key);
-        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
-
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
-
-        $this->logExpectedBehaviour($identity, 'logout successful');
     }
 
 
