@@ -38,7 +38,7 @@ class Identification
     {
         if ($identity->matchPassword($password) === false) {
             $this->logWrongPasswordWarning($identity, [
-                'identifier' => $identity->getIdentifier(),
+                'email' => $identity->getEmailAddress(),
                 'key' => md5($password),
             ]);
 
@@ -50,7 +50,7 @@ class Identification
 
         $this->logger->info('login successful', [
             'input' => [
-                'identifier' => $identity->getIdentifier(),
+                'email' => $identity->getEmailAddress(),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),

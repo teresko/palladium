@@ -38,7 +38,7 @@ class Registration
     {
         $identity = new Entity\EmailIdentity;
 
-        $identity->setIdentifier($emailAddress);
+        $identity->setEmailAddress($emailAddress);
         $identity->setPassword($password);
 
         $this->prepareNewIdentity($identity);
@@ -48,7 +48,7 @@ class Registration
         if ($mapper->exists($identity)) {
             $this->logger->warning('email already registered', [
                 'input' => [
-                    'identifier' => $emailAddress,
+                    'email' => $emailAddress,
                 ],
             ]);
 

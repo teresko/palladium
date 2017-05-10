@@ -69,7 +69,7 @@ class Search
     public function findEmailIdentityByEmailAddress(string $emailAddress)
     {
         $identity = new Entity\EmailIdentity;
-        $identity->setIdentifier($emailAddress);
+        $identity->setEmailAddress($emailAddress);
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->fetch($identity);
@@ -77,7 +77,7 @@ class Search
         if ($identity->getId() === null) {
             $this->logger->warning('identity not found', [
                 'input' => [
-                    'identifier' => $emailAddress,
+                    'email' => $emailAddress,
                 ],
             ]);
 

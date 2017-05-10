@@ -33,7 +33,7 @@ class Recovery
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
             $this->logger->warning('identity not verified', [
                 'input' => [
-                    'identifier' => $identity->getIdentifier(),
+                    'email' => $identity->getEmailAddress(),
                 ],
                 'user' => [
                     'account' => $identity->getAccountId(),
@@ -53,7 +53,7 @@ class Recovery
 
         $this->logger->info('request password reset', [
             'input' => [
-                'identifier' => $identity->getIdentifier(),
+                'email' => $identity->getEmailAddress(),
             ],
         ]);
 

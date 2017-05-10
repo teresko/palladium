@@ -14,31 +14,31 @@ class EmailIdentity extends Identity
     const MAX_LENGTH = 128;
 
 
-    private $identifier;
+    private $emailAddress;
     private $password;
     private $hash;
 
     protected $type = Identity::TYPE_PASSWORD;
 
 
-    public function setIdentifier($identifier)
+    public function setEmailAddress($emailAddress)
     {
-        $this->identifier = (string) $identifier;
+        $this->emailAddress = (string) $emailAddress;
     }
 
 
     /**
      * @codeCoverageIgnore
      */
-    public function getIdentifier()
+    public function getEmailAddress()
     {
-        return $this->identifier;
+        return $this->emailAddress;
     }
 
 
     public function getFingerprint()
     {
-        return hash('sha384', $this->identifier);
+        return hash('sha384', $this->emailAddress);
     }
 
 
