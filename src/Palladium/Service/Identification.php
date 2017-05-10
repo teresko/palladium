@@ -201,9 +201,9 @@ class Identification
     }
 
 
-    public function discardIdentity(Entity\Identity $identity)
+    public function blockIdentity(Entity\Identity $identity)
     {
-        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
+        $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
 
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->store($identity);
