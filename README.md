@@ -33,6 +33,8 @@ composer require teresko/palladium
 
 To use this package, it require PHP version 7.0+ and PDO.
 
+You will also need to create a table, where to store the **identities**. The example schema is available [here](https://github.com/teresko/palladium/blob/master/resources/schema.sql). It currently contains only table definition for MySQL/MariaDB, but the library can be used with any RDBMS, that has a PDO driver.
+
 ## Initialization
 
 Palladium contains 4 services: `Registration`, `Identification`, `Search` and `Recovery`. Each of these services has two&nbsp;dependencies:  
@@ -43,6 +45,17 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
 
  This gives you an option to replace the default  [`MapperFactory`](https://github.com/teresko/palladium/blob/master/src/Palladium/Component/MapperFactory.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
 
+#### Setting up mapper factory
+
+To start using any of the services, you will need to pass a `MapperFactory` instance as a dependency. The included factory itself has two dependencies: `PDO` instance and the name of table, where the **identities** will be stored.
+
+```php
+<?php
+
+$factory = new \Palladium\Component\MapperFactory(new \PDO(...$config), $tableName);
+```
+
+In every other example, where you see `$factory` variable used, you can assume, that it has been initialized using this code sample.
 
 ## Usage
 
@@ -79,6 +92,7 @@ The `$token` value is used to locate the matching [`EmailIdentity`](https://gith
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
@@ -86,22 +100,48 @@ $identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $cookie = $identification->loginWithPassword($identity, $password);
 ```
 
+If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+
+In case, if password does not match, the `loginWithPassword()` will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
+
 #### Login using cookie
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
 $identity = $search->findCookieIdentity($accountId, $series);
 $cookie = $identification->loginWithCookie($identity, $key);
-
 ```
+
+If cookie is not found using `findCookieIdentity()` a standard [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception will be thrown. The possible caused for it would be either cookie not being active anymore (e.g. user logged out) or cookie not existing at all.
+
+In case, if cookie is too old, `loginWithCookie()` will produce [`IdentityExpired`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityExpired.php) exception.
+
+But the `loginWithCookie()` method can also produce [`CompromisedCookie`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/CompromisedCookie.php) exception. Seeing an exception for this **could indicate, that cookie has been stolen** or that user never received a new cookie value.
+
+
+#### Blocking a compromised cookie
+
+```php
+<?php
+
+$search = new \Palladium\Service\Search($factory, $logger);
+$identification = new \Palladium\Service\Identification($factory, $logger);
+
+$identity = $search->findCookieIdentity($accountId, $series);
+$identification->blockIdentity($identity);
+```
+
+This is the recommended way for dealing with suspicious cookies, that might or might not be stolen. This is **not intended for logging out users**.
 
 #### Logout
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
@@ -109,10 +149,13 @@ $identity = $search->findCookieIdentity($accountId, $series);
 $identification->logout($identity, $key);
 ```
 
+This operation marks the cookie as "discarded". The list of exception, that can be produced, match the ones described in [login using cookie](#login-using-cookie) section.
+
 #### Starting password reset
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
@@ -124,6 +167,7 @@ $token = $recovery->markForReset($identity);
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $recovery = new \Palladium\Service\Recovery($factory, $logger);
 
@@ -135,6 +179,7 @@ $recovery->resetIdentityPassword($identity, 'foobar');
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
@@ -146,11 +191,12 @@ $identification->changePassword($identity, $oldPassword, $newPassword);
 
 ```php
 <?php
+
 $search = new \Palladium\Service\Search($factory, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
 $list = $search->findIdentitiesByParentId($identity->getId());
-$identification->discardIdentities($list);
+$identification->discardIdentityCollection($list);
 ```
 
 
