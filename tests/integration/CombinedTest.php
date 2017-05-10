@@ -160,7 +160,7 @@ final class CombinedTest extends TestCase
         $this->recovery->resetIdentityPassword($identity, 'foobar');
 
         $list = $this->search->findIdentitiesByParentId($identity->getId());
-        $this->identification->discardIdentities($list);
+        $this->identification->discardIdentityCollection($list);
 
         $cookie = $this->identification->loginWithPassword($identity, 'foobar');
         $this->assertSame(4, $cookie->getAccountId());

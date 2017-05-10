@@ -187,7 +187,7 @@ class Identification
     }
 
 
-    public function discardIdentities(Entity\IdentityCollection $list)
+    public function discardIdentityCollection(Entity\IdentityCollection $list)
     {
         foreach ($list as $identity) {
             $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
@@ -195,6 +195,15 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
         $mapper->store($list);
+    }
+
+
+    public function discardIdentity(Entity\Identity $identity)
+    {
+        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
+
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->store($identity);
     }
 
 

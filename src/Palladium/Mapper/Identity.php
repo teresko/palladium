@@ -18,13 +18,16 @@ class Identity extends DataMapper
     public function store(Entity\Identity $entity)
     {
         $sql = "UPDATE {$this->table}
-                   SET used_on = :used
+                   SET used_on = :used,
+                       status = :status
                  WHERE identity_id = :id";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':id', $entity->getId());
         $statement->bindValue(':used', $entity->getLastUsed());
+        $statement->bindValue(':status', $entity->getStatus());
+
         $statement->execute();
     }
 

@@ -221,7 +221,7 @@ final class IdentificationTest extends TestCase
         $list->addEntity($entity);
 
         $instance = new Identification($factory, $logger);
-        $instance->discardIdentities($list);
+        $instance->discardIdentityCollection($list);
 
         $this->assertNotNull($entity->getStatus());
     }
