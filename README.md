@@ -17,7 +17,7 @@ Library for handling the user identification.
 
 The primary goal of any authentication system is to verify the ownership of an account. User's account is the structure in your application to which you associate information about said user. This association can be direct (when the `Account` entity contains all you know about the user) or implemented using composition (when `Account` entity contains other entities, like `Profile`&nbsp;and&nbsp;`History`).
 
-Palladium does not restrict you to any specific approach of defining users' accounts. To use your existing account management system with it, the only requirement is for the account entity to implement the [`HasId`](https://github.com/teresko/palladium/blob/master/src/Palladium/Contract/HasId.php) interface. This interface is used to link one or more user identities with user's&nbsp;account.
+Palladium does not restrict you to any specific approach of defining user accounts. To use your existing account management system with it, the only requirement is for the account entity to implement the [`HasId`](https://github.com/teresko/palladium/blob/master/src/Palladium/Contract/HasId.php) interface. This interface is used to link one or more user identities with user's&nbsp;account.
 
 #### Identity
 
@@ -102,7 +102,7 @@ $cookie = $identification->loginWithPassword($identity, $password);
 
 If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
-In case, if password does not match, the `loginWithPassword()` will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
+In case, if password does not match, the `loginWithPassword()` method will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
 
 #### Login using cookie
 
@@ -151,7 +151,7 @@ $identification->logout($identity, $key);
 
 This operation marks the cookie as "discarded". The list of exception, that can be produced, match the ones described in [login using cookie](#login-using-cookie) section.
 
-#### Starting password reset
+#### Initiating password reset process
 
 ```php
 <?php
@@ -163,7 +163,11 @@ $identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $token = $recovery->markForReset($identity);
 ```
 
-#### Resetting the password
+If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+
+When `markForReset()` is called, it must be provided with an email identity, that has already been verified (otherwise, it has a potential to leak user's private information from your application). If that is not the case, the method will throw [`IdentityNotVerified`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotVerified.php) exception.
+
+#### Completion of password reset
 
 ```php
 <?php
@@ -174,6 +178,8 @@ $recovery = new \Palladium\Service\Recovery($factory, $logger);
 $identity = $search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
 $recovery->resetIdentityPassword($identity, 'foobar');
 ```
+
+If there is no matching identity with given token found, the `findEmailIdentityByToken()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 #### Changing password of email identity
 
@@ -187,6 +193,10 @@ $identity = $search->findEmailIdentityByEmailAddress($emailAddress);
 $identification->changePassword($identity, $oldPassword, $newPassword);
 ```
 
+If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+
+In case, if the password does not match, the `changePassword()` method will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
+
 #### Logging out identities in bulk
 
 ```php
@@ -199,21 +209,44 @@ $list = $search->findIdentitiesByParentId($identity->getId());
 $identification->discardIdentityCollection($list);
 ```
 
+The return value of `findIdentitiesByParentId()` will return `IdentityCollection`, which can be empty.
+
+## Logging of user activity
+
+As previously mentioned, the services in this library expect a [PSR-3 compatible](https://github.com/php-fig/log) logger as a dependency. It will be utilized to log three levels of events:
+
+#### `LogLevel::INFO`
+
+This log-level is used for tracking ordinary operations, that user would perform, when using your application in the intended manner:
+
+ - successful registration
+ - successful password recover
+ - successful login (with email or cookie) or logout
+ - successful email verification
+ - use of expired cookie
+
+#### `LogLevel::NOTICE`
+
+Logs with this level will be recorded, if user attempted an unsuccessful operation, that should not happed in correct usage scenarios:
+
+ - all cases, when identity was not found
+ - incorrect password was entered
+ - email already used for different identity
+ - attempt to recover password using unverified email
+
+#### `LogLevel::WARNING`
+
+Only used for logging cases, when user attempted to use a compromised cookie.
 
 
 
+## Additional notes
 
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
-&nbsp;   
+This library focuses on one specific task. It **does not** include any of the following functionality:
+
+ - account creation and management
+ - authorization system
+ - validation of user input (including emails and passwords)
+ - logging framework
+
+If you think, that authentication library requires one of the above listed parts, then is not the library, that you are looking for.
