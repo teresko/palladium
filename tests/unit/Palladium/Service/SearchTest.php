@@ -213,6 +213,35 @@ final class SearchTest extends TestCase
     }
 
 
+    public function test_Failure_to_Find_Cookie_Identity()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function(HasId $entity) {}));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\CookieIdentity::class,
+            $instance->findCookieIdentity(123, '12345678901234567890123456789012')
+        );
+    }
+
+
     public function test_Looking_for_Identity_with_Given_Account_Id()
     {
         $mapper = $this

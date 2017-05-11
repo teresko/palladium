@@ -242,4 +242,23 @@ final class IdentificationTest extends TestCase
         $instance = new Identification($factory, $logger);
         $instance->changePassword($affected, 'wrong', 'password');
     }
+
+
+    public function test_Blocking_of_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\Identity::class => $mapper,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $instance = new Identification($factory, $logger);
+        $instance->blockIdentity(new Entity\Identity);
+    }
 }
