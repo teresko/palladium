@@ -28,10 +28,15 @@ class Recovery
     }
 
 
+    /**
+     * @throws Palladium\Exception\IdentityNotVerified if attempting to reset password for unverified identity
+     *
+     * @return string token, that can be use to reset password
+     */
     public function markForReset(Entity\EmailIdentity $identity)
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
-            $this->logger->warning('identity not verified', [
+            $this->logger->notice('identity not verified', [
                 'input' => [
                     'email' => $identity->getEmailAddress(),
                 ],

@@ -232,7 +232,7 @@ final class IdentificationTest extends TestCase
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->expects($this->once())->method('warning');
+        $logger->expects($this->once())->method('notice');
 
         $affected = new Entity\EmailIdentity;
         $affected->setId(99);

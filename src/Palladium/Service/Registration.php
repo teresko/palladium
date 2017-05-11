@@ -46,7 +46,7 @@ class Registration
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($mapper->exists($identity)) {
-            $this->logger->warning('email already registered', [
+            $this->logger->notice('email already registered', [
                 'input' => [
                     'email' => $emailAddress,
                 ],

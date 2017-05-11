@@ -48,7 +48,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getAccountId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'id' => $identityId,
                 ],
@@ -79,7 +79,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'email' => $emailAddress,
                 ],
@@ -112,7 +112,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'token' => $token,
                 ],
@@ -144,7 +144,7 @@ class Search
         $mapper->fetch($cookie);
 
         if ($cookie->getId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'account' => $cookie->getAccountId(),
                     'series' => $cookie->getSeries(),
@@ -167,7 +167,7 @@ class Search
         $collection->forAccountId($accountId);
         $collection->forType($type);
 
-        return $this->fetchIdentitiesByStatus($collection, $status);
+        return $this->fetchIdentitiesWithStatus($collection, $status);
     }
 
 
@@ -179,14 +179,14 @@ class Search
         $collection = new Entity\IdentityCollection;
         $collection->forParentId($parentId);
 
-        return $this->fetchIdentitiesByStatus($collection, $status);
+        return $this->fetchIdentitiesWithStatus($collection, $status);
     }
 
 
     /**
      * @return Palladium\Entity\IdentityCollection
      */
-    private function fetchIdentitiesByStatus(Entity\IdentityCollection $collection, $status)
+    private function fetchIdentitiesWithStatus(Entity\IdentityCollection $collection, $status)
     {
         $collection->forStatus($status);
 
