@@ -10,7 +10,6 @@ use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\PasswordNotMatch;
 use Palladium\Exception\CompromisedCookie;
-use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Contract\CanCreateMapper;
 use Psr\Log\LoggerInterface;
