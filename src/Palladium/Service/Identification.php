@@ -8,7 +8,7 @@ namespace Palladium\Service;
 
 use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
-use Palladium\Exception\PasswordNotMatch;
+use Palladium\Exception\PasswordMismatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Contract\CanCreateMapper;
@@ -41,7 +41,7 @@ class Identification
                 'key' => md5($password),
             ]);
 
-            throw new PasswordNotMatch;
+            throw new PasswordMismatch;
         }
 
         $this->registerUsageOfIdentity($identity);
@@ -224,7 +224,7 @@ class Identification
                 'new-key' => md5($newPassword),
             ]);
 
-            throw new PasswordNotMatch;
+            throw new PasswordMismatch;
         }
 
         $identity->setPassword($newPassword);

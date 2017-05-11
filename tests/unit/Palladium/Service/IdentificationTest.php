@@ -12,7 +12,7 @@ use Palladium\Entity;
 use Palladium\Mapper;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Exception\CompromisedCookie;
-use Palladium\Exception\PasswordNotMatch;
+use Palladium\Exception\PasswordMismatch;
 
 /**
  * @covers Palladium\Service\Identification
@@ -22,7 +22,7 @@ final class IdentificationTest extends TestCase
 
     public function test_Logging_in_with_Password()
     {
-        $this->expectException(PasswordNotMatch::class);
+        $this->expectException(PasswordMismatch::class);
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -227,7 +227,7 @@ final class IdentificationTest extends TestCase
 
     public function test_Failure_to_Change_of_Password_for_Identity()
     {
-        $this->expectException(PasswordNotMatch::class);
+        $this->expectException(PasswordMismatch::class);
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
 
