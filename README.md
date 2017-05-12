@@ -249,4 +249,4 @@ This library focuses on one specific task. It **does not** include any of the fo
  - validation of user input (including emails and passwords)
  - logging framework
 
-If you think, that authentication library requires one of the above listed parts, then is not the library, that you are looking for.
+If you think, that authentication library requires one of the above listed parts, then this is not the library that you are looking for.
