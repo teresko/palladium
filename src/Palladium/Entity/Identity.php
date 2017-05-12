@@ -21,7 +21,7 @@ class Identity implements HasId
 
     const STATUS_ANY = null;
     const STATUS_NEW = 1; // not veriefoed user
-    const STATUS_ACTIVE = 2;  // this is the "good" state
+    const STATUS_ACTIVE = 2; // this is the "good" state
     const STATUS_DISCARDED = 4; // user logged out or changed password
     const STATUS_BLOCKED = 8; // someone tried to us an invalid auth cookie
     const STATUS_EXPIRED = 16;
