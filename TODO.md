@@ -7,5 +7,4 @@ The "don't forget to do this" list:
   - create integration test, that illustrate scenarios with exceptions
   - add error code in the exceptions
   - create method for deleting identity
-  - add new identity type for on-click-login-link scenarios
-  - document why using such links would be a terrible idea
+  
