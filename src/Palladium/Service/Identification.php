@@ -145,17 +145,7 @@ class Identification
         if ($identity->getExpiresOn() < time()) {
             $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
 
-            $this->logger->info('cookie expired', [
-                'input' => [
-                    'account' => $identity->getAccountId(),
-                    'series' => $identity->getSeries(),
-                    'key' => $identity->getKey(),
-                ],
-                'user' => [
-                    'account' => $identity->getAccountId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
+            $this->logger->info('cookie expired', $this->assembleCookieLogDetails($identity));
 
             $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
             $mapper->store($identity);
@@ -183,7 +173,18 @@ class Identification
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
 
-        $this->logger->warning('compromised cookie', [
+        $this->logger->warning('compromised cookie', $this->assembleCookieLogDetails($identity));
+
+        throw new CompromisedCookie;
+    }
+
+
+    /**
+     * @return array 
+     */
+    private function assembleCookieLogDetails(Entity\CookieIdentity $identity)
+    {
+        return [
             'input' => [
                 'account' => $identity->getAccountId(),
                 'series' => $identity->getSeries(),
@@ -193,9 +194,7 @@ class Identification
                 'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
             ],
-        ]);
-
-        throw new CompromisedCookie;
+        ];
     }
 
 
