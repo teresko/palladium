@@ -37,13 +37,20 @@ You will also need to create a table, where to store the **identities**. The exa
 
 ## Initialization
 
-Palladium contains 4 services: `Registration`, `Identification`, `Search` and `Recovery`. Each of these services has two&nbsp;dependencies:  
+Palladium contains 4 services: `Registration`, `Identification`, `Search` and `Recovery`. Each of these services has two&nbsp;mandatory&nbsp;dependencies:  
 
  - mapper factory (that implements `Palladium\Contract\CanCreateMapper`)
  - logger (that implements `Psr\Log\LoggerInterface`)
 
 
  This gives you an option to replace the default  [`MapperFactory`](https://github.com/teresko/palladium/blob/master/src/Palladium/Component/MapperFactory.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
+
+#### Optional parameters
+
+In the constructor of `Identification` service there is also an optional third parameter: lifespan of the cookie (in seconds). It defaults to 4 hours.
+
+Also both `Registration` service and `Recovery` service have an optional third parameter in their constructors: token lifetimes (in seconds). They are for email verification and password recovery tokens, respectively. Both of them default to 8 hours.
+
 
 #### Setting up mapper factory
 

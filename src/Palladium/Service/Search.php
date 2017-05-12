@@ -22,7 +22,10 @@ class Search
     private $mapperFactory;
     private $logger;
 
-
+    /**
+     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
         $this->mapperFactory = $mapperFactory;

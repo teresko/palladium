@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 
 class Identification
 {
+    
     const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
 
     private $mapperFactory;
@@ -23,7 +24,11 @@ class Identification
 
     private $cookieLifespan;
 
-
+    /**
+     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
+     */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN)
     {
         $this->mapperFactory = $mapperFactory;

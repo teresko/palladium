@@ -16,6 +16,7 @@ use Psr\Log\LoggerInterface;
 
 class Recovery
 {
+    
     const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
 
     private $mapperFactory;
@@ -23,6 +24,11 @@ class Recovery
 
     private $tokenLifespan;
 
+    /**
+     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param int $tokenLifespan Lifespan of the password recovery token in seconds
+     */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         $this->mapperFactory = $mapperFactory;
