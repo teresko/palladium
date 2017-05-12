@@ -14,9 +14,6 @@ class Identity implements HasId
 {
 
     const TOKEN_SIZE = 16;
-    const TOKEN_LIFESPAN = 28800; // 8 hours
-
-    const COOKIE_LIFESPAN = 14400; // 4 hours
 
     const ACTION_ANY = null;
     const ACTION_VERIFY = 1;

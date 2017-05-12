@@ -16,15 +16,19 @@ use Psr\Log\LoggerInterface;
 
 class Identification
 {
+    const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
 
     private $mapperFactory;
     private $logger;
 
+    private $cookieLifespan;
 
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
+        $this->cookieLifespan = $cookieLifespan;
     }
 
 
@@ -80,7 +84,7 @@ class Identification
 
         $cookie->generateNewKey();
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
-        $cookie->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
+        $cookie->setExpiresOn(time() + $this->cookieLifespan);
 
 
         $parentId = $identity->getParentId();
@@ -112,7 +116,7 @@ class Identification
 
         $identity->generateNewKey();
         $identity->setLastUsed(time());
-        $identity->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
+        $identity->setExpiresOn(time() + $this->cookieLifespan);
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
@@ -180,7 +184,7 @@ class Identification
 
 
     /**
-     * @return array 
+     * @return array
      */
     private function assembleCookieLogDetails(Entity\CookieIdentity $identity)
     {

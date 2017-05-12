@@ -16,15 +16,18 @@ use Psr\Log\LoggerInterface;
 
 class Registration
 {
+    const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
 
     private $mapperFactory;
     private $logger;
 
+    private $tokenLifespan;
 
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
+        $this->tokenLifespan = $tokenLifespan;
     }
 
 
@@ -67,7 +70,7 @@ class Registration
 
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_VERIFY);
-        $identity->setTokenEndOfLife(time() + Entity\Identity::TOKEN_LIFESPAN);
+        $identity->setTokenEndOfLife(time() + $this->tokenLifespan);
     }
 
 
