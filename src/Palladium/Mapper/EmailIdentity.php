@@ -8,6 +8,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
+use PDOStatement;
 
 class EmailIdentity extends DataMapper
 {
@@ -98,11 +99,9 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
-        $statement->bindValue(':token', $entity->getToken());
-        $statement->bindValue(':action', $entity->getTokenAction());
-        $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
         $statement->bindValue(':created', time());
 
+        $this->bindToken($statement, $entity);
 
         $statement->execute();
 
@@ -127,10 +126,17 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':expires', $entity->getExpiresOn());
+
+        $this->bindToken($statement, $entity);
+
+        $statement->execute();
+    }
+
+
+    private function bindToken(PDOStatement $statement, Entity\EmailIdentity $entity)
+    {
         $statement->bindValue(':token', $entity->getToken());
         $statement->bindValue(':action', $entity->getTokenAction());
         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
-
-        $statement->execute();
     }
 }

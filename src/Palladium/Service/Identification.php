@@ -227,10 +227,13 @@ class Identification
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function deleteIdentity(Entity\Identity $identity)
     {
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->remove($identity);        
+        $mapper->remove($identity);
     }
 
 
