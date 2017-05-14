@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
 
 class Identification
 {
-    
+
     const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
 
     private $mapperFactory;
@@ -224,6 +224,13 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->store($identity);
+    }
+
+
+    public function deleteIdentity(Entity\Identity $identity)
+    {
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->remove($identity);        
     }
 
 

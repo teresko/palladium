@@ -35,7 +35,21 @@ class Identity extends DataMapper
     /**
      * @param Entity\Identity $entity
      */
+    public function remove(Entity\Identity $entity)
+    {
+        $sql = "DELETE FROM {$this->table} WHERE identity_id: id";
+        $statement = $this->connection->prepare($sql);
+
+        $statement->bindValue(':id', $entity->getId());
+        $statement->execute();
+    }
+
+
+    /**
+    * @param Entity\Identity $entity
+    */
     public function fetch(Entity\Identity $entity)
+
     {
         if ($entity->getId()) {
             $this->fetchById($entity);
