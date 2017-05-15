@@ -70,6 +70,29 @@ class Registration
     }
 
 
+    public function createOneTimeIdentity($accountId)
+    {
+        $identity = new Entity\OneTimeIdentity;
+
+        $identity->setAccountId($accountId);
+        $identity->generateNewNonce();
+        $identity->generateNewKey();
+
+        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
+        $mapper->store($identity);
+
+        $this->logger->info('new single-use identity created', [
+            'user' => [
+                'account' => $identity->getAccountId(),
+                'identity' => $identity->getId(),
+            ],
+        ]);
+
+        return $identity;
+    }
+
+
+
     private function prepareNewIdentity(Entity\EmailIdentity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_NEW);
@@ -87,7 +110,7 @@ class Registration
         $mapper = $this->mapperFactory->create(Mapper\IdentityAccount::class);
         $mapper->store($identity);
 
-        $this->logger->info('new identity registered', [
+        $this->logger->info('new email identity registered', [
             'user' => [
                 'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),

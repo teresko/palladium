@@ -95,6 +95,28 @@ class Search
     }
 
 
+    public function findOneTimeIdentityByNonce(string $nonce)
+    {
+        $identity = new Entity\OneTimeIdentity;
+        $identity->setNonce($nonce);
+
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+        $mapper->fetch($identity);
+
+        if ($identity->getId() === null) {
+            $this->logger->notice('identity not found', [
+                'input' => [
+                    'nonce' => $nonce,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
+
+        return $identity;
+    }
+
+
     /**
      * @param string $token
      * @param int $action

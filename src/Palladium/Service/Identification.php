@@ -286,4 +286,23 @@ class Identification
             ],
         ]);
     }
+
+
+    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, $key)
+    {
+        if ($identity->matchKey($key) === false) {
+            $this->logger->notice('wrong key', [
+                'input' => [
+                    'key' => md5($key),
+                ],
+                'user' => [
+                    'account' => $identity->getAccountId(),
+                    'identity' => $identity->getId(),
+                ],
+            ]);
+        }
+
+        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
+        $mapper->store($identity);
+    }
 }
