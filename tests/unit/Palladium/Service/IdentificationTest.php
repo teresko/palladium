@@ -260,21 +260,4 @@ final class IdentificationTest extends TestCase
         $instance = new Identification($factory, $logger);
         $instance->blockIdentity(new Entity\Identity);
     }
-
-
-    public function test_Logging_in_with_Password()
-    {
-        $this->expectException(PasswordMismatch::class);
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-
-        $affected = new Entity\EmailIdentity;
-        $affected->setAccountId(3);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
-
-        $instance = new Identification($factory, $logger);
-        $instance->loginWithPassword($affected, 'beta');
-    }
-
 }
