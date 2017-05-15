@@ -27,7 +27,7 @@ class EmailIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':now', time());
@@ -94,7 +94,7 @@ class EmailIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
         $statement->bindValue(':status', Entity\EmailIdentity::STATUS_NEW);
         $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());

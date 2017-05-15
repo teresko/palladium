@@ -10,15 +10,11 @@ class EmailIdentity extends Identity
     const HASH_ALGO = PASSWORD_BCRYPT;
     const HASH_COST = 12;
 
-    const MIN_LENGTH = 6;
-    const MAX_LENGTH = 128;
-
-
     private $emailAddress;
     private $password;
     private $hash;
 
-    protected $type = Identity::TYPE_PASSWORD;
+    protected $type = Identity::TYPE_EMAIL;
 
 
     public function setEmailAddress($emailAddress)

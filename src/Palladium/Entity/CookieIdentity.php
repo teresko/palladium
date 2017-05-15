@@ -10,7 +10,6 @@ class CookieIdentity extends Identity
     const SERIES_SIZE = 16;
     const KEY_SIZE = 32;
 
-
     private $series;
     private $key;
     private $hash;

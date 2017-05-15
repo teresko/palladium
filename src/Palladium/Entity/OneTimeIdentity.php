@@ -60,6 +60,12 @@ class OneTimeIdentity extends Identity
     }
 
 
+    public function matchKey($key)
+    {
+        return password_verify($key, $this->hash);
+    }
+
+
     /**
      * Assignes a new identification key and resets a the hash.
      *
@@ -76,6 +82,12 @@ class OneTimeIdentity extends Identity
 
         $this->key = (string) $key;
         $this->hash = $this->makeHash($key);
+    }
+
+
+    public function setHash($hash)
+    {
+        $this->hash = (string) $hash;
     }
 
     /**
