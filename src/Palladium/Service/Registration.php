@@ -75,6 +75,7 @@ class Registration
         $identity = new Entity\OneTimeIdentity;
 
         $identity->setAccountId($accountId);
+        $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->generateNewNonce();
         $identity->generateNewKey();
 

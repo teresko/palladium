@@ -100,7 +100,7 @@ class Search
         $identity = new Entity\OneTimeIdentity;
         $identity->setNonce($nonce);
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {

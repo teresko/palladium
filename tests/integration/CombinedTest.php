@@ -193,4 +193,30 @@ final class CombinedTest extends TestCase
         $cookie = $this->identification->loginWithPassword($identity, 'password');
         $this->assertSame(4, $cookie->getAccountId());
     }
+
+
+    public function test_Creating_One_Time_Use_Identity()
+    {
+        $identity = $this->registration->createOneTimeIdentity(4);
+        $this->assertSame(4, $identity->getAccountId());
+
+        self::$hold = [
+            'nonce' => $identity->getNonce(),
+            'key' => $identity->getKey(),
+        ];
+    }
+
+
+    /**
+     * @depends test_Creating_One_Time_Use_Identity
+     */
+    public function test_Using_the_One_Time_Identity()
+    {
+        $parts = self::$hold;
+
+        $identity = $this->search->findOneTimeIdentityByNonce($parts['nonce']);
+        $cookie = $this->identification->useOneTimeIdentity($identity, $parts['key']);
+
+        $this->assertSame(4, $cookie->getAccountId());
+    }
 }

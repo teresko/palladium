@@ -31,7 +31,7 @@ class OneTimeIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':nonce', $entity->getEmailAddress());
+        $statement->bindValue(':nonce', $entity->getNonce());
         $statement->bindValue(':type', $entity->getType());
 
         $statement->execute();
@@ -85,7 +85,7 @@ class OneTimeIdentity extends DataMapper
 
         $sql = "UPDATE {$this->table}
                    SET status = :status,
-                       used_on = :used,
+                       used_on = :used
                  WHERE identity_id = :id
                    AND status = {$status}";
 

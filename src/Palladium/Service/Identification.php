@@ -79,7 +79,7 @@ class Identification
     }
 
 
-    private function createCookieIdentity(Entity\EmailIdentity $identity)
+    private function createCookieIdentity(Entity\Identity $identity)
     {
         $cookie = new Entity\CookieIdentity;
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
@@ -304,5 +304,7 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
         $mapper->store($identity);
+
+        return $this->createCookieIdentity($identity);
     }
 }

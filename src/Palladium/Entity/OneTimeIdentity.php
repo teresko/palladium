@@ -35,7 +35,7 @@ class OneTimeIdentity extends Identity
     }
 
 
-    public function getFootprint()
+    public function getFingerprint()
     {
         return hash('sha384', $this->nonce);
     }
@@ -82,6 +82,12 @@ class OneTimeIdentity extends Identity
 
         $this->key = (string) $key;
         $this->hash = $this->makeHash($key);
+    }
+
+
+    public function getKey()
+    {
+        return $this->key;
     }
 
 
