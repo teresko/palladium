@@ -108,4 +108,25 @@ final class RegistrationTest extends TestCase
         $instance->verifyEmailIdentity($affected);
         $this->assertSame(Entity\Identity::STATUS_ACTIVE, $affected->getStatus());
     }
+
+
+    public function test_Creation_of_OneTime_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Registration(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(Entity\Identity::class, $instance->createOneTimeIdentity(3));
+    }
 }

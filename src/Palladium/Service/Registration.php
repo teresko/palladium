@@ -93,7 +93,6 @@ class Registration
     }
 
 
-
     private function prepareNewIdentity(Entity\EmailIdentity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_NEW);
