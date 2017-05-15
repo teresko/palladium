@@ -29,6 +29,7 @@ class Identity implements HasId
     const TYPE_ANY = null;
     const TYPE_PASSWORD = 1;
     const TYPE_COOKIE = 2;
+    const TYPE_ONETIME = 4;
 
 
     private $identityId;
