@@ -46,9 +46,8 @@ class OneTimeIdentity extends Identity
      */
     public function generateNewKey()
     {
-        $key = bin2hex(random_bytes(self::KEY_SIZE));
-        $this->key = $key;
-        $this->hash = $this->makeHash($key);
+        $this->key = bin2hex(random_bytes(self::KEY_SIZE));
+        $this->hash = $this->makeHash($this->key);
     }
 
 
