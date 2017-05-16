@@ -18,12 +18,18 @@ class OneTimeIdentity extends Identity
     protected $type = Identity::TYPE_ONETIME;
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function setNonce($nonce)
     {
         $this->nonce = (string) $nonce;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getNonce()
     {
         return $this->nonce;
@@ -36,6 +42,9 @@ class OneTimeIdentity extends Identity
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getFingerprint()
     {
         return hash('sha384', $this->nonce);
@@ -85,12 +94,18 @@ class OneTimeIdentity extends Identity
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getKey()
     {
         return $this->key;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function setHash($hash)
     {
         $this->hash = (string) $hash;
