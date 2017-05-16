@@ -13,6 +13,7 @@ use Palladium\Mapper;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\PasswordMismatch;
+use Palladium\Exception\KeyMismatch;
 
 /**
  * @covers Palladium\Service\Identification
@@ -260,4 +261,55 @@ final class IdentificationTest extends TestCase
         $instance = new Identification($factory, $logger);
         $instance->blockIdentity(new Entity\Identity);
     }
+
+
+    public function test_Use_of_One_Time_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $cookie = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $cookie->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\CookieIdentity::class => $cookie,
+            Mapper\OneTimeIdentity::class => $mapper,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+        $affected = new Entity\OneTimeIdentity;
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger);
+        $this->assertInstanceOf(
+            Entity\CookieIdentity::class,
+            $instance->useOneTimeIdentity($affected, 'alpha')
+        );
+    }
+
+
+    public function test_Failure_to_Use_One_Time_Identity()
+    {
+        $this->expectException(KeyMismatch::class);
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('notice');
+
+        $affected = new Entity\OneTimeIdentity;
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger);
+        $instance->useOneTimeIdentity($affected, 'wrong');
+    }
+
 }
