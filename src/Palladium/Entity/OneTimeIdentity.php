@@ -12,6 +12,7 @@ class OneTimeIdentity extends Identity
     const KEY_SIZE = 32;
 
     private $nonce;
+    private $key;
     private $hash;
 
     protected $type = Identity::TYPE_ONETIME;
