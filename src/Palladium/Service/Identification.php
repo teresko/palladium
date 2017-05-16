@@ -308,12 +308,7 @@ class Identification
         $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
         $mapper->store($identity);
 
-        $this->logger->info('one-time identity used', [
-            'user' => [
-                'account' => $identity->getAccountId(),
-                'identity' => $identity->getId(),
-            ],
-        ]);
+        $this->logExpectedBehaviour($identity, 'one-time identity used');
 
         return $this->createCookieIdentity($identity);
     }
