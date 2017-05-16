@@ -9,6 +9,7 @@ namespace Palladium\Service;
 use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\PasswordMismatch;
+use Palladium\Exception\KeyMismatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Contract\CanCreateMapper;
@@ -300,6 +301,8 @@ class Identification
                     'identity' => $identity->getId(),
                 ],
             ]);
+
+            throw new KeyMismatch;
         }
 
         $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
