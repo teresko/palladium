@@ -219,4 +219,17 @@ final class CombinedTest extends TestCase
 
         $this->assertSame(4, $cookie->getAccountId());
     }
+
+
+    /**
+     * @depends test_Using_the_One_Time_Identity
+     */
+    public function test_Failure_to_Use_Same_One_Time_Identity_Twice()
+    {
+        $parts = self::$hold;
+
+        $this->expectException(\Palladium\Exception\IdentityNotFound::class);
+
+        $identity = $this->search->findOneTimeIdentityByNonce($parts['nonce']);
+    }
 }

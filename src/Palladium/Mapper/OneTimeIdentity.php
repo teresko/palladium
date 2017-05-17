@@ -86,8 +86,7 @@ class OneTimeIdentity extends DataMapper
         $sql = "UPDATE {$this->table}
                    SET status = :status,
                        used_on = :used
-                 WHERE identity_id = :id
-                   AND status = {$status}";
+                 WHERE identity_id = :id";
 
         $statement = $this->connection->prepare($sql);
 

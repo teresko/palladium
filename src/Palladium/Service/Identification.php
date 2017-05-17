@@ -305,6 +305,8 @@ class Identification
             throw new KeyMismatch;
         }
 
+        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
+
         $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
         $mapper->store($identity);
 
