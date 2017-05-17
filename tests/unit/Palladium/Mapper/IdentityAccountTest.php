@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use PDO;
 use PDOStatement;
 use Palladium\Entity;
-use Mock\Statement;
 
 /**
  * @covers Palladium\Mapper\IdentityAccount
