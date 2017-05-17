@@ -81,8 +81,6 @@ class OneTimeIdentity extends DataMapper
 
     private function updateIdentity(Entity\OneTimeIdentity $entity)
     {
-        $status = Entity\Identity::STATUS_DISCARDED;
-
         $sql = "UPDATE {$this->table}
                    SET status = :status,
                        used_on = :used
