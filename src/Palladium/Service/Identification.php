@@ -155,7 +155,7 @@ class Identification
 
     private function changeIdentityStatus(Entity\Identity $identity, int $status)
     {
-        $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
+        $identity->setStatus($status);
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->store($identity);
     }
