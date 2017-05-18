@@ -26,8 +26,8 @@ class Identification
     private $cookieLifespan;
 
     /**
-     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
-     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
      */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN)
@@ -107,8 +107,6 @@ class Identification
      *
      * @throws \Palladium\Exception\CompromisedCookie if key does not match
      * @throws \Palladium\Exception\IdentityExpired if cookie is too old
-     *
-     * @return Palladium\Entity\CookieIdentity
      */
     public function loginWithCookie(Entity\CookieIdentity $identity, $key): Entity\CookieIdentity
     {
@@ -267,6 +265,9 @@ class Identification
     }
 
 
+    /**
+     * @param string $message logged text
+     */
     private function logExpectedBehaviour(Entity\Identity $identity, $message)
     {
         $this->logger->info($message, [
@@ -278,7 +279,7 @@ class Identification
     }
 
 
-    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, $key): Entity\CookieIdentity
+    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, string $key): Entity\CookieIdentity
     {
         if ($identity->matchKey($key) === false) {
             $this->logger->notice('wrong key', [
@@ -295,7 +296,6 @@ class Identification
         }
 
         $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
-
         $this->logExpectedBehaviour($identity, 'one-time identity used');
 
         return $this->createCookieIdentity($identity);
