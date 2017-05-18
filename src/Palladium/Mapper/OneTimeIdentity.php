@@ -8,7 +8,6 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
-use PDOStatement;
 
 class OneTimeIdentity extends DataMapper
 {

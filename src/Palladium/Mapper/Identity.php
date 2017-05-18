@@ -46,8 +46,8 @@ class Identity extends DataMapper
 
 
     /**
-    * @param Entity\Identity $entity
-    */
+     * @param Entity\Identity $entity
+     */
     public function fetch(Entity\Identity $entity)
 
     {
