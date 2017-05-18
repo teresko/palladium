@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Palladium\Contract\CanCreateMapper;
 
-use Palladium\Exception\IdentityDuplicated;
+use Palladium\Exception\IdentityConflict;
 use Palladium\Exception\AccountNotFound;
 use Palladium\Exception\TokenNotFound;
 use Palladium\Entity;
@@ -21,7 +21,7 @@ final class RegistrationTest extends TestCase
 
     public function test_Failure_of_Creating_Duplicate_Email_Identity()
     {
-        $this->expectException(IdentityDuplicated::class);
+        $this->expectException(IdentityConflict::class);
 
         $mapper = $this
                     ->getMockBuilder(Mapper\EmailIdentity::class)
