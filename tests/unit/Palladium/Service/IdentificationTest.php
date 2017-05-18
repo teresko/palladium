@@ -74,14 +74,14 @@ final class IdentificationTest extends TestCase
     {
         $this->expectException(IdentityExpired::class);
 
-        $cookie = $this
-                    ->getMockBuilder(Mapper\CookieIdentity::class)
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $cookie->expects($this->once())->method('store');
+        $mapper->expects($this->once())->method('store');
 
         $factory = new Factory([
-            Mapper\CookieIdentity::class => $cookie,
+            Mapper\Identity::class => $mapper,
         ]);
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
@@ -125,14 +125,14 @@ final class IdentificationTest extends TestCase
     {
         $this->expectException(CompromisedCookie::class);
 
-        $cookie = $this
-                    ->getMockBuilder(Mapper\CookieIdentity::class)
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $cookie->expects($this->once())->method('store');
+        $mapper->expects($this->once())->method('store');
 
         $factory = new Factory([
-            Mapper\CookieIdentity::class => $cookie,
+            Mapper\Identity::class => $mapper,
         ]);
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -150,14 +150,14 @@ final class IdentificationTest extends TestCase
 
     public function test_Logout_of_Identity()
     {
-        $cookie = $this
-                    ->getMockBuilder(Mapper\CookieIdentity::class)
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $cookie->expects($this->once())->method('store');
+        $mapper->expects($this->once())->method('store');
 
         $factory = new Factory([
-            Mapper\CookieIdentity::class => $cookie,
+            Mapper\Identity::class => $mapper,
         ]);
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -266,7 +266,7 @@ final class IdentificationTest extends TestCase
     public function test_Use_of_One_Time_Identity()
     {
         $mapper = $this
-                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->getMockBuilder(Mapper\Identity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper->expects($this->once())->method('store');
@@ -279,7 +279,7 @@ final class IdentificationTest extends TestCase
 
         $factory = new Factory([
             Mapper\CookieIdentity::class => $cookie,
-            Mapper\OneTimeIdentity::class => $mapper,
+            Mapper\Identity::class => $mapper,
         ]);
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();

@@ -136,11 +136,7 @@ class Identification
         $this->checkCookieExpireTime($identity);
         $this->checkCookieKey($identity, $key);
 
-        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
-
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
-
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
         $this->logExpectedBehaviour($identity, 'logout successful');
     }
 
@@ -148,15 +144,20 @@ class Identification
     private function checkCookieExpireTime(Entity\CookieIdentity $identity)
     {
         if ($identity->getExpiresOn() < time()) {
-            $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
-
             $this->logger->info('cookie expired', $this->assembleCookieLogDetails($identity));
 
-            $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-            $mapper->store($identity);
+            $this->changeIdentityStatus($identity, Entity\Identity::STATUS_EXPIRED);
 
             throw new IdentityExpired;
         }
+    }
+
+
+    private function changeIdentityStatus(Entity\Identity $identity, int $status)
+    {
+        $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->store($identity);
     }
 
 
@@ -173,11 +174,7 @@ class Identification
             return;
         }
 
-        $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
-
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
-
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_BLOCKED);
         $this->logger->warning('compromised cookie', $this->assembleCookieLogDetails($identity));
 
         throw new CompromisedCookie;
@@ -297,10 +294,7 @@ class Identification
             throw new KeyMismatch;
         }
 
-        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
-
-        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
-        $mapper->store($identity);
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
 
         $this->logExpectedBehaviour($identity, 'one-time identity used');
 
