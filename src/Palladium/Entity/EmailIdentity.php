@@ -32,7 +32,7 @@ class EmailIdentity extends Identity
     }
 
 
-    public function getFingerprint()
+    public function getFingerprint(): string
     {
         return hash('sha384', $this->emailAddress);
     }
@@ -54,11 +54,9 @@ class EmailIdentity extends Identity
     }
 
 
-    private function createHash($password)
+    private function createHash($password): string
     {
-        $hash = password_hash($password, self::HASH_ALGO, ['cost' => self::HASH_COST]);
-
-        return $hash;
+        return password_hash($password, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }
 
 
@@ -72,13 +70,13 @@ class EmailIdentity extends Identity
     }
 
 
-    public function matchPassword($password)
+    public function matchPassword($password): bool
     {
         return password_verify($password, $this->hash);
     }
 
 
-    public function isOldHash()
+    public function isOldHash(): bool
     {
         return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }

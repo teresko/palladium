@@ -38,12 +38,7 @@ class Identification
     }
 
 
-    /**
-     * @param string $password
-     *
-     * @return Palladium\Entity\CookieIdentity
-     */
-    public function loginWithPassword(Entity\EmailIdentity $identity, $password)
+    public function loginWithPassword(Entity\EmailIdentity $identity, string $password): Entity\CookieIdentity
     {
         if ($identity->matchPassword($password) === false) {
             $this->logWrongPasswordNotice($identity, [
@@ -80,7 +75,7 @@ class Identification
     }
 
 
-    private function createCookieIdentity(Entity\Identity $identity)
+    private function createCookieIdentity(Entity\Identity $identity): Entity\CookieIdentity
     {
         $cookie = new Entity\CookieIdentity;
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
@@ -115,7 +110,7 @@ class Identification
      *
      * @return Palladium\Entity\CookieIdentity
      */
-    public function loginWithCookie(Entity\CookieIdentity $identity, $key)
+    public function loginWithCookie(Entity\CookieIdentity $identity, $key): Entity\CookieIdentity
     {
         $this->checkCookieExpireTime($identity);
         $this->checkCookieKey($identity, $key);
@@ -189,10 +184,7 @@ class Identification
     }
 
 
-    /**
-     * @return array
-     */
-    private function assembleCookieLogDetails(Entity\CookieIdentity $identity)
+    private function assembleCookieLogDetails(Entity\CookieIdentity $identity): array
     {
         return [
             'input' => [
@@ -289,7 +281,7 @@ class Identification
     }
 
 
-    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, $key)
+    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, $key): Entity\CookieIdentity
     {
         if ($identity->matchKey($key) === false) {
             $this->logger->notice('wrong key', [

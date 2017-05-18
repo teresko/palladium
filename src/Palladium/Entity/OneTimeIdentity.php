@@ -45,7 +45,7 @@ class OneTimeIdentity extends Identity
     /**
      * @codeCoverageIgnore
      */
-    public function getFingerprint()
+    public function getFingerprint(): string
     {
         return hash('sha384', $this->nonce);
     }
@@ -61,15 +61,13 @@ class OneTimeIdentity extends Identity
     }
 
 
-    private function makeHash($key)
+    private function makeHash($key): string
     {
-        $hash = password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
-
-        return $hash;
+        return password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }
 
 
-    public function matchKey($key)
+    public function matchKey($key): bool
     {
         return password_verify($key, $this->hash);
     }

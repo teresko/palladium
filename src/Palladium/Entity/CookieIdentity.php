@@ -39,10 +39,8 @@ class CookieIdentity extends Identity
 
     /**
      * Produces a hash from series to obscure it for storage.
-     *
-     * @return string
      */
-    public function getFingerprint()
+    public function getFingerprint(): string
     {
         return hash('sha384', $this->series);
     }
@@ -75,7 +73,7 @@ class CookieIdentity extends Identity
 
     /**
      * @codeCoverageIgnore
-     * @return string
+     * @return string|null
      */
     public function getKey()
     {
@@ -103,7 +101,7 @@ class CookieIdentity extends Identity
     }
 
 
-    private function makeHash($key)
+    private function makeHash($key): string
     {
         return hash('sha384', $key);
     }
@@ -123,7 +121,7 @@ class CookieIdentity extends Identity
     }
 
 
-    public function matchKey($key)
+    public function matchKey($key): bool
     {
         return  $this->makeHash($key) === $this->hash;
     }

@@ -16,7 +16,7 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    protected function buildEntity()
+    protected function buildEntity(): Identity
     {
         return new Identity;
     }
