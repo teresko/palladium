@@ -61,12 +61,18 @@ class OneTimeIdentity extends Identity
     }
 
 
+    /**
+     * @param string $key
+     */
     private function makeHash($key): string
     {
         return password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }
 
 
+    /**
+     * @param string $key
+     */
     public function matchKey($key): bool
     {
         return password_verify($key, $this->hash);
@@ -103,6 +109,7 @@ class OneTimeIdentity extends Identity
 
     /**
      * @codeCoverageIgnore
+     * @param string $key
      */
     public function setHash($hash)
     {

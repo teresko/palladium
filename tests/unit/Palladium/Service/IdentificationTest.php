@@ -44,7 +44,6 @@ final class IdentificationTest extends TestCase
                     ->disableOriginalConstructor()
                     ->getMock();
         $basic->expects($this->any())->method('store');
-        // $mapper->expects($this->once())->method('exists')->will($this->returnValue(false));
 
         $cookie = $this
                     ->getMockBuilder(Mapper\CookieIdentity::class)
