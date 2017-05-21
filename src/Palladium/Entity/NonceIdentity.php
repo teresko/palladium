@@ -2,7 +2,7 @@
 
 namespace Palladium\Entity;
 
-class OneTimeIdentity extends Identity
+class NonceIdentity extends Identity
 {
 
     const HASH_ALGO = PASSWORD_BCRYPT;
@@ -11,34 +11,34 @@ class OneTimeIdentity extends Identity
     const NONCE_SIZE = 16;
     const KEY_SIZE = 32;
 
-    private $nonce;
+    private $identifier;
     private $key;
     private $hash;
 
-    protected $type = Identity::TYPE_ONETIME;
+    protected $type = Identity::TYPE_NONCE;
 
 
     /**
      * @codeCoverageIgnore
      */
-    public function setNonce($nonce)
+    public function setIdentifier($identifier)
     {
-        $this->nonce = (string) $nonce;
+        $this->identifier = (string) $identifier;
     }
 
 
     /**
      * @codeCoverageIgnore
      */
-    public function getNonce()
+    public function getIdentifier()
     {
-        return $this->nonce;
+        return $this->identifier;
     }
 
 
     public function generateNewNonce()
     {
-        $this->nonce = bin2hex(random_bytes(self::NONCE_SIZE));
+        $this->identifier = bin2hex(random_bytes(self::NONCE_SIZE));
     }
 
 
@@ -47,7 +47,7 @@ class OneTimeIdentity extends Identity
      */
     public function getFingerprint(): string
     {
-        return hash('sha384', $this->nonce);
+        return hash('sha384', $this->identifier);
     }
 
 

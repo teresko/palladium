@@ -8,9 +8,9 @@ use PDOStatement;
 use Palladium\Entity;
 
 /**
- * @covers Palladium\Mapper\OneTimeIdentity
+ * @covers Palladium\Mapper\NonceIdentity
  */
-final class OneTimeIdentityTest extends TestCase
+final class NonceIdentityTest extends TestCase
 {
 
     public function test_Creating_One_Time_Identity()
@@ -32,10 +32,10 @@ final class OneTimeIdentityTest extends TestCase
         $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
 
 
-        $identity = new Entity\OneTimeIdentity;
+        $identity = new Entity\NonceIdentity;
         $identity->setAccountId(3);
 
-        $instance = new OneTimeIdentity($pdo, 'table');
+        $instance = new NonceIdentity($pdo, 'table');
         $instance->store($identity);
     }
 
@@ -61,11 +61,11 @@ final class OneTimeIdentityTest extends TestCase
         $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
 
 
-        $identity = new Entity\OneTimeIdentity;
+        $identity = new Entity\NonceIdentity;
         $identity->setId(82);
         $identity->setStatus(9);
 
-        $instance = new OneTimeIdentity($pdo, 'table');
+        $instance = new NonceIdentity($pdo, 'table');
         $instance->store($identity);
     }
 }

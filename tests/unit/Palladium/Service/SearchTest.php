@@ -301,7 +301,7 @@ final class SearchTest extends TestCase
     public function test_Looking_for_OneTime_Identity()
     {
         $mapper = $this
-                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->getMockBuilder(Mapper\NonceIdentity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper
@@ -321,8 +321,8 @@ final class SearchTest extends TestCase
         );
 
         $this->assertInstanceOf(
-            Entity\OneTimeIdentity::class,
-            $instance->findOneTimeIdentityByNonce('qwerty')
+            Entity\NonceIdentity::class,
+            $instance->findNonceIdentityByNonce('qwerty')
         );
     }
 
@@ -332,7 +332,7 @@ final class SearchTest extends TestCase
         $this->expectException(IdentityNotFound::class);
 
         $mapper = $this
-                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->getMockBuilder(Mapper\NonceIdentity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper
@@ -350,8 +350,8 @@ final class SearchTest extends TestCase
         );
 
         $this->assertInstanceOf(
-            Entity\OneTimeIdentity::class,
-            $instance->findOneTimeIdentityByNonce('qwerty')
+            Entity\NonceIdentity::class,
+            $instance->findNonceIdentityByNonce('qwerty')
         );
     }
 }

@@ -6,23 +6,23 @@ use PHPUnit\Framework\TestCase;
 use Palladium\Exception\InvalidCookieToken;
 
 /**
- * @covers Palladium\Entity\OneTimeIdentity
+ * @covers Palladium\Entity\NonceIdentity
  */
-final class OneTimeIdentityTest extends TestCase
+final class NonceIdentityTest extends TestCase
 {
 
     public function  test_Gerneration_of_Nonce()
     {
-        $instance = new OneTimeIdentity;
-        $this->assertNull($instance->getNonce());
+        $instance = new NonceIdentity;
+        $this->assertNull($instance->getIdentifier());
         $instance->generateNewNonce();
-        $this->assertNotNull($instance->getNonce());
+        $this->assertNotNull($instance->getIdentifier());
     }
 
 
     public function  test_Gerneration_of_Key()
     {
-        $instance = new OneTimeIdentity;
+        $instance = new NonceIdentity;
         $this->assertNull($instance->getKey());
         $instance->generateNewKey();
         $this->assertNotNull($instance->getKey());
@@ -34,7 +34,7 @@ final class OneTimeIdentityTest extends TestCase
      */
     public function test_Setting_of_a_Key($input, $expected)
     {
-        $instance = new OneTimeIdentity;
+        $instance = new NonceIdentity;
         $instance->setKey($input);
         $this->assertSame($expected, $instance->getKey());
     }
@@ -65,7 +65,7 @@ final class OneTimeIdentityTest extends TestCase
 
     public function test_Key_Matching()
     {
-        $instance = new OneTimeIdentity;
+        $instance = new NonceIdentity;
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $this->assertTrue($instance->matchKey('alpha'));

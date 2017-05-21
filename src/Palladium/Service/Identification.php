@@ -279,7 +279,7 @@ class Identification
     }
 
 
-    public function useOneTimeIdentity(Entity\OneTimeIdentity $identity, string $key): Entity\CookieIdentity
+    public function useNonceIdentity(Entity\NonceIdentity $identity, string $key): Entity\CookieIdentity
     {
         if ($identity->matchKey($key) === false) {
             $this->logger->notice('wrong key', [

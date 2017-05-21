@@ -70,16 +70,16 @@ class Registration
     }
 
 
-    public function createOneTimeIdentity($accountId)
+    public function createNonceIdentity($accountId)
     {
-        $identity = new Entity\OneTimeIdentity;
+        $identity = new Entity\NonceIdentity;
 
         $identity->setAccountId($accountId);
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->generateNewNonce();
         $identity->generateNewKey();
 
-        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
         $mapper->store($identity);
 
         $this->logger->info('new single-use identity created', [

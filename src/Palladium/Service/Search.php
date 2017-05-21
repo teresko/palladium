@@ -95,12 +95,12 @@ class Search
     }
 
 
-    public function findOneTimeIdentityByNonce(string $nonce)
+    public function findNonceIdentityByNonce(string $nonce)
     {
-        $identity = new Entity\OneTimeIdentity;
-        $identity->setNonce($nonce);
+        $identity = new Entity\NonceIdentity;
+        $identity->setIdentifier($nonce);
 
-        $mapper = $this->mapperFactory->create(Mapper\OneTimeIdentity::class);
+        $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {

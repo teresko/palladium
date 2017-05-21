@@ -113,7 +113,7 @@ final class RegistrationTest extends TestCase
     public function test_Creation_of_OneTime_Identity()
     {
         $mapper = $this
-                    ->getMockBuilder(Mapper\OneTimeIdentity::class)
+                    ->getMockBuilder(Mapper\NonceIdentity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
         $mapper->expects($this->once())->method('store');
@@ -127,6 +127,6 @@ final class RegistrationTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $this->assertInstanceOf(Entity\Identity::class, $instance->createOneTimeIdentity(3));
+        $this->assertInstanceOf(Entity\Identity::class, $instance->createNonceIdentity(3));
     }
 }

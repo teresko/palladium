@@ -284,13 +284,13 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('info');
 
-        $affected = new Entity\OneTimeIdentity;
+        $affected = new Entity\NonceIdentity;
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $instance = new Identification($factory, $logger);
         $this->assertInstanceOf(
             Entity\CookieIdentity::class,
-            $instance->useOneTimeIdentity($affected, 'alpha')
+            $instance->useNonceIdentity($affected, 'alpha')
         );
     }
 
@@ -304,11 +304,11 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('notice');
 
-        $affected = new Entity\OneTimeIdentity;
+        $affected = new Entity\NonceIdentity;
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $instance = new Identification($factory, $logger);
-        $instance->useOneTimeIdentity($affected, 'wrong');
+        $instance->useNonceIdentity($affected, 'wrong');
     }
 
 }

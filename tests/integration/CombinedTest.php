@@ -197,11 +197,11 @@ final class CombinedTest extends TestCase
 
     public function test_Creating_One_Time_Use_Identity()
     {
-        $identity = $this->registration->createOneTimeIdentity(4);
+        $identity = $this->registration->createNonceIdentity(4);
         $this->assertSame(4, $identity->getAccountId());
 
         self::$hold = [
-            'nonce' => $identity->getNonce(),
+            'identifier' => $identity->getIdentifier(),
             'key' => $identity->getKey(),
         ];
     }
@@ -214,8 +214,8 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findOneTimeIdentityByNonce($parts['nonce']);
-        $cookie = $this->identification->useOneTimeIdentity($identity, $parts['key']);
+        $identity = $this->search->findNonceIdentityByNonce($parts['identifier']);
+        $cookie = $this->identification->useNonceIdentity($identity, $parts['key']);
 
         $this->assertSame(4, $cookie->getAccountId());
     }
@@ -230,6 +230,6 @@ final class CombinedTest extends TestCase
 
         $this->expectException(\Palladium\Exception\IdentityNotFound::class);
 
-        $identity = $this->search->findOneTimeIdentityByNonce($parts['nonce']);
+        $identity = $this->search->findNonceIdentityByNonce($parts['identifier']);
     }
 }

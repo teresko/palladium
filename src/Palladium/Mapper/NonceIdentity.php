@@ -9,13 +9,13 @@ namespace Palladium\Mapper;
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 
-class OneTimeIdentity extends DataMapper
+class NonceIdentity extends DataMapper
 {
 
     /**
-     * @param Entity\OneTimeIdentity $entity
+     * @param Entity\NonceIdentity $entity
      */
-    public function fetch(Entity\OneTimeIdentity $entity)
+    public function fetch(Entity\NonceIdentity $entity)
     {
         $status = Entity\Identity::STATUS_ACTIVE;
 
@@ -30,7 +30,7 @@ class OneTimeIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':nonce', $entity->getNonce());
+        $statement->bindValue(':nonce', $entity->getIdentifier());
         $statement->bindValue(':type', $entity->getType());
 
         $statement->execute();
@@ -44,9 +44,9 @@ class OneTimeIdentity extends DataMapper
 
 
     /**
-     * @param Entity\OneTimeIdentity $entity
+     * @param Entity\NonceIdentity $entity
      */
-    public function store(Entity\OneTimeIdentity $entity)
+    public function store(Entity\NonceIdentity $entity)
     {
         if ($entity->getId() === null) {
             $this->createIdentity($entity);
@@ -57,7 +57,7 @@ class OneTimeIdentity extends DataMapper
     }
 
 
-    private function createIdentity(Entity\OneTimeIdentity $entity)
+    private function createIdentity(Entity\NonceIdentity $entity)
     {
         $sql = "INSERT INTO {$this->table}
                        (account_id, type, status, identifier, fingerprint, hash, created_on, expires_on)
@@ -68,7 +68,7 @@ class OneTimeIdentity extends DataMapper
         $statement->bindValue(':account', $entity->getAccountId());
         $statement->bindValue(':type', $entity->getType());
         $statement->bindValue(':status', $entity->getStatus());
-        $statement->bindValue(':identifier', $entity->getNonce());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':created', time());
@@ -78,7 +78,7 @@ class OneTimeIdentity extends DataMapper
     }
 
 
-    private function updateIdentity(Entity\OneTimeIdentity $entity)
+    private function updateIdentity(Entity\NonceIdentity $entity)
     {
         $sql = "UPDATE {$this->table}
                    SET status = :status,
