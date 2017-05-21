@@ -26,11 +26,11 @@ class NonceIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND status = {$status}
-                   AND identifier = :nonce";
+                   AND identifier = :identifier";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':nonce', $entity->getIdentifier());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':type', $entity->getType());
 
         $statement->execute();

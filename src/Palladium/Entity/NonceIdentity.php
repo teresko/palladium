@@ -109,7 +109,7 @@ class NonceIdentity extends Identity
 
     /**
      * @codeCoverageIgnore
-     * @param string $key
+     * @param string $hash
      */
     public function setHash($hash)
     {
