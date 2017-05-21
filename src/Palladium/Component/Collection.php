@@ -15,7 +15,7 @@ use Palladium\Contract\HasId;
 abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 {
 
-    abstract protected function buildEntity();
+    abstract protected function buildEntity(): HasId;
 
     private $pool = [];
     private $indexed = [];
