@@ -23,6 +23,12 @@ Palladium does not restrict you to any specific approach of defining user accoun
 
 In context of this library, an `Identity` is a named resource, that you can claim to own by providing a secret, which has been associated with this identity. At any given moment a user account can have multiple active identities (same account can have multiple ways to log in). And you have an ability to deactivate any specific identity or all identities, that have been associated with a specific&nbsp;account.
 
+The current version of the library contains 3 different identity types:
+
+ - **EmailIdentity**: your basic form of email + password authentication approach
+ - **NonceIdentity**: single-use authentication
+ - **CookieIdentity**: used for "relogin" and always contains a parent identity's id (either one-time or email)
+
 ## Installation
 
 You can add the library to your project using composer with following command:
@@ -74,7 +80,7 @@ In every other example, where you see `$factory` variable used, you can assume, 
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
 $identity = $registration->createEmailIdentity('foo@bar.com', 'password');
-$registration->bindAccountToIdentity($account, $identity);
+$registration->bindAccountToIdentity($accountId, $identity);
 ```
 
 If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
@@ -109,7 +115,31 @@ $cookie = $identification->loginWithPassword($identity, $password);
 
 If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
-In case, if password does not match, the `loginWithPassword()` method will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
+In case, if password does not match, the `loginWithPassword()` method will throw [`PasswordMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordMismatch.php) exception.
+
+#### Creation of new single-use login
+
+```
+<?php
+
+$identity = $this->registration->createNonceIdentity($accountId);
+```
+
+This will create a new instance of `NonceIdentity`. To use it for login, you will need values in `NonceIdentity::getIdentifier()` and `NonceIdentity::getKey()`, where the identifier will be used to locate the nonce identity and key will be used to verify.
+
+#### Login with nonce
+
+```
+<?php
+
+$identity = $this->search->findNonceIdentityByNonce($identifier);
+$cookie = $this->identification->useNonceIdentity($identity, $key);
+```
+
+If there is no matching identity with given email address found, the `findNonceIdentityByNonce()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+
+In case, if password does not match, the `useNonceIdentity()` method will throw [`KeyMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/KeyMismatch.php) exception.
+
 
 #### Login using cookie
 
@@ -202,7 +232,7 @@ $identification->changePassword($identity, $oldPassword, $newPassword);
 
 If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
-In case, if the password does not match, the `changePassword()` method will throw [`PasswordNotMatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordNotMatch.php) exception.
+In case, if the password does not match, the `changePassword()` method will throw [`PasswordMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordMismatch.php) exception.
 
 #### Logging out identities in bulk
 
