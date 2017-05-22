@@ -286,6 +286,7 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\NonceIdentity;
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setExpiresOn(time() + 1000);
 
         $instance = new Identification($factory, $logger);
         $this->assertInstanceOf(
@@ -295,7 +296,32 @@ final class IdentificationTest extends TestCase
     }
 
 
-    public function test_Failure_to_Use_One_Time_Identity()
+    public function test_Use_of_Expired_One_Time_Identity()
+    {
+        $this->expectException(IdentityExpired::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\Identity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper->expects($this->once())->method('store');
+
+        $factory = new Factory([
+            Mapper\Identity::class => $mapper,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+        $affected = new Entity\NonceIdentity;
+        $affected->setExpiresOn(1000);
+
+        $instance = new Identification($factory, $logger);
+        $instance->useNonceIdentity($affected, 'wrong');
+    }
+
+
+    public function test_Failure_to_Match_Key_of_One_Time_Identity()
     {
         $this->expectException(KeyMismatch::class);
 
@@ -306,6 +332,7 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\NonceIdentity;
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setExpiresOn(time() + 1000);
 
         $instance = new Identification($factory, $logger);
         $instance->useNonceIdentity($affected, 'wrong');

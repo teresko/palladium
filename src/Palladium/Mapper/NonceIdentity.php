@@ -17,20 +17,20 @@ class NonceIdentity extends DataMapper
      */
     public function fetch(Entity\NonceIdentity $entity)
     {
-        $status = Entity\Identity::STATUS_ACTIVE;
-
         $sql = "SELECT identity_id      AS id,
                        account_id       AS accountId,
                        hash             AS hash,
-                       status           AS status
+                       status           AS status,
+                       expires_on       AS expiresOn
                   FROM {$this->table}
                  WHERE type = :type
-                   AND status = {$status}
+                   AND status = :status
                    AND identifier = :identifier";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':status', Entity\Identity::STATUS_ACTIVE);
         $statement->bindValue(':type', $entity->getType());
 
         $statement->execute();

@@ -110,7 +110,7 @@ class Identification
      */
     public function loginWithCookie(Entity\CookieIdentity $identity, $key): Entity\CookieIdentity
     {
-        $this->checkCookieExpireTime($identity);
+        $this->checkIdentityExpireTime($identity, $this->assembleCookieLogDetails($identity));
         $this->checkCookieKey($identity, $key);
 
         $identity->generateNewKey();
@@ -131,7 +131,7 @@ class Identification
      */
     public function logout(Entity\CookieIdentity $identity, $key)
     {
-        $this->checkCookieExpireTime($identity);
+        $this->checkIdentityExpireTime($identity, $this->assembleCookieLogDetails($identity));
         $this->checkCookieKey($identity, $key);
 
         $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
@@ -139,10 +139,10 @@ class Identification
     }
 
 
-    private function checkCookieExpireTime(Entity\CookieIdentity $identity)
+    private function checkIdentityExpireTime(Entity\Identity $identity, $details)
     {
         if ($identity->getExpiresOn() < time()) {
-            $this->logger->info('cookie expired', $this->assembleCookieLogDetails($identity));
+            $this->logger->info('identity expired', $details);
 
             $this->changeIdentityStatus($identity, Entity\Identity::STATUS_EXPIRED);
 
@@ -185,7 +185,7 @@ class Identification
             'input' => [
                 'account' => $identity->getAccountId(),
                 'series' => $identity->getSeries(),
-                'key' => $identity->getKey(),
+                'key' => md5($identity->getKey()),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),
@@ -281,17 +281,10 @@ class Identification
 
     public function useNonceIdentity(Entity\NonceIdentity $identity, string $key): Entity\CookieIdentity
     {
-        if ($identity->matchKey($key) === false) {
-            $this->logger->notice('wrong key', [
-                'input' => [
-                    'key' => md5($key),
-                ],
-                'user' => [
-                    'account' => $identity->getAccountId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
+        $this->checkIdentityExpireTime($identity, $this->assembleNonceLogDetails($identity));
 
+        if ($identity->matchKey($key) === false) {
+            $this->logger->notice('wrong key', $this->assembleNonceLogDetails($identity));
             throw new KeyMismatch;
         }
 
@@ -300,4 +293,20 @@ class Identification
 
         return $this->createCookieIdentity($identity);
     }
+
+
+    private function assembleNonceLogDetails(Entity\NonceIdentity $identity): array
+    {
+        return [
+            'input' => [
+                'identifier' => $identity->getIdentifier(),
+                'key' => md5($identity->getKey()),
+            ],
+            'user' => [
+                'account' => $identity->getAccountId(),
+                'identity' => $identity->getId(),
+            ],
+        ];
+    }
+
 }

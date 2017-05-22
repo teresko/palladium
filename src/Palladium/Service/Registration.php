@@ -18,37 +18,36 @@ class Registration
 {
 
     const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
+    const DEFAULT_NONCE_LIFESPAN = 300; // 5 minutes
 
     private $mapperFactory;
     private $logger;
 
-    private $tokenLifespan;
-
     /**
      * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
-     * @param int $tokenLifespan Lifespan of the email verification token in seconds
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
-        $this->tokenLifespan = $tokenLifespan;
     }
 
 
     /**
      * @param string $emailAddress
      * @param string $password
+     * @param int $tokenLifespan
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function createEmailIdentity(string $emailAddress, string $password)
+    public function createEmailIdentity(string $emailAddress, string $password, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         $identity = new Entity\EmailIdentity;
 
         $identity->setEmailAddress($emailAddress);
         $identity->setPassword($password);
+        $identity->setTokenEndOfLife(time() + $tokenLifespan);
 
         $this->prepareNewIdentity($identity);
 
@@ -70,11 +69,12 @@ class Registration
     }
 
 
-    public function createNonceIdentity($accountId)
+    public function createNonceIdentity($accountId, $identityLifespan = self::DEFAULT_NONCE_LIFESPAN)
     {
         $identity = new Entity\NonceIdentity;
 
         $identity->setAccountId($accountId);
+        $identity->setExpiresOn(time() + $identityLifespan);
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->generateNewNonce();
         $identity->generateNewKey();
@@ -96,10 +96,8 @@ class Registration
     private function prepareNewIdentity(Entity\EmailIdentity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_NEW);
-
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_VERIFY);
-        $identity->setTokenEndOfLife(time() + $this->tokenLifespan);
     }
 
 
