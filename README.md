@@ -55,8 +55,6 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
 
 In the constructor of `Identification` service there is also an optional third parameter: lifespan of the cookie (in seconds). It defaults to 4 hours.
 
-Also both `Registration` service and `Recovery` service have an optional third parameter in their constructors: token lifetimes (in seconds). They are for email verification and password recovery tokens, respectively. Both of them default to 8 hours.
-
 
 #### Setting up mapper factory
 
@@ -86,6 +84,19 @@ $registration->bindAccountToIdentity($accountId, $identity);
 If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
 
 The `createEmailIdentity()` method can throw  [`IdentityConflict`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityConflict.php) exception, if email has already used for a another&nbsp;identity.
+
+The `createEmailIdentity()` method was an optional third parameter, that defines the lifespan on the email verification token in seconds. When applied, the previous example looks as following:
+
+```php
+<?php
+
+$registration = new \Palladium\Service\Registration($factory, $logger);
+
+$identity = $registration->createEmailIdentity('foo@bar.com', 'password', 3600);
+$registration->bindAccountToIdentity($accountId, $identity);
+```
+
+This will make the verification token usable for 1 hour after this user's identity has been registered. After that given time passes, you won't be able to find this identity using the `findEmailIdentityByToken()` in the `Search` service.
 
 #### Verification of email identity
 
@@ -119,7 +130,7 @@ In case, if password does not match, the `loginWithPassword()` method will throw
 
 #### Creation of new single-use login
 
-```
+```php
 <?php
 
 $identity = $this->registration->createNonceIdentity($accountId);
@@ -127,9 +138,19 @@ $identity = $this->registration->createNonceIdentity($accountId);
 
 This will create a new instance of `NonceIdentity`. To use it for login, you will need values in `NonceIdentity::getIdentifier()` and `NonceIdentity::getKey()`, where the identifier will be used to locate the nonce identity and key will be used to verify.
 
+The `createNonceIdentity()` method was an optional second parameter, that defines the lifespan this single-use identity in seconds. When applied, the previous example looks as following:
+
+```php
+<?php
+
+$identity = $this->registration->createNonceIdentity($accountId, 600);
+```
+
+This will make the single-use identity usable for 10 minutes after its creation. After the allowed time has passed, passing this identity in `useNonceIdentity()` method of `Identification` will result in [`IdentityExpired`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityExpired.php) exception being thrown.
+
 #### Login with nonce
 
-```
+```php
 <?php
 
 $identity = $this->search->findNonceIdentityByNonce($identifier);
@@ -204,6 +225,20 @@ If there is no matching identity with given email address found, the `findEmailI
 
 When `markForReset()` is called, it must be provided with an email identity, that has already been verified (otherwise, it has a potential to leak user's private information from your application). If that is not the case, the method will throw [`IdentityNotVerified`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotVerified.php) exception.
 
+The `markForReset()` method was an optional second parameter, that defines the lifespan on the password reset token in seconds. When applied, the previous example looks as following:
+
+```php
+<?php
+
+$search = new \Palladium\Service\Search($factory, $logger);
+$recovery = new \Palladium\Service\Recovery($factory, $logger);
+
+$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
+$token = $recovery->markForReset($identity, 7200);
+```
+
+This will make the password reset token usable for two hours after this user's identity has been marked for reset. When the allowed time has expired, you won't be able to find this identity using the `findEmailIdentityByToken()` in the `Search` service.
+
 #### Completion of password reset
 
 ```php
@@ -260,7 +295,7 @@ This log-level is used for tracking ordinary operations, that user would perform
  - successful password recover
  - successful login (with email or cookie) or logout
  - successful email verification
- - use of expired cookie
+ - use of expired cookie or nonce
 
 #### `LogLevel::NOTICE`
 
