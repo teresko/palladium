@@ -15,7 +15,7 @@ class Identity implements HasId
 
     const TOKEN_SIZE = 16;
 
-    const ACTION_ANY = null;
+    const ACTION_NONE = null;
     const ACTION_VERIFY = 1;
     const ACTION_RESET = 2;
 
@@ -241,7 +241,7 @@ class Identity implements HasId
     public function clearToken()
     {
         $this->token = null;
-        $this->tokenAction = Identity::ACTION_ANY;
+        $this->tokenAction = Identity::ACTION_NONE;
         $this->tokenExpiresOn = null;
     }
 

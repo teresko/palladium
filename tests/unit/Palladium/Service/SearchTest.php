@@ -151,7 +151,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 
@@ -179,7 +179,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 

@@ -162,25 +162,25 @@ final class IdentityTest extends TestCase
     {
         $instance = new Identity;
 
-        $this->assertSame(Identity::ACTION_ANY, $instance->getTokenAction());
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
         $instance->setTokenAction(Identity::ACTION_VERIFY);
         $this->assertSame(Identity::ACTION_VERIFY, $instance->getTokenAction());
 
-        $instance->setTokenAction(Identity::ACTION_ANY);
-        $this->assertSame(Identity::ACTION_ANY, $instance->getTokenAction());
+        $instance->setTokenAction(Identity::ACTION_NONE);
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
         $instance->setTokenAction('42');
         $this->assertSame(42, $instance->getTokenAction());
 
         $instance->setTokenAction(-100);
-        $this->assertSame(Identity::ACTION_ANY, $instance->getTokenAction());
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
         $instance->setTokenAction('foobar');
-        $this->assertSame(Identity::ACTION_ANY, $instance->getTokenAction());
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
-        $instance->setTokenAction(Identity::ACTION_ANY);
-        $this->assertNull(Identity::ACTION_ANY, $instance->getTokenAction());
+        $instance->setTokenAction(Identity::ACTION_NONE);
+        $this->assertNull(Identity::ACTION_NONE, $instance->getTokenAction());
     }
 
 
@@ -194,6 +194,6 @@ final class IdentityTest extends TestCase
 
         $this->assertNull($instance->getToken());
         $this->assertNull($instance->getTokenEndOfLife());
-        $this->assertSame(Identity::ACTION_ANY, $instance->getTokenAction());
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
     }
 }

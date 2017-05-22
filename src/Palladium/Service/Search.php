@@ -125,7 +125,7 @@ class Search
      *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_ANY)
+    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE)
     {
         $identity = new Entity\EmailIdentity;
 
