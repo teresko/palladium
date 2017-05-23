@@ -153,11 +153,11 @@ This will make the single-use identity usable for 10 minutes after its creation.
 ```php
 <?php
 
-$identity = $this->search->findNonceIdentityByNonce($identifier);
+$identity = $this->search->findNonceIdentityByIdentifier($identifier);
 $cookie = $this->identification->useNonceIdentity($identity, $key);
 ```
 
-If there is no matching identity with given email address found, the `findNonceIdentityByNonce()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+If there is no matching identity with given email address found, the `findNonceIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 In case, if password does not match, the `useNonceIdentity()` method will throw [`KeyMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/KeyMismatch.php) exception.
 

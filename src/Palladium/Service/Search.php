@@ -95,10 +95,10 @@ class Search
     }
 
 
-    public function findNonceIdentityByNonce(string $nonce)
+    public function findNonceIdentityByIdentifier(string $identifier)
     {
         $identity = new Entity\NonceIdentity;
-        $identity->setIdentifier($nonce);
+        $identity->setIdentifier($identifier);
 
         $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
         $mapper->fetch($identity);
@@ -106,7 +106,7 @@ class Search
         if ($identity->getId() === null) {
             $this->logger->notice('identity not found', [
                 'input' => [
-                    'nonce' => $nonce,
+                    'identifier' => $identifier,
                 ],
             ]);
 
