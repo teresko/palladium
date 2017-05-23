@@ -214,7 +214,7 @@ final class CombinedTest extends TestCase
     {
         $parts = self::$hold;
 
-        $identity = $this->search->findNonceIdentityByNonce($parts['identifier']);
+        $identity = $this->search->findNonceIdentityByIdentifier($parts['identifier']);
         $cookie = $this->identification->useNonceIdentity($identity, $parts['key']);
 
         $this->assertSame(4, $cookie->getAccountId());
@@ -230,6 +230,6 @@ final class CombinedTest extends TestCase
 
         $this->expectException(\Palladium\Exception\IdentityNotFound::class);
 
-        $identity = $this->search->findNonceIdentityByNonce($parts['identifier']);
+        $identity = $this->search->findNonceIdentityByIdentifier($parts['identifier']);
     }
 }

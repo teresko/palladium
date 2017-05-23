@@ -322,7 +322,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\NonceIdentity::class,
-            $instance->findNonceIdentityByNonce('qwerty')
+            $instance->findNonceIdentityByIdentifier('qwerty')
         );
     }
 
@@ -351,7 +351,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\NonceIdentity::class,
-            $instance->findNonceIdentityByNonce('qwerty')
+            $instance->findNonceIdentityByIdentifier('qwerty')
         );
     }
 }
