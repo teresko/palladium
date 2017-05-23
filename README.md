@@ -85,7 +85,7 @@ If operation is completed successfully, the `$identity` variable will contain an
 
 The `createEmailIdentity()` method can throw  [`IdentityConflict`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityConflict.php) exception, if email has already used for a another&nbsp;identity.
 
-The `createEmailIdentity()` method was an optional third parameter, that defines the lifespan on the email verification token in seconds. When applied, the previous example looks as following:
+The `createEmailIdentity()` method has an optional third parameter, that defines the lifespan on the email verification token in seconds. When applied, the previous example looks as following:
 
 ```php
 <?php
