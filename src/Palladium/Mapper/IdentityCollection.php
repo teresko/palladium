@@ -3,7 +3,7 @@
 namespace Palladium\Mapper;
 
 /**
- * SQL code repsonsible for locating all of the identities, that have been associated
+ * SQL code responsible for locating all of the identities, that have been associated
  * to a given account and discarding them in bulk.
  * Used mostly in case of password reset or, if cookie has been compromised.
  */

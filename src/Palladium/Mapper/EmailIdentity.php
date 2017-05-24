@@ -3,7 +3,7 @@
 namespace Palladium\Mapper;
 
 /**
- * SQL logic for authentication attemps using username/password
+ * SQL logic for authentication attempts using username/password
  */
 
 use Palladium\Component\DataMapper;
