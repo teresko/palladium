@@ -17,10 +17,15 @@ use Psr\Log\LoggerInterface;
 class Recovery
 {
 
-    protected $mapperFactory;
-    protected $logger;
+    const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
 
+    private $mapperFactory;
+    private $logger;
 
+    /**
+     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
         $this->mapperFactory = $mapperFactory;
@@ -28,12 +33,19 @@ class Recovery
     }
 
 
-    public function markForReset(Entity\EmailIdentity $identity)
+    /**
+     * @throws Palladium\Exception\IdentityNotVerified if attempting to reset password for unverified identity
+     *
+     * @param int $tokenLifespan Lifespan of the password recovery token in seconds
+     *
+     * @return string token, that can be use to reset password
+     */
+    public function markForReset(Entity\EmailIdentity $identity, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
-            $this->logger->warning('identity not verified', [
+            $this->logger->notice('identity not verified', [
                 'input' => [
-                    'identifier' => $identity->getIdentifier(),
+                    'email' => $identity->getEmailAddress(),
                 ],
                 'user' => [
                     'account' => $identity->getAccountId(),
@@ -46,14 +58,14 @@ class Recovery
 
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_RESET);
-        $identity->setTokenEndOfLife(time() + Entity\Identity::TOKEN_LIFESPAN);
+        $identity->setTokenEndOfLife(time() + $tokenLifespan);
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->store($identity);
 
         $this->logger->info('request password reset', [
             'input' => [
-                'identifier' => $identity->getIdentifier(),
+                'email' => $identity->getEmailAddress(),
             ],
         ]);
 

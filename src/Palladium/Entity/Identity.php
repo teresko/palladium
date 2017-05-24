@@ -14,24 +14,22 @@ class Identity implements HasId
 {
 
     const TOKEN_SIZE = 16;
-    const TOKEN_LIFESPAN = 28800; // 8 hours
 
-    const COOKIE_LIFESPAN = 14400; // 4 hours
-
-    const ACTION_ANY = null;
+    const ACTION_NONE = null;
     const ACTION_VERIFY = 1;
     const ACTION_RESET = 2;
 
     const STATUS_ANY = null;
-    const STATUS_NEW = 1;       // not veriefoed user
-    const STATUS_ACTIVE = 2;    // this is the "good" state
-    const STATUS_DISCARDED = 3; // user logged out or changed password
-    const STATUS_BLOCKED = 4;   // someone tried to us an invalid auth cookie
-    const STATUS_EXPIRED = 5;
+    const STATUS_NEW = 1; // not veriefoed user
+    const STATUS_ACTIVE = 2; // this is the "good" state
+    const STATUS_DISCARDED = 4; // user logged out or changed password
+    const STATUS_BLOCKED = 8; // someone tried to us an invalid auth cookie
+    const STATUS_EXPIRED = 16;
 
     const TYPE_ANY = null;
-    const TYPE_PASSWORD = 1;
+    const TYPE_EMAIL = 1;
     const TYPE_COOKIE = 2;
+    const TYPE_NONCE = 4;
 
 
     private $identityId;
@@ -243,7 +241,7 @@ class Identity implements HasId
     public function clearToken()
     {
         $this->token = null;
-        $this->tokenAction = Identity::ACTION_ANY;
+        $this->tokenAction = Identity::ACTION_NONE;
         $this->tokenExpiresOn = null;
     }
 

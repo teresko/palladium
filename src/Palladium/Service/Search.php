@@ -22,7 +22,10 @@ class Search
     private $mapperFactory;
     private $logger;
 
-
+    /**
+     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     */
     public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
     {
         $this->mapperFactory = $mapperFactory;
@@ -35,6 +38,8 @@ class Search
      *
      * @param int $identityId
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\Identity
      */
     public function findIdentityById($identityId)
@@ -46,7 +51,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getAccountId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'id' => $identityId,
                 ],
@@ -64,20 +69,44 @@ class Search
      *
      * @param string $emailAddress
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\EmailIdentity
      */
     public function findEmailIdentityByEmailAddress(string $emailAddress)
     {
         $identity = new Entity\EmailIdentity;
-        $identity->setIdentifier($emailAddress);
+        $identity->setEmailAddress($emailAddress);
 
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
-                    'identifier' => $emailAddress,
+                    'email' => $emailAddress,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
+
+        return $identity;
+    }
+
+
+    public function findNonceIdentityByIdentifier(string $identifier)
+    {
+        $identity = new Entity\NonceIdentity;
+        $identity->setIdentifier($identifier);
+
+        $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
+        $mapper->fetch($identity);
+
+        if ($identity->getId() === null) {
+            $this->logger->notice('identity not found', [
+                'input' => [
+                    'identifier' => $identifier,
                 ],
             ]);
 
@@ -92,9 +121,11 @@ class Search
      * @param string $token
      * @param int $action
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\EmailIdentity
      */
-    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_ANY)
+    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE)
     {
         $identity = new Entity\EmailIdentity;
 
@@ -106,7 +137,7 @@ class Search
         $mapper->fetch($identity);
 
         if ($identity->getId() === null) {
-            $this->logger->warning('identity not found', [
+            $this->logger->notice('identity not found', [
                 'input' => [
                     'token' => $token,
                 ],
@@ -123,6 +154,8 @@ class Search
      * @param int $accountId
      * @param string $series
      *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
      * @return Palladium\Entity\CookieIdentity
      */
     public function findCookieIdentity($accountId, $series)
@@ -134,6 +167,17 @@ class Search
 
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->fetch($cookie);
+
+        if ($cookie->getId() === null) {
+            $this->logger->notice('identity not found', [
+                'input' => [
+                    'account' => $cookie->getAccountId(),
+                    'series' => $cookie->getSeries(),
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
 
         return $cookie;
     }
@@ -148,7 +192,7 @@ class Search
         $collection->forAccountId($accountId);
         $collection->forType($type);
 
-        return $this->fetchIdentitiesByStatus($collection, $status);
+        return $this->fetchIdentitiesWithStatus($collection, $status);
     }
 
 
@@ -160,14 +204,14 @@ class Search
         $collection = new Entity\IdentityCollection;
         $collection->forParentId($parentId);
 
-        return $this->fetchIdentitiesByStatus($collection, $status);
+        return $this->fetchIdentitiesWithStatus($collection, $status);
     }
 
 
     /**
      * @return Palladium\Entity\IdentityCollection
      */
-    private function fetchIdentitiesByStatus(Entity\IdentityCollection $collection, $status)
+    private function fetchIdentitiesWithStatus(Entity\IdentityCollection $collection, $status)
     {
         $collection->forStatus($status);
 

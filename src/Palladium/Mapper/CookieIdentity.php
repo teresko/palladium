@@ -9,6 +9,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
+use PDOStatement;
 
 class CookieIdentity extends DataMapper
 {
@@ -30,12 +31,7 @@ class CookieIdentity extends DataMapper
                    AND status = :status";
 
         $statement = $this->connection->prepare($sql);
-
-        $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':status', $entity->getStatus());
-        $statement->bindValue(':account', $entity->getAccountId());
-        $statement->bindValue(':identifier', $entity->getSeries());
-        $statement->bindValue(':fingerprint', $entity->getFingerprint());
+        $this->bindCommonParameters($statement, $entity);
 
         $statement->execute();
 
@@ -45,6 +41,17 @@ class CookieIdentity extends DataMapper
             $this->applyValues($entity, $data);
         }
     }
+
+
+    private function bindCommonParameters(PDOStatement $statement, Entity\CookieIdentity $entity)
+    {
+        $statement->bindValue(':type', $entity->getType());
+        $statement->bindValue(':status', $entity->getStatus());
+        $statement->bindValue(':account', $entity->getAccountId());
+        $statement->bindValue(':identifier', $entity->getSeries());
+        $statement->bindValue(':fingerprint', $entity->getFingerprint());
+    }
+
 
 
     public function store(Entity\CookieIdentity $entity)
@@ -66,15 +73,12 @@ class CookieIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':account', $entity->getAccountId());
         $statement->bindValue(':parent', $entity->getParentId());
-        $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':status', $entity->getStatus());
-        $statement->bindValue(':identifier', $entity->getSeries());
-        $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':expires', $entity->getExpiresOn());
         $statement->bindValue(':created', time());
+
+        $this->bindCommonParameters($statement, $entity);
 
         $statement->execute();
 

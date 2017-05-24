@@ -127,6 +127,19 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->identification->logout($identity, $parts['key']);
 
+        $this->assertSame(4, $identity->getAccountId()); // from Registration phase
+    }
+
+
+    /**
+     * @depends test_User_Logout
+     */
+    public function test_User_Logout_Again()
+    {
+        $parts = self::$hold;
+
+        $this->expectException(\Palladium\Exception\IdentityNotFound::class);
+
         $identity = $this->search->findCookieIdentity($parts['account'], $parts['series']);
         $this->assertNull($identity->getId());
 
@@ -160,7 +173,7 @@ final class CombinedTest extends TestCase
         $this->recovery->resetIdentityPassword($identity, 'foobar');
 
         $list = $this->search->findIdentitiesByParentId($identity->getId());
-        $this->identification->discardIdentities($list);
+        $this->identification->discardIdentityCollection($list);
 
         $cookie = $this->identification->loginWithPassword($identity, 'foobar');
         $this->assertSame(4, $cookie->getAccountId());
@@ -179,5 +192,44 @@ final class CombinedTest extends TestCase
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');
         $this->assertSame(4, $cookie->getAccountId());
+    }
+
+
+    public function test_Creating_One_Time_Use_Identity()
+    {
+        $identity = $this->registration->createNonceIdentity(4);
+        $this->assertSame(4, $identity->getAccountId());
+
+        self::$hold = [
+            'identifier' => $identity->getIdentifier(),
+            'key' => $identity->getKey(),
+        ];
+    }
+
+
+    /**
+     * @depends test_Creating_One_Time_Use_Identity
+     */
+    public function test_Using_the_One_Time_Identity()
+    {
+        $parts = self::$hold;
+
+        $identity = $this->search->findNonceIdentityByIdentifier($parts['identifier']);
+        $cookie = $this->identification->useNonceIdentity($identity, $parts['key']);
+
+        $this->assertSame(4, $cookie->getAccountId());
+    }
+
+
+    /**
+     * @depends test_Using_the_One_Time_Identity
+     */
+    public function test_Failure_to_Use_Same_One_Time_Identity_Twice()
+    {
+        $parts = self::$hold;
+
+        $this->expectException(\Palladium\Exception\IdentityNotFound::class);
+
+        $identity = $this->search->findNonceIdentityByIdentifier($parts['identifier']);
     }
 }

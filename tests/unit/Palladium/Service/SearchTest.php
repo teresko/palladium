@@ -151,7 +151,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 
@@ -179,7 +179,7 @@ final class SearchTest extends TestCase
 
         $this->assertInstanceOf(
             Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_ANY)
+            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 
@@ -196,6 +196,35 @@ final class SearchTest extends TestCase
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\CookieIdentity::class,
+            $instance->findCookieIdentity(123, '12345678901234567890123456789012')
+        );
+    }
+
+
+    public function test_Failure_to_Find_Cookie_Identity()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function(HasId $entity) {}));
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));
@@ -266,5 +295,63 @@ final class SearchTest extends TestCase
 
         $list = $instance->findIdentitiesByParentId(123);
         $this->assertSame([3, 7], $list->getIds());
+    }
+
+
+    public function test_Looking_for_OneTime_Identity()
+    {
+        $mapper = $this
+                    ->getMockBuilder(Mapper\NonceIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function(HasId $entity) {
+                $entity->setId(1);
+            }));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\NonceIdentity::class,
+            $instance->findNonceIdentityByIdentifier('qwerty')
+        );
+    }
+
+
+    public function test_Failure_to_Find_OneTime_Identity()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $mapper = $this
+                    ->getMockBuilder(Mapper\NonceIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $mapper
+            ->expects($this->once())
+            ->method('fetch')
+            ->will($this->returnCallback(function(HasId $entity) {}));
+
+        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
+        $factory->method('create')->will($this->returnValue($mapper));
+
+
+        $instance = new Search(
+            $factory,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $this->assertInstanceOf(
+            Entity\NonceIdentity::class,
+            $instance->findNonceIdentityByIdentifier('qwerty')
+        );
     }
 }

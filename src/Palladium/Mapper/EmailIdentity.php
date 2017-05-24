@@ -8,6 +8,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
+use PDOStatement;
 
 class EmailIdentity extends DataMapper
 {
@@ -21,14 +22,14 @@ class EmailIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
-                   AND identifier = :identifier
+                   AND identifier = :email
                    AND (expires_on IS NULL OR expires_on > :now)";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
-        $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':now', time());
 
         $statement->execute();
@@ -53,12 +54,12 @@ class EmailIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
-                   AND identifier = :identifier";
+                   AND identifier = :email";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
 
         $statement->execute();
@@ -89,20 +90,18 @@ class EmailIdentity extends DataMapper
     {
         $sql = "INSERT INTO {$this->table}
                        (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on )
-                VALUES (:type, :status, :identifier, :fingerprint, :hash, :created, :token, :action, :token_eol)";
+                VALUES (:type, :status, :email, :fingerprint, :hash, :created, :token, :action, :token_eol)";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_PASSWORD);
+        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
         $statement->bindValue(':status', Entity\EmailIdentity::STATUS_NEW);
-        $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
-        $statement->bindValue(':token', $entity->getToken());
-        $statement->bindValue(':action', $entity->getTokenAction());
-        $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
         $statement->bindValue(':created', time());
 
+        $this->bindToken($statement, $entity);
 
         $statement->execute();
 
@@ -127,10 +126,17 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':expires', $entity->getExpiresOn());
+
+        $this->bindToken($statement, $entity);
+
+        $statement->execute();
+    }
+
+
+    private function bindToken(PDOStatement $statement, Entity\EmailIdentity $entity)
+    {
         $statement->bindValue(':token', $entity->getToken());
         $statement->bindValue(':action', $entity->getTokenAction());
         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
-
-        $statement->execute();
     }
 }

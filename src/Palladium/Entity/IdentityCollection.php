@@ -3,6 +3,7 @@
 namespace Palladium\Entity;
 
 use Palladium\Component\Collection;
+use Palladium\Contract\HasId;
 
 class IdentityCollection extends Collection
 {
@@ -16,7 +17,7 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    protected function buildEntity()
+    protected function buildEntity(): HasId
     {
         return new Identity;
     }

@@ -8,9 +8,9 @@ namespace Palladium\Service;
 
 use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
-use Palladium\Exception\PasswordNotMatch;
+use Palladium\Exception\PasswordMismatch;
+use Palladium\Exception\KeyMismatch;
 use Palladium\Exception\CompromisedCookie;
-use Palladium\Exception\DenialOfServiceAttempt;
 use Palladium\Exception\IdentityExpired;
 use Palladium\Contract\CanCreateMapper;
 use Psr\Log\LoggerInterface;
@@ -18,31 +18,35 @@ use Psr\Log\LoggerInterface;
 class Identification
 {
 
+    const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
+
     private $mapperFactory;
     private $logger;
 
+    private $cookieLifespan;
 
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    /**
+     * @param CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
+     * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
+     */
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
+        $this->cookieLifespan = $cookieLifespan;
     }
 
 
-    /**
-     * @param string $password
-     *
-     * @return Palladium\Entity\CookieIdentity
-     */
-    public function loginWithPassword(Entity\EmailIdentity $identity, $password)
+    public function loginWithPassword(Entity\EmailIdentity $identity, string $password): Entity\CookieIdentity
     {
         if ($identity->matchPassword($password) === false) {
-            $this->logWrongPasswordWarning($identity, [
-                'identifier' => $identity->getIdentifier(),
+            $this->logWrongPasswordNotice($identity, [
+                'email' => $identity->getEmailAddress(),
                 'key' => md5($password),
             ]);
 
-            throw new PasswordNotMatch;
+            throw new PasswordMismatch;
         }
 
         $this->registerUsageOfIdentity($identity);
@@ -50,7 +54,7 @@ class Identification
 
         $this->logger->info('login successful', [
             'input' => [
-                'identifier' => $identity->getIdentifier(),
+                'email' => $identity->getEmailAddress(),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),
@@ -71,7 +75,7 @@ class Identification
     }
 
 
-    private function createCookieIdentity(Entity\EmailIdentity $identity)
+    private function createCookieIdentity(Entity\Identity $identity): Entity\CookieIdentity
     {
         $cookie = new Entity\CookieIdentity;
         $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
@@ -81,7 +85,7 @@ class Identification
 
         $cookie->generateNewKey();
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
-        $cookie->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
+        $cookie->setExpiresOn(time() + $this->cookieLifespan);
 
 
         $parentId = $identity->getParentId();
@@ -101,42 +105,21 @@ class Identification
     /**
      * @param string @key
      *
-     * @return Palladium\Entity\CookieIdentity
+     * @throws \Palladium\Exception\CompromisedCookie if key does not match
+     * @throws \Palladium\Exception\IdentityExpired if cookie is too old
      */
-    public function loginWithCookie(Entity\CookieIdentity $identity, $key)
+    public function loginWithCookie(Entity\CookieIdentity $identity, $key): Entity\CookieIdentity
     {
-        if ($identity->getId() === null) {
-            $this->logCookieError($identity, 'denial of service');
-            throw new DenialOfServiceAttempt;
-        }
-
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-
-        if ($identity->getExpiresOn() < time()) {
-            $identity->setStatus(Entity\Identity::STATUS_EXPIRED);
-            $mapper->store($identity);
-            $this->logger->info('cookie expired', [
-                'input' => [
-                    'account' => $identity->getAccountId(),
-                    'series' => $identity->getSeries(),
-                    'key' => $identity->getKey(),
-                ],
-                'user' => [
-                    'account' => $identity->getAccountId(),
-                    'identity' => $identity->getId(),
-                ],
-            ]);
-
-            throw new IdentityExpired;
-        }
-
+        $this->checkIdentityExpireTime($identity, $this->assembleCookieLogDetails($identity));
         $this->checkCookieKey($identity, $key);
 
         $identity->generateNewKey();
         $identity->setLastUsed(time());
-        $identity->setExpiresOn(time() + Entity\Identity::COOKIE_LIFESPAN);
+        $identity->setExpiresOn(time() + $this->cookieLifespan);
 
+        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
         $mapper->store($identity);
+
         $this->logExpectedBehaviour($identity, 'cookie updated');
 
         return $identity;
@@ -148,18 +131,31 @@ class Identification
      */
     public function logout(Entity\CookieIdentity $identity, $key)
     {
-        if ($identity->getId() === null) {
-            $this->logCookieError($identity, 'denial of service');
-            throw new DenialOfServiceAttempt;
-        }
-
+        $this->checkIdentityExpireTime($identity, $this->assembleCookieLogDetails($identity));
         $this->checkCookieKey($identity, $key);
-        $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
 
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
-
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
         $this->logExpectedBehaviour($identity, 'logout successful');
+    }
+
+
+    private function checkIdentityExpireTime(Entity\Identity $identity, $details)
+    {
+        if ($identity->getExpiresOn() < time()) {
+            $this->logger->info('identity expired', $details);
+
+            $this->changeIdentityStatus($identity, Entity\Identity::STATUS_EXPIRED);
+
+            throw new IdentityExpired;
+        }
+    }
+
+
+    private function changeIdentityStatus(Entity\Identity $identity, int $status)
+    {
+        $identity->setStatus($status);
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->store($identity);
     }
 
 
@@ -176,18 +172,30 @@ class Identification
             return;
         }
 
-        $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
-
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
-
-        $this->logCookieError($identity, 'compromised cookie');
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_BLOCKED);
+        $this->logger->warning('compromised cookie', $this->assembleCookieLogDetails($identity));
 
         throw new CompromisedCookie;
     }
 
 
-    public function discardIdentities(Entity\IdentityCollection $list)
+    private function assembleCookieLogDetails(Entity\CookieIdentity $identity): array
+    {
+        return [
+            'input' => [
+                'account' => $identity->getAccountId(),
+                'series' => $identity->getSeries(),
+                'key' => md5($identity->getKey()),
+            ],
+            'user' => [
+                'account' => $identity->getAccountId(),
+                'identity' => $identity->getId(),
+            ],
+        ];
+    }
+
+
+    public function discardIdentityCollection(Entity\IdentityCollection $list)
     {
         foreach ($list as $identity) {
             $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
@@ -195,6 +203,25 @@ class Identification
 
         $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
         $mapper->store($list);
+    }
+
+
+    public function blockIdentity(Entity\Identity $identity)
+    {
+        $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
+
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->store($identity);
+    }
+
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function deleteIdentity(Entity\Identity $identity)
+    {
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $mapper->remove($identity);
     }
 
 
@@ -207,13 +234,13 @@ class Identification
         $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($identity->matchPassword($oldPassword) === false) {
-            $this->logWrongPasswordWarning($identity, [
+            $this->logWrongPasswordNotice($identity, [
                 'account' => $identity->getAccountId(),
                 'old-key' => md5($oldPassword),
                 'new-key' => md5($newPassword),
             ]);
 
-            throw new PasswordNotMatch;
+            throw new PasswordMismatch;
         }
 
         $identity->setPassword($newPassword);
@@ -224,30 +251,11 @@ class Identification
 
 
     /**
-     * @param string $message
-     */
-    private function logCookieError(Entity\CookieIdentity $identity, $message)
-    {
-        $this->logger->error($message, [
-            'input' => [
-                'account' => $identity->getAccountId(),
-                'series' => $identity->getSeries(),
-                'key' => $identity->getKey(),
-            ],
-            'user' => [
-                'account' => $identity->getAccountId(),
-                'identity' => $identity->getId(),
-            ],
-        ]);
-    }
-
-
-    /**
      * @param array $input
      */
-    private function logWrongPasswordWarning(Entity\EmailIdentity $identity, $input)
+    private function logWrongPasswordNotice(Entity\EmailIdentity $identity, $input)
     {
-        $this->logger->warning('wrong password', [
+        $this->logger->notice('wrong password', [
             'input' => $input,
             'user' => [
                 'account' => $identity->getAccountId(),
@@ -257,6 +265,9 @@ class Identification
     }
 
 
+    /**
+     * @param string $message logged text
+     */
     private function logExpectedBehaviour(Entity\Identity $identity, $message)
     {
         $this->logger->info($message, [
@@ -266,4 +277,36 @@ class Identification
             ],
         ]);
     }
+
+
+    public function useNonceIdentity(Entity\NonceIdentity $identity, string $key): Entity\CookieIdentity
+    {
+        $this->checkIdentityExpireTime($identity, $this->assembleNonceLogDetails($identity));
+
+        if ($identity->matchKey($key) === false) {
+            $this->logger->notice('wrong key', $this->assembleNonceLogDetails($identity));
+            throw new KeyMismatch;
+        }
+
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_DISCARDED);
+        $this->logExpectedBehaviour($identity, 'one-time identity used');
+
+        return $this->createCookieIdentity($identity);
+    }
+
+
+    private function assembleNonceLogDetails(Entity\NonceIdentity $identity): array
+    {
+        return [
+            'input' => [
+                'identifier' => $identity->getIdentifier(),
+                'key' => md5($identity->getKey()),
+            ],
+            'user' => [
+                'account' => $identity->getAccountId(),
+                'identity' => $identity->getId(),
+            ],
+        ];
+    }
+
 }

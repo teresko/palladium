@@ -34,6 +34,8 @@ CREATE TABLE `identities` (
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
+
+    -- EDIT THIS foreign key to match your existing table for storing accounts
     FOREIGN KEY `associatedAccount` (`account_id`) REFERENCES `accounts`(`account_id`)
         ON DELETE CASCADE
         ON UPDATE CASCADE

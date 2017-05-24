@@ -13,18 +13,18 @@ final class EmailIdentityTest extends TestCase
     {
         $instance = new EmailIdentity;
 
-        $instance->setIdentifier('alpha');
-        $this->assertSame('alpha', $instance->getIdentifier());
+        $instance->setEmailAddress('alpha');
+        $this->assertSame('alpha', $instance->getEmailAddress());
 
-        $instance->setIdentifier(12345);
-        $this->assertSame('12345', $instance->getIdentifier());
+        $instance->setEmailAddress(12345);
+        $this->assertSame('12345', $instance->getEmailAddress());
     }
 
 
     public function test_Retrieval_of_Fingerprint()
     {
         $instance = new EmailIdentity;
-        $instance->setIdentifier('alpha');
+        $instance->setEmailAddress('alpha');
 
         $this->assertSame(
             '9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af',
