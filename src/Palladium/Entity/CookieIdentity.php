@@ -53,7 +53,7 @@ class CookieIdentity extends Identity
 
 
     /**
-     * Assignes a new identification key and resets a the hash.
+     * Assigns a new identification key and resets a the hash.
      *
      * @param string $key
      */

@@ -4,7 +4,7 @@ namespace Palladium\Service;
 
 
 /**
- * Class for finding indentities based on various conditions
+ * Class for finding identities based on various conditions
  */
 
 use Palladium\Mapper as Mapper;

@@ -27,7 +27,7 @@ abstract class DataMapper
 
 
     /**
-     * Method for populating the doven instance with values from the array via setters
+     * Method for populating the given instance with values from the array via setters
      *
      * @param object $instance The object to be populated with values
      * @param array $parameters A key-value array, that will be matched to setters

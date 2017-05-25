@@ -49,7 +49,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     }
 
 
-    /** code that does the actualy population of data from the given array in blueprint */
+    /** code that does the actual population of data from the given array in blueprint */
     private function populateEntity($instance, $parameters)
     {
         foreach ((array) $parameters as $key => $value) {
@@ -158,7 +158,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
 
     /**
-     * Removes all od the content of the collection and resets it to pristine state.
+     * Removes all of the content of the collection and resets it to pristine state.
      */
     public function purge()
     {
@@ -169,7 +169,7 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     }
 
 
-    // imeplementing Countable
+    // implementing Countable
     public function count()
     {
         return count($this->pool);
