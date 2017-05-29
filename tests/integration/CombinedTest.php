@@ -234,4 +234,26 @@ final class CombinedTest extends TestCase
 
         $this->search->findNonceIdentityByIdentifier($parts['identifier']);
     }
+
+
+    /**
+     * @depends test_Using_the_One_Time_Identity
+     * @depends test_Identify_Verification
+     */
+    public function test_FetchMode_Changed_for_PDO()
+    {
+        $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+
+        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
+        $cookie = $this->identification->loginWithPassword($identity, 'password');
+
+        $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
+
+        self::$hold = [
+            'account' => $cookie->getAccountId(),
+            'series' => $cookie->getSeries(),
+            'key' => $cookie->getKey(),
+        ];
+    }
+
 }
