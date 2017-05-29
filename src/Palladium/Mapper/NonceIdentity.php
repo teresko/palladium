@@ -8,6 +8,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
+use PDO;
 
 class NonceIdentity extends DataMapper
 {
@@ -35,7 +36,7 @@ class NonceIdentity extends DataMapper
 
         $statement->execute();
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $this->applyValues($entity, $data);

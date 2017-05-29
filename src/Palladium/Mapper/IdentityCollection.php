@@ -12,6 +12,7 @@ namespace Palladium\Mapper;
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 use PDOStatement;
+use PDO;
 
 class IdentityCollection extends DataMapper
 {
@@ -87,7 +88,7 @@ class IdentityCollection extends DataMapper
 
         $statement->execute();
 
-        foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $parameters) {
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $parameters) {
             $collection->addBlueprint($parameters);
         }
     }

@@ -10,6 +10,7 @@ namespace Palladium\Mapper;
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 use PDOStatement;
+use PDO;
 
 class CookieIdentity extends DataMapper
 {
@@ -35,7 +36,7 @@ class CookieIdentity extends DataMapper
 
         $statement->execute();
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $this->applyValues($entity, $data);

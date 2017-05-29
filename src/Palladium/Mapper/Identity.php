@@ -8,6 +8,7 @@ namespace Palladium\Mapper;
 
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
+use PDO;
 
 class Identity extends DataMapper
 {
@@ -77,7 +78,7 @@ class Identity extends DataMapper
 
         $statement->execute();
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $this->applyValues($entity, $data);
@@ -106,7 +107,7 @@ class Identity extends DataMapper
 
         $statement->execute();
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $this->applyValues($entity, $data);

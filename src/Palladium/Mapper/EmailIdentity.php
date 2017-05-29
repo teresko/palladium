@@ -9,6 +9,7 @@ namespace Palladium\Mapper;
 use Palladium\Component\DataMapper;
 use Palladium\Entity as Entity;
 use PDOStatement;
+use PDO;
 
 class EmailIdentity extends DataMapper
 {
@@ -33,7 +34,7 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':now', time());
 
         $statement->execute();
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         return empty($data) === false;
     }
@@ -64,7 +65,7 @@ class EmailIdentity extends DataMapper
 
         $statement->execute();
 
-        $data = $statement->fetch();
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $this->applyValues($entity, $data);
