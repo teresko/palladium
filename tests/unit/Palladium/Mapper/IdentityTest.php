@@ -9,6 +9,8 @@ use Palladium\Entity;
 
 /**
  * @covers Palladium\Mapper\Identity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class IdentityTest extends TestCase
 {

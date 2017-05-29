@@ -9,6 +9,8 @@ use Palladium\Entity;
 
 /**
  * @covers Palladium\Mapper\NonceIdentity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class NonceIdentityTest extends TestCase
 {

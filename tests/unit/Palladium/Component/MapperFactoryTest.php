@@ -9,6 +9,8 @@ use Mock\Mapper;
 
 /**
  * @covers Palladium\Component\MapperFactory
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class MapperFactoryTest extends TestCase
 {
@@ -39,6 +41,6 @@ class MapperFactoryTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $instance = new MapperFactory(new PDO('sqlite::memory:'), 'alpha');
-        $result = $instance->create(\Foo\Bar::class);
+        $instance->create(\Foo\Bar::class);
     }
 }

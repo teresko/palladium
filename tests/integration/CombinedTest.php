@@ -12,6 +12,8 @@ use Mock;
 
 /**
  * @coversNothing
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class CombinedTest extends TestCase
 {

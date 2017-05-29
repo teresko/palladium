@@ -14,6 +14,8 @@ use Palladium\Exception\IdentityNotVerified;
 
 /**
  * @covers Palladium\Service\Recovery
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class RecoveryTest extends TestCase
 {

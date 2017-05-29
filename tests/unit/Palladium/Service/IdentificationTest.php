@@ -17,6 +17,9 @@ use Palladium\Exception\KeyMismatch;
 
 /**
  * @covers Palladium\Service\Identification
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 final class IdentificationTest extends TestCase
 {
@@ -89,7 +92,7 @@ final class IdentificationTest extends TestCase
         $affected->setExpiresOn(time() - 10000);
 
         $instance = new Identification($factory, $logger);
-        $result = $instance->loginWithCookie($affected, 'alpha');
+        $instance->loginWithCookie($affected, 'alpha');
     }
 
 
@@ -143,7 +146,7 @@ final class IdentificationTest extends TestCase
         $affected->setExpiresOn(time() + 10000);
 
         $instance = new Identification($factory, $logger);
-        $result = $instance->loginWithCookie($affected, 'beta');
+        $instance->loginWithCookie($affected, 'beta');
     }
 
 
@@ -168,7 +171,7 @@ final class IdentificationTest extends TestCase
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
 
         $instance = new Identification($factory, $logger);
-        $result = $instance->logout($affected, 'alpha');
+        $instance->logout($affected, 'alpha');
     }
 
 

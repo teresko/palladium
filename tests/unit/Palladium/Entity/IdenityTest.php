@@ -7,6 +7,8 @@ use Palladium\Exception\InvalidCookieToken;
 
 /**
  * @covers Palladium\Entity\Identity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class IdentityTest extends TestCase
 {

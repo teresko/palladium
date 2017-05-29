@@ -14,6 +14,9 @@ use Palladium\Exception\IdentityNotFound;
 
 /**
  * @covers Palladium\Service\Search
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 final class SearchTest extends TestCase
 {
@@ -224,7 +227,7 @@ final class SearchTest extends TestCase
         $mapper
             ->expects($this->once())
             ->method('fetch')
-            ->will($this->returnCallback(function(HasId $entity) {}));
+            ->will($this->returnCallback(function() {}));
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));
@@ -338,7 +341,7 @@ final class SearchTest extends TestCase
         $mapper
             ->expects($this->once())
             ->method('fetch')
-            ->will($this->returnCallback(function(HasId $entity) {}));
+            ->will($this->returnCallback(function() {}));
 
         $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
         $factory->method('create')->will($this->returnValue($mapper));

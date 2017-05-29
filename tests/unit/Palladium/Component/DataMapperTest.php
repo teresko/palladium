@@ -9,6 +9,8 @@ use Mock\Accopunt;
 
 /**
  * @covers Palladium\Component\DataMapper
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class DataMapperTest extends TestCase
 {

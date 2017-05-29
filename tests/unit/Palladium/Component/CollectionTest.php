@@ -9,17 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Palladium\Component\Collection
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CollectionTest extends TestCase
 {
 
-    private function buildItem($id)
+    private function buildItem($itemId)
     {
         $item = $this
                     ->getMockBuilder(\Mock\Entity::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $item->method('getId')->willReturn($id);
+        $item->method('getId')->willReturn($itemId);
         return $item;
     }
 
@@ -141,15 +143,15 @@ class CollectionTest extends TestCase
         $item = $this->buildItem(9);
 
         $instance->addEntity($item);
-        $n = 0;
+        $counter = 0;
 
         foreach ($instance as $key => $value) {
-            $n += 1;
+            $counter += 1;
             $this->assertSame(0, $key);
             $this->assertSame($item, $value);
         }
 
-        $this->assertSame(1, $n);
+        $this->assertSame(1, $counter);
     }
 
 

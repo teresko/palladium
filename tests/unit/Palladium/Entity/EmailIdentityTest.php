@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Palladium\Entity\EmailIdentity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class EmailIdentityTest extends TestCase
 {

@@ -9,6 +9,8 @@ use Palladium\Entity;
 
 /**
  * @covers Palladium\Mapper\CookieIdentity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class CookieIdentityTest extends TestCase
 {

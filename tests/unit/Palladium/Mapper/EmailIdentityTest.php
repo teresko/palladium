@@ -9,6 +9,8 @@ use Palladium\Entity;
 
 /**
  * @covers Palladium\Mapper\EmailIdentity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class EmailIdentityTest extends TestCase
 {

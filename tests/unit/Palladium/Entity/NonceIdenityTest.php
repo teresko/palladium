@@ -7,6 +7,8 @@ use Palladium\Exception\InvalidCookieToken;
 
 /**
  * @covers Palladium\Entity\NonceIdentity
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class NonceIdentityTest extends TestCase
 {

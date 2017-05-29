@@ -15,6 +15,8 @@ use Palladium\Mapper;
 
 /**
  * @covers Palladium\Service\Registration
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 final class RegistrationTest extends TestCase
 {
