@@ -50,9 +50,9 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
 
 
     /** code that does the actual population of data from the given array in blueprint */
-    private function populateEntity($instance, $parameters)
+    private function populateEntity($instance, array $parameters)
     {
-        foreach ((array) $parameters as $key => $value) {
+        foreach ($parameters as $key => $value) {
             $method = 'set' . str_replace('_', '', $key);
             if (method_exists($instance, $method)) {
                 $instance->{$method}($value);
