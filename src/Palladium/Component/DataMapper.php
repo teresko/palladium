@@ -34,7 +34,7 @@ abstract class DataMapper
      */
     public function applyValues($instance, array $parameters)
     {
-        foreach ((array) $parameters as $key => $value) {
+        foreach ($parameters as $key => $value) {
             $method = 'set' . str_replace('_', '', $key);
             if (method_exists($instance, $method)) {
                 $instance->{$method}($value);
