@@ -232,6 +232,6 @@ final class CombinedTest extends TestCase
 
         $this->expectException(\Palladium\Exception\IdentityNotFound::class);
 
-        $identity = $this->search->findNonceIdentityByIdentifier($parts['identifier']);
+        $this->search->findNonceIdentityByIdentifier($parts['identifier']);
     }
 }
