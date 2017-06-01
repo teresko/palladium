@@ -24,7 +24,7 @@ use Palladium\Exception\KeyMismatch;
 final class IdentificationTest extends TestCase
 {
 
-    public function test_Logging_in_with_Password()
+    public function test_Failure_to_Login_with_Password()
     {
         $this->expectException(PasswordMismatch::class);
 
@@ -40,7 +40,40 @@ final class IdentificationTest extends TestCase
     }
 
 
-    public function test_Failure_to_Login_with_Password()
+    public function test_Logging_in_with_Password_where_Rehash_is_Triggered()
+    {
+        $basic = $this
+                    ->getMockBuilder(Mapper\EmailIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $basic->expects($this->any())->method('store');
+
+        $cookie = $this
+                    ->getMockBuilder(Mapper\CookieIdentity::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $cookie->expects($this->any())->method('store');
+
+        $factory = new Factory([
+            Mapper\EmailIdentity::class => $basic,
+            Mapper\CookieIdentity::class => $cookie,
+        ]);
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $affected = new Entity\EmailIdentity;
+        $affected->setAccountId(3);
+        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 10);
+        $instance->loginWithPassword($affected, 'alpha');
+
+        $this->assertStringStartsWith('$2y$10', $affected->getHash());
+
+    }
+
+
+    public function test_Logging_in_with_Password()
     {
         $basic = $this
                     ->getMockBuilder(Mapper\Identity::class)
