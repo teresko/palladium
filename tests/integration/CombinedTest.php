@@ -57,7 +57,7 @@ final class CombinedTest extends TestCase
         $identity = $this->registration->createEmailIdentity('test@example.com', 'password');
         $this->registration->bindAccountToIdentity(4, $identity);
 
-        $this->assertSame(1, $identity->getId());
+        $this->assertSame(2, $identity->getId());
 
         self::$hold = $identity->getToken();
     }
@@ -109,7 +109,7 @@ final class CombinedTest extends TestCase
         $cookie = $this->identification->loginWithCookie($identity, $parts['key']);
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
-        $this->assertSame(1, $cookie->getParentId()); // from Registration phase
+        $this->assertSame(2, $cookie->getParentId()); // from Registration phase
 
         self::$hold = [
             'account' => $cookie->getAccountId(),
@@ -254,6 +254,26 @@ final class CombinedTest extends TestCase
             'series' => $cookie->getSeries(),
             'key' => $cookie->getKey(),
         ];
+    }
+
+
+    public function test_Rehashing_of_Outdated_Password_on_Login()
+    {
+        // using preexisting entry in sqlite database
+
+        $factory = new MapperFactory($this->connection, 'identities');
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $this->assertStringStartsWith('$2y$12', $identity->getHash());
+
+        $identification->loginWithPassword($identity, 'qwerty');
+
+        $affected = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $this->assertGreaterThan(1496353300, $affected->getLastUsed());
+        $this->assertStringStartsWith('$2y$11', $affected->getHash());
     }
 
 }

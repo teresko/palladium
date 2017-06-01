@@ -49,6 +49,7 @@ class EmailIdentity extends DataMapper
                        account_id       AS accountId,
                        hash             AS hash,
                        status           AS status,
+                       used_on          AS lastUsed,
                        token            AS token,
                        token_action     AS tokenAction,
                        token_expires_on AS tokenEndOfLife
