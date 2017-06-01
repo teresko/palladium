@@ -65,11 +65,11 @@ final class EmailIdentityTest extends TestCase
         $instance = new EmailIdentity;
         $instance->setHash('$1$beta$ocWFwI6Cax/SdMiwWXYoQ/');
 
-        $this->assertTrue($instance->isOldHash());
+        $this->assertTrue($instance->hasOldHash());
 
 
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
-        $this->assertFalse($instance->isOldHash());
+        $this->assertFalse($instance->hasOldHash());
     }
 
     public function test_Key_Matching()

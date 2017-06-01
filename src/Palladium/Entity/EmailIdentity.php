@@ -76,7 +76,7 @@ class EmailIdentity extends Identity
     }
 
 
-    public function isOldHash(): bool
+    public function hasOldHash($cost = self::HASH_COST): bool
     {
         return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }
