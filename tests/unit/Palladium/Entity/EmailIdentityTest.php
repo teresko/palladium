@@ -79,4 +79,16 @@ final class EmailIdentityTest extends TestCase
 
         $this->assertTrue($instance->matchPassword('alpha'));
     }
+
+
+    public function test_Rehashing_of_a_Password()
+    {
+        $instance = new EmailIdentity;
+        $instance->setPassword('alpha');
+        $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+
+        $instance->rehashPassword(10);
+
+        $this->assertStringStartsWith('$2y$10', $instance->getHash());
+    }
 }
