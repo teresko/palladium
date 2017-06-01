@@ -38,10 +38,10 @@ class EmailIdentity extends Identity
     }
 
 
-    public function setPassword($password)
+    public function setPassword($password, $cost = self::HASH_COST)
     {
         $this->password = (string) $password;
-        $this->hash = $this->createHash($password);
+        $this->hash = $this->createHash($password, $cost);
     }
 
 
@@ -54,9 +54,9 @@ class EmailIdentity extends Identity
     }
 
 
-    private function createHash($password): string
+    private function createHash($password, int $cost): string
     {
-        return password_hash($password, self::HASH_ALGO, ['cost' => self::HASH_COST]);
+        return password_hash($password, self::HASH_ALGO, ['cost' => $cost]);
     }
 
 
@@ -78,6 +78,6 @@ class EmailIdentity extends Identity
 
     public function hasOldHash($cost = self::HASH_COST): bool
     {
-        return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => self::HASH_COST]);
+        return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => $cost]);
     }
 }

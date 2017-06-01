@@ -19,18 +19,22 @@ class Registration
 
     const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
     const DEFAULT_NONCE_LIFESPAN = 300; // 5 minutes
+    const DEFAULT_HASH_COST = 12;
 
     private $mapperFactory;
     private $logger;
+    private $hashCost;
 
     /**
      * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param int $hashCost Optional value for setting the cost of hashing algorythm
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
+        $this->hashCost = $hashCost;
     }
 
 
@@ -46,7 +50,7 @@ class Registration
         $identity = new Entity\EmailIdentity;
 
         $identity->setEmailAddress($emailAddress);
-        $identity->setPassword($password);
+        $identity->setPassword($password, $this->hashCost);
         $identity->setTokenEndOfLife(time() + $tokenLifespan);
 
         $this->prepareNewIdentity($identity);

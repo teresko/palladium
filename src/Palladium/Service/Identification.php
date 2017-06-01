@@ -19,22 +19,30 @@ class Identification
 {
 
     const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
+    const DEFAULT_HASH_COST = 12;
 
     private $mapperFactory;
     private $logger;
 
     private $cookieLifespan;
+    private $hashCost;
 
     /**
      * @param CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN)
+    public function __construct(
+        CanCreateMapper $mapperFactory,
+        LoggerInterface $logger,
+        $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN,
+        $hashCost = self::DEFAULT_HASH_COST
+        )
     {
         $this->mapperFactory = $mapperFactory;
         $this->logger = $logger;
         $this->cookieLifespan = $cookieLifespan;
+        $this->hashCost = $hashCost;
     }
 
 
@@ -49,7 +57,7 @@ class Identification
             throw new PasswordMismatch;
         }
 
-        $this->registerUsageOfIdentity($identity);
+        $this->updateEmailIdentityOnUse($identity);
         $cookie = $this->createCookieIdentity($identity);
 
         $this->logger->info('login successful', [
@@ -66,11 +74,14 @@ class Identification
     }
 
 
-    private function registerUsageOfIdentity(Entity\Identity $identity)
+    private function updateEmailIdentityOnUse(Entity\EmailIdentity $identity)
     {
+        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        if ($identity->hasOldHash()) {
+            // @TODO: choose a different mapper to save the hash
+        }
         $identity->setLastUsed(time());
 
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->store($identity);
     }
 
