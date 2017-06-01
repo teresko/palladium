@@ -77,8 +77,9 @@ class Identification
     private function updateEmailIdentityOnUse(Entity\EmailIdentity $identity)
     {
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        if ($identity->hasOldHash()) {
-            // @TODO: choose a different mapper to save the hash
+        if ($identity->hasOldHash($this->hashCost)) {
+            $identity->rehashPassword($this->hashCost);
+            $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         }
         $identity->setLastUsed(time());
 

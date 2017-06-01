@@ -116,6 +116,7 @@ class EmailIdentity extends DataMapper
         $sql = "UPDATE {$this->table}
                    SET hash = :hash,
                        status = :status,
+                       used_on = :used,
                        expires_on = :expires,
                        token = :token,
                        token_action = :action,
@@ -127,6 +128,7 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':id', $entity->getId());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':status', $entity->getStatus());
+        $statement->bindValue(':used', $entity->getLastUsed());
         $statement->bindValue(':expires', $entity->getExpiresOn());
 
         $this->bindToken($statement, $entity);

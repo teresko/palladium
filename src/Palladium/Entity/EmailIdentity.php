@@ -45,6 +45,11 @@ class EmailIdentity extends Identity
     }
 
 
+    public function rehashPassword($cost = self::HASH_COST)
+    {
+        $this->hash = $this->createHash($this->password, $cost);        
+    }
+
     /**
      * @codeCoverageIgnore
      */
