@@ -51,7 +51,7 @@ class Identification
         if ($identity->matchPassword($password) === false) {
             $this->logWrongPasswordNotice($identity, [
                 'email' => $identity->getEmailAddress(),
-                'key' => md5($password),
+                'key' => $password, // this is the wrong password
             ]);
 
             throw new PasswordMismatch;
@@ -77,12 +77,13 @@ class Identification
     private function updateEmailIdentityOnUse(Entity\EmailIdentity $identity)
     {
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+
         if ($identity->hasOldHash($this->hashCost)) {
             $identity->rehashPassword($this->hashCost);
             $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
         }
-        $identity->setLastUsed(time());
 
+        $identity->setLastUsed(time());
         $mapper->store($identity);
     }
 
@@ -153,13 +154,14 @@ class Identification
 
     private function checkIdentityExpireTime(Entity\Identity $identity, $details)
     {
-        if ($identity->getExpiresOn() < time()) {
-            $this->logger->info('identity expired', $details);
-
-            $this->changeIdentityStatus($identity, Entity\Identity::STATUS_EXPIRED);
-
-            throw new IdentityExpired;
+        if ($identity->getExpiresOn() > time()) {
+            return;
         }
+
+        $this->logger->info('identity expired', $details);
+        $this->changeIdentityStatus($identity, Entity\Identity::STATUS_EXPIRED);
+
+        throw new IdentityExpired;
     }
 
 
@@ -198,7 +200,7 @@ class Identification
             'input' => [
                 'account' => $identity->getAccountId(),
                 'series' => $identity->getSeries(),
-                'key' => md5($identity->getKey()),
+                'key' => $identity->getKey(),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),
@@ -249,8 +251,8 @@ class Identification
         if ($identity->matchPassword($oldPassword) === false) {
             $this->logWrongPasswordNotice($identity, [
                 'account' => $identity->getAccountId(),
-                'old-key' => md5($oldPassword),
-                'new-key' => md5($newPassword),
+                'old-key' => $oldPassword, // the wrong password
+                'new-key' => $newPassword,
             ]);
 
             throw new PasswordMismatch;
@@ -313,7 +315,7 @@ class Identification
         return [
             'input' => [
                 'identifier' => $identity->getIdentifier(),
-                'key' => md5($identity->getKey()),
+                'key' => $identity->getKey(),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),
