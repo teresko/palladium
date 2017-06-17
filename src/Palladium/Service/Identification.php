@@ -166,6 +166,7 @@ class Identification
     private function changeIdentityStatus(Entity\Identity $identity, int $status)
     {
         $identity->setStatus($status);
+        $identity->setLastUsed(time());
         $mapper = $this->mapperFactory->create(Mapper\Identity::class);
         $mapper->store($identity);
     }

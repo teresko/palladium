@@ -105,7 +105,7 @@ class CookieIdentity extends DataMapper
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':expires', $entity->getExpiresOn());
-        $statement->bindValue(':used', time());
+        $statement->bindValue(':used', $entity->getLastUsed());
 
         $statement->execute();
     }
