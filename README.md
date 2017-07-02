@@ -53,7 +53,14 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
 
 #### Optional parameters
 
-In the constructor of `Identification` service there is also an optional third parameter: lifespan of the cookie (in seconds). It defaults to 4 hours.
+In the constructor of `Identification` service there is an optional third and fourth parameter:
+
+- lifespan of the cookie (in seconds), which defaults to 4 hours.
+- hash cost (for BCrypt), which defaults to 12
+
+In the constructor of `Registration` service there is an optional third parameter:
+
+- hash cost (for BCrypt), which defaults to 12
 
 
 #### Setting up mapper factory
