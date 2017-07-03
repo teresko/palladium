@@ -5,6 +5,7 @@ namespace Palladium\Service;
 use PHPUnit\Framework\TestCase;
 
 use Palladium\Component\MapperFactory;
+use Palladium\Exception\IdentityNotFound;
 use Psr\Log\LoggerInterface;
 
 use PDO;
@@ -274,6 +275,25 @@ final class CombinedTest extends TestCase
         $affected = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
         $this->assertGreaterThan(1496353300, $affected->getLastUsed());
         $this->assertStringStartsWith('$2y$11', $affected->getHash());
+    }
+
+    /**
+     * @depends test_Account_Registration
+     */
+
+    public function test_Removing_Existing_Identity()
+    {
+        $factory = new MapperFactory($this->connection, 'identities');
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findIdentityById(2);
+        $identification->deleteIdentity($identity);
+
+        $this->expectException(IdentityNotFound::class);
+
+        $this->search->findIdentityById(2);
     }
 
 }
