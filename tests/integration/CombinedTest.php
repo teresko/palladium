@@ -276,4 +276,19 @@ final class CombinedTest extends TestCase
         $this->assertStringStartsWith('$2y$11', $affected->getHash());
     }
 
+    public function test_Removing_Existing_Identity()
+    {
+        $factory = new MapperFactory($this->connection, 'identities');
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findIdentityById(2);
+        $identification->deleteIdentity($identity);
+
+        $this->expectException(IdentityNotFound::class);
+
+        $this->search->findIdentityById(2);
+    }
+
 }
