@@ -5,6 +5,7 @@ namespace Palladium\Service;
 use PHPUnit\Framework\TestCase;
 
 use Palladium\Component\MapperFactory;
+use Palladium\Exception\IdentityNotFound;
 use Psr\Log\LoggerInterface;
 
 use PDO;
