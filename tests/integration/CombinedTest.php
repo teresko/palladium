@@ -277,6 +277,10 @@ final class CombinedTest extends TestCase
         $this->assertStringStartsWith('$2y$11', $affected->getHash());
     }
 
+    /**
+     * @depends test_Account_Registration
+     */
+
     public function test_Removing_Existing_Identity()
     {
         $factory = new MapperFactory($this->connection, 'identities');
