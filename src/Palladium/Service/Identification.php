@@ -57,6 +57,7 @@ class Identification
             throw new PasswordMismatch;
         }
 
+        $identity->setPassword($password);
         $this->updateEmailIdentityOnUse($identity);
         $cookie = $this->createCookieIdentity($identity);
 
