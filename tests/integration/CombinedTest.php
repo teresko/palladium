@@ -278,6 +278,22 @@ final class CombinedTest extends TestCase
     }
 
     /**
+     * @depends test_Rehashing_of_Outdated_Password_on_Login
+     */
+    public function test_Logging_in_After_Password_has_been_Updated()
+    {
+        $factory = new MapperFactory($this->connection, 'identities');
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $cookie = $identification->loginWithPassword($identity, 'qwerty');
+        $this->assertSame(9, $cookie->getAccountId());
+    }
+
+
+    /**
      * @depends test_Account_Registration
      */
 
