@@ -42,7 +42,7 @@ class Search
      *
      * @return Palladium\Entity\Identity
      */
-    public function findIdentityById($identityId)
+    public function findIdentityById(int $identityId)
     {
         $identity = new Entity\Identity;
         $identity->setId($identityId);
@@ -140,6 +140,35 @@ class Search
             $this->logger->notice('identity not found', [
                 'input' => [
                     'token' => $token,
+                ],
+            ]);
+
+            throw new IdentityNotFound;
+        }
+
+        return $identity;
+    }
+
+
+    /**
+     * @param int $identityId
+     *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
+     * @return Palladium\Entity\EmailIdentity
+     */
+    public function findEmailIdentityById(int $identityId)
+    {
+        $identity = new Entity\EmailIdentity;
+        $identity->setId($identityId);
+
+        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+        $mapper->fetch($identity);
+
+        if ($identity->getAccountId() === null) {
+            $this->logger->notice('identity not found', [
+                'input' => [
+                    'id' => $identityId,
                 ],
             ]);
 

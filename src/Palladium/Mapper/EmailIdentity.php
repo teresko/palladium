@@ -45,6 +45,17 @@ class EmailIdentity extends DataMapper
      */
     public function fetch(Entity\EmailIdentity $entity)
     {
+        if ($entity->getId()) {
+            $this->fetchById($entity);
+            return;
+        }
+
+        $this->fetchByEmailAddress($entity);
+    }
+
+
+    private function fetchByEmailAddress(Entity\EmailIdentity $entity)
+    {
         $sql = "SELECT identity_id      AS id,
                        account_id       AS accountId,
                        hash             AS hash,
@@ -63,6 +74,35 @@ class EmailIdentity extends DataMapper
         $statement->bindValue(':type', $entity->getType());
         $statement->bindValue(':email', $entity->getEmailAddress());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
+
+        $statement->execute();
+
+        $data = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            $this->applyValues($entity, $data);
+        }
+    }
+
+
+    private function fetchById(Entity\EmailIdentity $entity)
+    {
+        $sql = "SELECT identity_id      AS id,
+                       account_id       AS accountId,
+                       hash             AS hash,
+                       status           AS status,
+                       used_on          AS lastUsed,
+                       token            AS token,
+                       token_action     AS tokenAction,
+                       token_expires_on AS tokenEndOfLife
+                  FROM {$this->table}
+                 WHERE type = :type
+                   AND identity_id = :id";
+
+        $statement = $this->connection->prepare($sql);
+
+        $statement->bindValue(':type', $entity->getType());
+        $statement->bindValue(':id', $entity->getId());
 
         $statement->execute();
 

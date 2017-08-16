@@ -191,7 +191,22 @@ final class CombinedTest extends TestCase
     public function test_Changing_Password_for_Identity()
     {
         $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
-        $this->identification->changePassword($identity, 'foobar', 'password');
+        $this->identification->changePassword($identity, 'foobar', 'foobuz');
+
+        $cookie = $this->identification->loginWithPassword($identity, 'foobuz');
+        $this->assertSame(4, $cookie->getAccountId());
+    }
+
+
+
+
+    /**
+     * @depends test_Changing_Password_for_Identity
+     */
+    public function test_Changing_Password_for_Identity_By_Id()
+    {
+        $identity = $this->search->findEmailIdentityById(2);
+        $this->identification->changePassword($identity, 'foobuz', 'password');
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');
         $this->assertSame(4, $cookie->getAccountId());
