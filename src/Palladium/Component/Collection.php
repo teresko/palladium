@@ -83,6 +83,14 @@ abstract class Collection implements \Iterator, \ArrayAccess, \Countable
     }
 
 
+    public function removeEntityById($key)
+    {
+        unset($this->pool[$this->map[$key]]);
+        $this->removeIndexEntry($key);
+        $this->pool = array_values($this->pool);
+    }
+
+
     private function replaceEntity(HasId $entity, $key)
     {
         if (isset($this->pool[$key])) {
