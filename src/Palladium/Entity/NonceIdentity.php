@@ -54,17 +54,17 @@ class NonceIdentity extends Identity
     /**
      * Sets a new key and resets the hash.
      */
-    public function generateNewKey()
+    public function generateNewKey(int $cost = self::HASH_COST)
     {
         $this->key = bin2hex(random_bytes(self::KEY_SIZE));
-        $this->hash = $this->makeHash($this->key);
+        $this->hash = $this->makeHash($this->key, $cost);
     }
 
 
     /**
      * @param string $key
      */
-    private function makeHash($key): string
+    private function makeHash($key, $cost): string
     {
         return password_hash($key, self::HASH_ALGO, ['cost' => self::HASH_COST]);
     }
@@ -84,7 +84,7 @@ class NonceIdentity extends Identity
      *
      * @param string $key
      */
-    public function setKey($key)
+    public function setKey($key, int $cost = self::HASH_COST)
     {
         $this->hash = null;
 
@@ -94,7 +94,7 @@ class NonceIdentity extends Identity
         }
 
         $this->key = (string) $key;
-        $this->hash = $this->makeHash($key);
+        $this->hash = $this->makeHash($key, $cost);
     }
 
 

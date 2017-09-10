@@ -81,7 +81,7 @@ class Registration
         $identity->setExpiresOn(time() + $identityLifespan);
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->generateNewNonce();
-        $identity->generateNewKey();
+        $identity->generateNewKey($this->hashCost);
 
         $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
         $mapper->store($identity);
