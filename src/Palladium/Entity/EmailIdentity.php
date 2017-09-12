@@ -17,9 +17,9 @@ class EmailIdentity extends Identity
     protected $type = Identity::TYPE_EMAIL;
 
 
-    public function setEmailAddress($emailAddress)
+    public function setEmailAddress(string $emailAddress)
     {
-        $this->emailAddress = (string) $emailAddress;
+        $this->emailAddress = strtolower($emailAddress);
     }
 
 
@@ -47,7 +47,7 @@ class EmailIdentity extends Identity
 
     public function rehashPassword($cost = self::HASH_COST)
     {
-        $this->hash = $this->createHash($this->password, $cost);        
+        $this->hash = $this->createHash($this->password, $cost);
     }
 
     /**
