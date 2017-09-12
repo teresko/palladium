@@ -311,7 +311,6 @@ final class CombinedTest extends TestCase
     /**
      * @depends test_Account_Registration
      */
-
     public function test_Removing_Existing_Identity()
     {
         $factory = new MapperFactory($this->connection, 'identities');
@@ -325,6 +324,21 @@ final class CombinedTest extends TestCase
         $this->expectException(IdentityNotFound::class);
 
         $this->search->findIdentityById(2);
+    }
+
+
+    /**
+     * @depends test_Removing_Existing_Identity
+     */
+    public function test_Account_with_Case_Insensitive_Email_Address()
+    {
+        $identity = $this->registration->createEmailIdentity('foo.BaR@example.com', 'password');
+        $this->registration->bindAccountToIdentity(4, $identity);
+
+        $identity = $this->search->findEmailIdentityByEmailAddress('FOO.bar@example.com');
+        $cookie = $this->identification->loginWithPassword($identity, 'password');
+
+        $this->assertSame(4, $cookie->getAccountId());
     }
 
 }
