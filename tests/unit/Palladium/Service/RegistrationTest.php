@@ -5,7 +5,7 @@ namespace Palladium\Service;
 use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 
 use Palladium\Exception\IdentityConflict;
 use Palladium\Exception\AccountNotFound;
@@ -25,39 +25,32 @@ final class RegistrationTest extends TestCase
     {
         $this->expectException(IdentityConflict::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('exists')->will($this->returnValue(true));
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
+        $repository->expects($this->once())->method('has')->will($this->returnValue(true));
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('notice');
 
 
-        $instance = new Registration($factory, $logger);
+        $instance = new Registration($repository, $logger);
         $instance->createEmailIdentity('foo@example.com', 'password');
     }
 
 
     public function test_Creation_of_Email_Identity()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('exists')->will($this->returnValue(false));
-        $mapper->expects($this->once())->method('store');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
+        $repository->expects($this->once())->method('has')->will($this->returnValue(false));
+        $repository->expects($this->once())->method('save');
 
         $instance = new Registration(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -67,20 +60,17 @@ final class RegistrationTest extends TestCase
 
     public function test_Binding_of_Account()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityAccount::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('store');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
+        $repository->expects($this->once())->method('save');
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('info');
 
 
-        $instance = new Registration($factory, $logger);
+        $instance = new Registration($repository, $logger);
         $affected = new Entity\Identity;
         $instance->bindAccountToIdentity(42, $affected);
         $this->assertSame(42, $affected->getAccountId());
@@ -89,20 +79,17 @@ final class RegistrationTest extends TestCase
 
     public function test_Verification_of_Identity()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityAccount::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('store');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
+        $repository->expects($this->once())->method('save');
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('info');
 
 
-        $instance = new Registration($factory, $logger);
+        $instance = new Registration($repository, $logger);
         $affected = new Entity\EmailIdentity;
         $affected->setId(2);
         $affected->setStatus(Entity\Identity::STATUS_NEW);
@@ -114,18 +101,14 @@ final class RegistrationTest extends TestCase
 
     public function test_Creation_of_OneTime_Identity()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\NonceIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper->expects($this->once())->method('store');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
+        $repository->expects($this->once())->method('save');
 
         $instance = new Registration(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 

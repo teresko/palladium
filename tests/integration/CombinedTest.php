@@ -48,7 +48,7 @@ final class CombinedTest extends TestCase
         $repository = new Repository($factory);
 
         $this->identification = new Identification($repository, $logger);
-        $this->registration = new Registration($factory, $logger);
+        $this->registration = new Registration($repository, $logger);
         $this->search = new Search($factory, $logger);
         $this->recovery = new Recovery($repository, $logger);
     }

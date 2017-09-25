@@ -10,7 +10,7 @@ use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityConflict;
 
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 use Palladium\Contract\HasId;
 use Psr\Log\LoggerInterface;
 
@@ -21,7 +21,7 @@ class Registration
     const DEFAULT_NONCE_LIFESPAN = 300; // 5 minutes
     const DEFAULT_HASH_COST = 12;
 
-    private $mapperFactory;
+    private $repository;
     private $logger;
     private $hashCost;
 
@@ -30,9 +30,9 @@ class Registration
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
      * @param int $hashCost Optional value for setting the cost of hashing algorythm
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
+    public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
     {
-        $this->mapperFactory = $mapperFactory;
+        $this->repository = $repository;
         $this->logger = $logger;
         $this->hashCost = $hashCost;
     }
@@ -55,9 +55,7 @@ class Registration
 
         $this->prepareNewIdentity($identity);
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-
-        if ($mapper->exists($identity)) {
+        if ($this->repository->has($identity)) {
             $this->logger->notice('email already registered', [
                 'input' => [
                     'email' => $emailAddress,
@@ -67,7 +65,7 @@ class Registration
             throw new IdentityConflict;
         }
 
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         return $identity;
     }
@@ -83,8 +81,7 @@ class Registration
         $identity->generateNewNonce();
         $identity->generateNewKey($this->hashCost);
 
-        $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logger->info('new single-use identity created', [
             'user' => [
@@ -108,9 +105,7 @@ class Registration
     public function bindAccountToIdentity(int $accountId, Entity\Identity $identity)
     {
         $identity->setAccountId($accountId);
-
-        $mapper = $this->mapperFactory->create(Mapper\IdentityAccount::class);
-        $mapper->store($identity);
+        $this->repository->save($identity, 'IdentityAccount');
 
         $this->logger->info('new email identity registered', [
             'user' => [
@@ -126,8 +121,7 @@ class Registration
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->clearToken();
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logger->info('identity verified', [
             'input' => [
