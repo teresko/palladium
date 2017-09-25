@@ -5,6 +5,7 @@ namespace Palladium\Service;
 use PHPUnit\Framework\TestCase;
 
 use Palladium\Component\MapperFactory;
+use Palladium\Repository\Identity AS Repository;
 use Palladium\Exception\IdentityNotFound;
 use Psr\Log\LoggerInterface;
 
@@ -44,9 +45,9 @@ final class CombinedTest extends TestCase
         $this->connection = $connection;
 
         $factory = new MapperFactory($connection, 'identities');
+        $repository = new Repository($factory);
 
-
-        $this->identification = new Identification($factory, $logger);
+        $this->identification = new Identification($repository, $logger);
         $this->registration = new Registration($factory, $logger);
         $this->search = new Search($factory, $logger);
         $this->recovery = new Recovery($factory, $logger);
@@ -277,10 +278,10 @@ final class CombinedTest extends TestCase
     {
         // using preexisting entry in sqlite database
 
-        $factory = new MapperFactory($this->connection, 'identities');
+        $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
         $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
         $this->assertStringStartsWith('$2y$12', $identity->getHash());
@@ -297,13 +298,13 @@ final class CombinedTest extends TestCase
      */
     public function test_Logging_in_After_Password_has_been_Updated()
     {
-        $factory = new MapperFactory($this->connection, 'identities');
+        $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
         $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
-        $cookie = $identification->loginWithPassword($identity, 'qwerty');
+        $cookie = $this->identification->loginWithPassword($identity, 'qwerty');
         $this->assertSame(9, $cookie->getAccountId());
     }
 
@@ -313,10 +314,10 @@ final class CombinedTest extends TestCase
      */
     public function test_Removing_Existing_Identity()
     {
-        $factory = new MapperFactory($this->connection, 'identities');
+        $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
         $identity = $this->search->findIdentityById(2);
         $identification->deleteIdentity($identity);
