@@ -10,8 +10,7 @@ use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\IdentityNotVerified;
-
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
 
 class Recovery
@@ -26,9 +25,9 @@ class Recovery
      * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    public function __construct(Repository $repository, LoggerInterface $logger)
     {
-        $this->mapperFactory = $mapperFactory;
+        $this->repository = $repository;
         $this->logger = $logger;
     }
 
@@ -60,8 +59,7 @@ class Recovery
         $identity->setTokenAction(Entity\Identity::ACTION_RESET);
         $identity->setTokenEndOfLife(time() + $tokenLifespan);
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logger->info('request password reset', [
             'input' => [
@@ -83,8 +81,7 @@ class Recovery
         $identity->setPassword($password);
         $identity->clearToken();
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logger->info('password reset successful', [
             'input' => [
