@@ -13,9 +13,10 @@ class Identity
     private $list = [
         Entity\Identity::class              => Mapper\Identity::class,
         Entity\EmailIdentity::class         => Mapper\EmailIdentity::class,
-        Entity\CookieIdentity::class         => Mapper\CookieIdentity::class,
-        Entity\NonceIdentity::class          => Mapper\NonceIdentity::class,
+        Entity\CookieIdentity::class        => Mapper\CookieIdentity::class,
+        Entity\NonceIdentity::class         => Mapper\NonceIdentity::class,
         Entity\IdentityCollection::class    => Mapper\IdentityCollection::class,
+        'IdentityAccount'                   => Mapper\IdentityAccount::class,
     ];
 
 
@@ -61,6 +62,14 @@ class Identity
         $key = $this->computeKey(get_class($identity), $override);
         $mapper = $this->mapperFactory->create($this->list[$key]);
         $mapper->remove($identity);
+    }
+
+
+    public function has($identity, string $override = null)
+    {
+        $key = $this->computeKey(get_class($identity), $override);
+        $mapper = $this->mapperFactory->create($this->list[$key]);
+        return $mapper->exists($identity);
     }
 
 
