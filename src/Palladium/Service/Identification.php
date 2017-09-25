@@ -12,7 +12,7 @@ use Palladium\Exception\PasswordMismatch;
 use Palladium\Exception\KeyMismatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\IdentityExpired;
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
 
 class Identification
@@ -21,25 +21,24 @@ class Identification
     const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
     const DEFAULT_HASH_COST = 12;
 
-    private $mapperFactory;
+    private $repository;
     private $logger;
 
     private $cookieLifespan;
     private $hashCost;
 
     /**
-     * @param CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
      */
     public function __construct(
-        CanCreateMapper $mapperFactory,
+        Repository $repository,
         LoggerInterface $logger,
-        $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN,
-        $hashCost = self::DEFAULT_HASH_COST
+        int $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN,
+        int $hashCost = self::DEFAULT_HASH_COST
         )
     {
-        $this->mapperFactory = $mapperFactory;
+        $this->repository = $repository;
         $this->logger = $logger;
         $this->cookieLifespan = $cookieLifespan;
         $this->hashCost = $hashCost;
@@ -77,22 +76,21 @@ class Identification
 
     private function updateEmailIdentityOnUse(Entity\EmailIdentity $identity)
     {
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
+        $type = Entity\Identity::class;
 
         if ($identity->hasOldHash($this->hashCost)) {
             $identity->rehashPassword($this->hashCost);
-            $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
+            $type = Entity\EmailIdentity::class;
         }
 
         $identity->setLastUsed(time());
-        $mapper->store($identity);
+        $this->repository->save($identity, $type);
     }
 
 
     private function createCookieIdentity(Entity\Identity $identity): Entity\CookieIdentity
     {
         $cookie = new Entity\CookieIdentity;
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
 
         $cookie->setAccountId($identity->getAccountId());
         $cookie->generateNewSeries();
@@ -109,8 +107,7 @@ class Identification
         }
 
         $cookie->setParentId($parentId);
-
-        $mapper->store($cookie);
+        $this->repository->save($cookie);
 
         return $cookie;
     }
@@ -131,8 +128,7 @@ class Identification
         $identity->setLastUsed(time());
         $identity->setExpiresOn(time() + $this->cookieLifespan);
 
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logExpectedBehaviour($identity, 'cookie updated');
 
@@ -170,8 +166,7 @@ class Identification
     {
         $identity->setStatus($status);
         $identity->setLastUsed(time());
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity, Entity\Identity::class);
     }
 
 
@@ -217,17 +212,14 @@ class Identification
             $identity->setStatus(Entity\Identity::STATUS_DISCARDED);
         }
 
-        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
-        $mapper->store($list);
+        $this->repository->save($list);
     }
 
 
     public function blockIdentity(Entity\Identity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_BLOCKED);
-
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->store($identity);
+        $this->repository->save($identity, Entity\Identity::class);
     }
 
 
@@ -236,8 +228,7 @@ class Identification
      */
     public function deleteIdentity(Entity\Identity $identity)
     {
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->remove($identity);
+        $this->repository->delete($identity, Entity\Identity::class);
     }
 
 
@@ -247,7 +238,6 @@ class Identification
      */
     public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
     {
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
 
         if ($identity->matchPassword($oldPassword) === false) {
             $this->logWrongPasswordNotice($identity, [
@@ -260,7 +250,7 @@ class Identification
         }
 
         $identity->setPassword($newPassword);
-        $mapper->store($identity);
+        $this->repository->save($identity);
 
         $this->logExpectedBehaviour($identity, 'password changed');
     }
