@@ -6,7 +6,6 @@ namespace Palladium\Service;
  * Retrieval and handling of identities for registered users
  */
 
-use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\PasswordMismatch;
 use Palladium\Exception\KeyMismatch;
@@ -28,8 +27,10 @@ class Identification
     private $hashCost;
 
     /**
-     * @param LoggerInterface $logger PSR-3 compatible logger
-     * @param int $cookieLifespan Lifespan of the authentication cookie in seconds
+     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
+     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param int $cookieLifespan Lifespan of the authentication cookie in seconds (default: 4 hours)
+     * @param int $hashCost Cost of the bcrypt hashing function (default: 12)
      */
     public function __construct(
         Repository $repository,

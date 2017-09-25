@@ -7,7 +7,6 @@ namespace Palladium\Service;
  * Class for finding identities based on various conditions
  */
 
-use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
@@ -23,7 +22,7 @@ class Search
     private $logger;
 
     /**
-     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
      */
     public function __construct(Repository $repository, LoggerInterface $logger)

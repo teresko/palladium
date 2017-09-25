@@ -6,7 +6,6 @@ namespace Palladium\Service;
  * Code for creating new identities
  */
 
-use Palladium\Mapper as Mapper;
 use Palladium\Entity as Entity;
 use Palladium\Exception\IdentityConflict;
 
@@ -26,9 +25,9 @@ class Registration
     private $hashCost;
 
     /**
-     * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
+     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
-     * @param int $hashCost Optional value for setting the cost of hashing algorythm
+     * @param int $hashCost Optional value for setting the cost of hashing algorythm (default: 12)
      */
     public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
     {
