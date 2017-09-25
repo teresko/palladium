@@ -18,7 +18,7 @@ class Registration
 {
 
     const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
-    const DEFAULT_NONCE_LIFESPAN = 300; // 5 minutes
+    const DEFAULT_NONCE_LIFESPAN = 7200; // 2 hours
     const DEFAULT_HASH_COST = 12;
 
     private $repository;
