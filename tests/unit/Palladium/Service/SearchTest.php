@@ -5,7 +5,7 @@ namespace Palladium\Service;
 use PHPUnit\Framework\TestCase;
 
 use Psr\Log\LoggerInterface;
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 use Palladium\Contract\HasId;
 
 use Palladium\Entity;
@@ -23,23 +23,19 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Identity_by_Id()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\Identity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setAccountId(1);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -55,20 +51,14 @@ final class SearchTest extends TestCase
     {
         $this->expectException(IdentityNotFound::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\Identity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
-            ->expects($this->once())
-            ->method('fetch');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
+        $repository->expects($this->once())->method('load');
 
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -78,23 +68,19 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Email_Identity_by_Email_Address()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -109,20 +95,14 @@ final class SearchTest extends TestCase
     {
         $this->expectException(IdentityNotFound::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
-            ->expects($this->once())
-            ->method('fetch');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
+        $repository->expects($this->once())->method('load');
 
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -132,23 +112,19 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Email_Identity_by_Token()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -163,20 +139,14 @@ final class SearchTest extends TestCase
     {
         $this->expectException(IdentityNotFound::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\EmailIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
-            ->expects($this->once())
-            ->method('fetch');
-
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
+        $repository->expects($this->once())->method('load');
 
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -189,23 +159,19 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Cookie_Identity()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\CookieIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -220,21 +186,17 @@ final class SearchTest extends TestCase
     {
         $this->expectException(IdentityNotFound::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\CookieIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function() {}));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -247,24 +209,21 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Identity_with_Given_Account_Id()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityCollection::class)
+
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function($collection) {
                 $collection->addBlueprint(['id' => 1]);
                 $collection->addBlueprint(['id' => 2]);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -275,24 +234,20 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_Identity_with_Given_Parent_Id()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\IdentityCollection::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function($collection) {
                 $collection->addBlueprint(['id' => 7]);
                 $collection->addBlueprint(['id' => 3]);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -303,23 +258,19 @@ final class SearchTest extends TestCase
 
     public function test_Looking_for_OneTime_Identity()
     {
-        $mapper = $this
-                    ->getMockBuilder(Mapper\NonceIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
             }));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
@@ -334,21 +285,17 @@ final class SearchTest extends TestCase
     {
         $this->expectException(IdentityNotFound::class);
 
-        $mapper = $this
-                    ->getMockBuilder(Mapper\NonceIdentity::class)
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
                     ->disableOriginalConstructor()
                     ->getMock();
-        $mapper
+        $repository
             ->expects($this->once())
-            ->method('fetch')
+            ->method('load')
             ->will($this->returnCallback(function() {}));
 
-        $factory = $this->getMockBuilder(CanCreateMapper::class)->getMock();
-        $factory->method('create')->will($this->returnValue($mapper));
-
-
         $instance = new Search(
-            $factory,
+            $repository,
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 

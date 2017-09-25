@@ -12,23 +12,23 @@ use Palladium\Entity as Entity;
 use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
 
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
 
 
 class Search
 {
 
-    private $mapperFactory;
+    private $repository;
     private $logger;
 
     /**
      * @param Palladium\Contract\CanCreateMapper $mapperFactory Factory for creating persistence layer structures
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
      */
-    public function __construct(CanCreateMapper $mapperFactory, LoggerInterface $logger)
+    public function __construct(Repository $repository, LoggerInterface $logger)
     {
-        $this->mapperFactory = $mapperFactory;
+        $this->repository = $repository;
         $this->logger = $logger;
     }
 
@@ -47,8 +47,7 @@ class Search
         $identity = new Entity\Identity;
         $identity->setId($identityId);
 
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->fetch($identity);
+        $this->repository->load($identity, Entity\Identity::class);
 
         if ($identity->getAccountId() === null) {
             $this->logger->notice('identity not found', [
@@ -78,8 +77,7 @@ class Search
         $identity = new Entity\EmailIdentity;
         $identity->setEmailAddress($emailAddress);
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->fetch($identity);
+        $this->repository->load($identity);
 
         if ($identity->getId() === null) {
             $this->logger->notice('identity not found', [
@@ -100,8 +98,7 @@ class Search
         $identity = new Entity\NonceIdentity;
         $identity->setIdentifier($identifier);
 
-        $mapper = $this->mapperFactory->create(Mapper\NonceIdentity::class);
-        $mapper->fetch($identity);
+        $this->repository->load($identity);
 
         if ($identity->getId() === null) {
             $this->logger->notice('identity not found', [
@@ -133,8 +130,7 @@ class Search
         $identity->setTokenAction($action);
         $identity->setTokenEndOfLife(time());
 
-        $mapper = $this->mapperFactory->create(Mapper\Identity::class);
-        $mapper->fetch($identity);
+        $this->repository->load($identity, Entity\Identity::class);
 
         if ($identity->getId() === null) {
             $this->logger->notice('identity not found', [
@@ -162,8 +158,7 @@ class Search
         $identity = new Entity\EmailIdentity;
         $identity->setId($identityId);
 
-        $mapper = $this->mapperFactory->create(Mapper\EmailIdentity::class);
-        $mapper->fetch($identity);
+        $this->repository->load($identity);
 
         if ($identity->getAccountId() === null) {
             $this->logger->notice('identity not found', [
@@ -194,8 +189,7 @@ class Search
         $cookie->setAccountId($accountId);
         $cookie->setSeries($series);
 
-        $mapper = $this->mapperFactory->create(Mapper\CookieIdentity::class);
-        $mapper->fetch($cookie);
+        $this->repository->load($cookie);
 
         if ($cookie->getId() === null) {
             $this->logger->notice('identity not found', [
@@ -243,9 +237,7 @@ class Search
     private function fetchIdentitiesWithStatus(Entity\IdentityCollection $collection, $status)
     {
         $collection->forStatus($status);
-
-        $mapper = $this->mapperFactory->create(Mapper\IdentityCollection::class);
-        $mapper->fetch($collection);
+        $this->repository->load($collection);
 
         return $collection;
     }
