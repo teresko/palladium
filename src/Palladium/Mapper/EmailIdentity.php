@@ -88,6 +88,7 @@ class EmailIdentity extends DataMapper
     private function fetchById(Entity\EmailIdentity $entity)
     {
         $sql = "SELECT identity_id      AS id,
+                       identifier       AS emailAddress,
                        account_id       AS accountId,
                        hash             AS hash,
                        status           AS status,

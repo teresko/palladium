@@ -311,6 +311,21 @@ final class CombinedTest extends TestCase
     /**
      * @depends test_Account_Registration
      */
+    public function test_Finding_Identity_By_Id()
+    {
+        $factory = new MapperFactory($this->connection, 'identities');
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findEmailIdentityById(2);
+        $this->assertSame('test@example.com', $identity->getEmailAddress());
+    }
+
+
+    /**
+     * @depends test_Finding_Identity_By_Id
+     */
     public function test_Removing_Existing_Identity()
     {
         $factory = new MapperFactory($this->connection, 'identities');
