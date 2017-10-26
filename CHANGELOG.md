@@ -1,6 +1,10 @@
 # Change Log   
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2017-10-26
+### Fixed
+- When using `findEmailIdentityById()` now also loads the email address of the located identity
+
 ## [1.4.0] - 2017-09-12
 ### Added
 - New method `findEmailIdentityById()` in the `Search` service for retrieving identity by email address
@@ -38,6 +42,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - In service `Search` the `findNonceIdentityByNonce()` was renamed to `findNonceIdentityByIdentifier()` to fix the inconsistency in the naming.
 
+[1.4.1]: https://github.com/teresko/palladium/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/teresko/palladium/compare/v1.3.1...v1.4.0
 [1.3.2]: https://github.com/teresko/palladium/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/teresko/palladium/compare/v1.3.0...v1.3.1
