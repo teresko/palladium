@@ -26,10 +26,12 @@ class NonceIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND status = :status
+                   AND fingerprint = :fingerprint
                    AND identifier = :identifier";
 
         $statement = $this->connection->prepare($sql);
 
+        $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':status', Entity\Identity::STATUS_ACTIVE);
         $statement->bindValue(':type', $entity->getType());
