@@ -66,7 +66,7 @@ final class SearchTest extends TestCase
     }
 
 
-    public function test_Looking_for_Email_Identity_by_Email_Address()
+    public function test_Looking_for_Email_Identity_by_Identifier()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -85,13 +85,13 @@ final class SearchTest extends TestCase
         );
 
         $this->assertInstanceOf(
-            Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByEmailAddress('foo@example.com')
+            Entity\StandardIdentity::class,
+            $instance->findStandardIdentityByIdentifier('foo@example.com')
         );
     }
 
 
-    public function test_Failure_to_Find_Email_Identity_by_Email_Address()
+    public function test_Failure_to_Find_Email_Identity_by_Identifier()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -106,7 +106,7 @@ final class SearchTest extends TestCase
             $this->getMockBuilder(LoggerInterface::class)->getMock()
         );
 
-        $instance->findEmailIdentityByEmailAddress('foo@example.com');
+        $instance->findStandardIdentityByIdentifier('foo@example.com');
     }
 
 
@@ -129,8 +129,8 @@ final class SearchTest extends TestCase
         );
 
         $this->assertInstanceOf(
-            Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
+            Entity\StandardIdentity::class,
+            $instance->findStandardIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 
@@ -151,8 +151,8 @@ final class SearchTest extends TestCase
         );
 
         $this->assertInstanceOf(
-            Entity\EmailIdentity::class,
-            $instance->findEmailIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
+            Entity\StandardIdentity::class,
+            $instance->findStandardIdentityByToken('12345678901234567890123456789012', Entity\Identity::ACTION_NONE)
         );
     }
 

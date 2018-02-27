@@ -5,28 +5,28 @@ namespace Palladium\Entity;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Palladium\Entity\EmailIdentity
+ * @covers Palladium\Entity\StandardIdentity
  * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-final class EmailIdentityTest extends TestCase
+final class StandardIdentityTest extends TestCase
 {
     public function test_Identifier_Assignment_Type_Cast()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
 
-        $instance->setEmailAddress('alpha');
-        $this->assertSame('alpha', $instance->getEmailAddress());
+        $instance->setIdentifier('alpha');
+        $this->assertSame('alpha', $instance->getIdentifier());
 
-        $instance->setEmailAddress(12345);
-        $this->assertSame('12345', $instance->getEmailAddress());
+        $instance->setIdentifier(12345);
+        $this->assertSame('12345', $instance->getIdentifier());
     }
 
 
     public function test_Retrieval_of_Fingerprint()
     {
-        $instance = new EmailIdentity;
-        $instance->setEmailAddress('alpha');
+        $instance = new StandardIdentity;
+        $instance->setIdentifier('alpha');
 
         $this->assertSame(
             '9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af',
@@ -37,7 +37,7 @@ final class EmailIdentityTest extends TestCase
 
     public function test_Hash_Retrieval_for_a_Given_Key()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
 
         $instance->setPassword('alpha');
         $this->assertTrue(password_verify('alpha', $instance->getHash()));
@@ -46,7 +46,7 @@ final class EmailIdentityTest extends TestCase
 
     public function test_Hash_Assignment()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
         $this->assertNull($instance->getHash());
 
         $instance->setHash('alpha');
@@ -62,7 +62,7 @@ final class EmailIdentityTest extends TestCase
 
     public function test_for_Old_Hash()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
         $instance->setHash('$1$beta$ocWFwI6Cax/SdMiwWXYoQ/');
 
         $this->assertTrue($instance->hasOldHash());
@@ -74,7 +74,7 @@ final class EmailIdentityTest extends TestCase
 
     public function test_Key_Matching()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
         $this->assertTrue($instance->matchPassword('alpha'));
@@ -83,7 +83,7 @@ final class EmailIdentityTest extends TestCase
 
     public function test_Rehashing_of_a_Password()
     {
-        $instance = new EmailIdentity;
+        $instance = new StandardIdentity;
         $instance->setPassword('alpha');
         $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 

@@ -32,7 +32,7 @@ final class RecoveryTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
 
         $instance = new Recovery($repository, $logger);
         $instance->markForReset($affected);
@@ -55,7 +55,7 @@ final class RecoveryTest extends TestCase
         $logger->expects($this->once())->method('notice');
 
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setStatus(Entity\Identity::STATUS_NEW);
 
         $instance = new Recovery($repository, $logger);
@@ -73,7 +73,7 @@ final class RecoveryTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setToken('12345678901234567890123456789012');
 
         $instance = new Recovery($repository, $logger);

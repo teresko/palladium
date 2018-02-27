@@ -8,7 +8,7 @@ use PDOStatement;
 use Palladium\Entity;
 
 /**
- * @covers Palladium\Mapper\EmailIdentity
+ * @covers Palladium\Mapper\StandardIdentity
  * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
@@ -34,10 +34,10 @@ final class EmailIdentityTest extends TestCase
         $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
 
 
-        $identity = new Entity\EmailIdentity;
+        $identity = new Entity\StandardIdentity;
         $identity->setAccountId(3);
 
-        $instance = new EmailIdentity($pdo, 'table');
+        $instance = new StandardIdentity($pdo, 'table');
         $instance->store($identity);
     }
 
@@ -61,10 +61,10 @@ final class EmailIdentityTest extends TestCase
         $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
 
 
-        $identity = new Entity\EmailIdentity;
+        $identity = new Entity\StandardIdentity;
         $identity->setId(43);
 
-        $instance = new EmailIdentity($pdo, 'table');
+        $instance = new StandardIdentity($pdo, 'table');
         $instance->store($identity);
     }
 }

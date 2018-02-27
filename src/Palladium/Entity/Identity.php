@@ -18,6 +18,7 @@ class Identity implements HasId
     const ACTION_NONE = null;
     const ACTION_VERIFY = 1;
     const ACTION_RESET = 2;
+    const ACTION_MODIFY = 4;
 
     const STATUS_ANY = null;
     const STATUS_NEW = 1; // not verified user
@@ -46,7 +47,7 @@ class Identity implements HasId
     private $token;
     private $tokenAction;
     private $tokenExpiresOn;
-
+    private $tokenPayload;
 
 
     public function setId($identityId)
@@ -238,11 +239,24 @@ class Identity implements HasId
     }
 
 
+    public function setTokenPayload(string $tokenPayload = null)
+    {
+        $this->tokenPayload = $tokenPayload;
+    }
+
+
+    public function getTokenPayload()
+    {
+        return $this->tokenPayload;
+    }
+
+
     public function clearToken()
     {
         $this->token = null;
         $this->tokenAction = Identity::ACTION_NONE;
         $this->tokenExpiresOn = null;
+        $this->tokenPayload = null;
     }
 
 

@@ -46,11 +46,11 @@ class Identification
     }
 
 
-    public function loginWithPassword(Entity\EmailIdentity $identity, string $password): Entity\CookieIdentity
+    public function loginWithPassword(Entity\StandardIdentity $identity, string $password): Entity\CookieIdentity
     {
         if ($identity->matchPassword($password) === false) {
             $this->logWrongPasswordNotice($identity, [
-                'email' => $identity->getEmailAddress(),
+                'identifier' => $identity->getIdentifier(),
                 'key' => $password, // this is the wrong password
             ]);
 
@@ -58,12 +58,12 @@ class Identification
         }
 
         $identity->setPassword($password);
-        $this->updateEmailIdentityOnUse($identity);
+        $this->updateStandardIdentityOnUse($identity);
         $cookie = $this->createCookieIdentity($identity);
 
         $this->logger->info('login successful', [
             'input' => [
-                'email' => $identity->getEmailAddress(),
+                'identifier' => $identity->getIdentifier(),
             ],
             'user' => [
                 'account' => $identity->getAccountId(),
@@ -75,13 +75,13 @@ class Identification
     }
 
 
-    private function updateEmailIdentityOnUse(Entity\EmailIdentity $identity)
+    private function updateStandardIdentityOnUse(Entity\StandardIdentity $identity)
     {
         $type = Entity\Identity::class;
 
         if ($identity->hasOldHash($this->hashCost)) {
             $identity->rehashPassword($this->hashCost);
-            $type = Entity\EmailIdentity::class;
+            $type = Entity\StandardIdentity::class;
         }
 
         $identity->setLastUsed(time());
@@ -237,7 +237,7 @@ class Identification
      * @param string $oldPassword
      * @param string $newPassword
      */
-    public function changePassword(Entity\EmailIdentity $identity, $oldPassword, $newPassword)
+    public function changePassword(Entity\StandardIdentity $identity, $oldPassword, $newPassword)
     {
 
         if ($identity->matchPassword($oldPassword) === false) {
@@ -260,7 +260,7 @@ class Identification
     /**
      * @param array $input
      */
-    private function logWrongPasswordNotice(Entity\EmailIdentity $identity, $input)
+    private function logWrongPasswordNotice(Entity\StandardIdentity $identity, $input)
     {
         $this->logger->notice('wrong password', [
             'input' => $input,

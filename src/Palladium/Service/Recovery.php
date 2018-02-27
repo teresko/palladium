@@ -38,12 +38,12 @@ class Recovery
      *
      * @return string token, that can be use to reset password
      */
-    public function markForReset(Entity\EmailIdentity $identity, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function markForReset(Entity\StandardIdentity $identity, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
             $this->logger->notice('identity not verified', [
                 'input' => [
-                    'email' => $identity->getEmailAddress(),
+                    'identifier' => $identity->getIdentifier(),
                 ],
                 'user' => [
                     'account' => $identity->getAccountId(),
@@ -62,7 +62,7 @@ class Recovery
 
         $this->logger->info('request password reset', [
             'input' => [
-                'email' => $identity->getEmailAddress(),
+                'identifier' => $identity->getIdentifier(),
             ],
         ]);
 
@@ -73,7 +73,7 @@ class Recovery
     /**
      * @param string $password
      */
-    public function resetIdentityPassword(Entity\EmailIdentity $identity, $password)
+    public function resetIdentityPassword(Entity\StandardIdentity $identity, $password)
     {
         $token = $identity->getToken();
 

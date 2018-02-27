@@ -12,7 +12,7 @@ class Identity
 {
     private $list = [
         Entity\Identity::class              => Mapper\Identity::class,
-        Entity\EmailIdentity::class         => Mapper\EmailIdentity::class,
+        Entity\StandardIdentity::class      => Mapper\StandardIdentity::class,
         Entity\CookieIdentity::class        => Mapper\CookieIdentity::class,
         Entity\NonceIdentity::class         => Mapper\NonceIdentity::class,
         Entity\IdentityCollection::class    => Mapper\IdentityCollection::class,

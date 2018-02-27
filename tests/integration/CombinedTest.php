@@ -57,7 +57,7 @@ final class CombinedTest extends TestCase
 
     public function test_Account_Registration()
     {
-        $identity = $this->registration->createEmailIdentity('test@example.com', 'password');
+        $identity = $this->registration->createStandardIdentity('test@example.com', 'password');
         $this->registration->bindAccountToIdentity(4, $identity);
 
         $this->assertSame(2, $identity->getId());
@@ -73,10 +73,10 @@ final class CombinedTest extends TestCase
     {
         $token = self::$hold;
 
-        $identity = $this->search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+        $identity = $this->search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
         $this->assertSame(\Palladium\Entity\Identity::STATUS_NEW, $identity->getStatus());
 
-        $this->registration->verifyEmailIdentity($identity);
+        $this->registration->verifyStandardIdentity($identity);
         $this->assertSame(\Palladium\Entity\Identity::STATUS_ACTIVE, $identity->getStatus());
 
         self::$hold = null;
@@ -88,7 +88,7 @@ final class CombinedTest extends TestCase
      */
     public function test_User_Login_with_Password()
     {
-        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
+        $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
@@ -157,7 +157,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Requesting_New_Password()
     {
-        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
+        $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $token = $this->recovery->markForReset($identity);
 
         $this->assertNotNull($token);
@@ -174,7 +174,7 @@ final class CombinedTest extends TestCase
     {
         $token = self::$hold;
 
-        $identity = $this->search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
+        $identity = $this->search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
         $this->recovery->resetIdentityPassword($identity, 'foobar');
 
         $list = $this->search->findIdentitiesByParentId($identity->getId());
@@ -192,7 +192,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Changing_Password_for_Identity()
     {
-        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
+        $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $this->identification->changePassword($identity, 'foobar', 'foobuz');
 
         $cookie = $this->identification->loginWithPassword($identity, 'foobuz');
@@ -207,7 +207,7 @@ final class CombinedTest extends TestCase
      */
     public function test_Changing_Password_for_Identity_By_Id()
     {
-        $identity = $this->search->findEmailIdentityById(2);
+        $identity = $this->search->findStandardIdentityById(2);
         $this->identification->changePassword($identity, 'foobuz', 'password');
 
         $cookie = $this->identification->loginWithPassword($identity, 'password');
@@ -262,7 +262,7 @@ final class CombinedTest extends TestCase
     {
         $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-        $identity = $this->search->findEmailIdentityByEmailAddress('test@example.com');
+        $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
         $this->assertSame(4, $cookie->getAccountId()); // from Registration phase
@@ -284,12 +284,12 @@ final class CombinedTest extends TestCase
 
         $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
-        $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $identity = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
         $this->assertStringStartsWith('$2y$12', $identity->getHash());
 
         $identification->loginWithPassword($identity, 'qwerty');
 
-        $affected = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $affected = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
         $this->assertGreaterThan(1496353300, $affected->getLastUsed());
         $this->assertStringStartsWith('$2y$11', $affected->getHash());
     }
@@ -304,7 +304,7 @@ final class CombinedTest extends TestCase
 
         $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
-        $identity = $this->search->findEmailIdentityByEmailAddress('foobar@who.cares');
+        $identity = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
         $cookie = $this->identification->loginWithPassword($identity, 'qwerty');
         $this->assertSame(9, $cookie->getAccountId());
     }
@@ -315,13 +315,13 @@ final class CombinedTest extends TestCase
      */
     public function test_Finding_Identity_By_Id()
     {
-        $factory = new MapperFactory($this->connection, 'identities');
+        $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($factory, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
 
-        $identity = $this->search->findEmailIdentityById(2);
-        $this->assertSame('test@example.com', $identity->getEmailAddress());
+        $identity = $this->search->findStandardIdentityById(2);
+        $this->assertSame('test@example.com', $identity->getIdentifier());
     }
 
 
@@ -347,12 +347,12 @@ final class CombinedTest extends TestCase
     /**
      * @depends test_Removing_Existing_Identity
      */
-    public function test_Account_with_Case_Insensitive_Email_Address()
+    public function test_Account_with_Case_Insensitive_Identifier()
     {
-        $identity = $this->registration->createEmailIdentity('foo.BaR@example.com', 'password');
+        $identity = $this->registration->createStandardIdentity('foo.BaR@example.com', 'password');
         $this->registration->bindAccountToIdentity(4, $identity);
 
-        $identity = $this->search->findEmailIdentityByEmailAddress('FOO.bar@example.com');
+        $identity = $this->search->findStandardIdentityByIdentifier('FOO.bar@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
 
         $this->assertSame(4, $cookie->getAccountId());

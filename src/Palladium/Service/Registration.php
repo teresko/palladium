@@ -40,26 +40,26 @@ class Registration
 
 
     /**
-     * @param string $emailAddress
+     * @param string $identifier
      * @param string $password
      * @param int $tokenLifespan
      *
-     * @return Palladium\Entity\EmailIdentity
+     * @return Palladium\Entity\StandardIdentity
      */
-    public function createEmailIdentity(string $emailAddress, string $password, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function createStandardIdentity(string $identifier, string $password, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
-        $identity = new Entity\EmailIdentity;
+        $identity = new Entity\StandardIdentity;
 
-        $identity->setEmailAddress($emailAddress);
+        $identity->setIdentifier($identifier);
         $identity->setPassword($password, $this->hashCost);
         $identity->setTokenEndOfLife(time() + $tokenLifespan);
 
         $this->prepareNewIdentity($identity);
 
         if ($this->repository->has($identity)) {
-            $this->logger->notice('email already registered', [
+            $this->logger->notice('identifier already registered', [
                 'input' => [
-                    'email' => $emailAddress,
+                    'identifier' => $identifier,
                 ],
             ]);
 
@@ -95,7 +95,7 @@ class Registration
     }
 
 
-    private function prepareNewIdentity(Entity\EmailIdentity $identity)
+    private function prepareNewIdentity(Entity\StandardIdentity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_NEW);
         $identity->generateToken();
@@ -108,7 +108,7 @@ class Registration
         $identity->setAccountId($accountId);
         $this->accountMapper->store($identity);
 
-        $this->logger->info('new email identity registered', [
+        $this->logger->info('new identifier registered', [
             'user' => [
                 'account' => $identity->getAccountId(),
                 'identity' => $identity->getId(),
@@ -117,7 +117,7 @@ class Registration
     }
 
 
-    public function verifyEmailIdentity(Entity\EmailIdentity $identity)
+    public function verifyStandardIdentity(Entity\StandardIdentity $identity)
     {
         $identity->setStatus(Entity\Identity::STATUS_ACTIVE);
         $identity->clearToken();

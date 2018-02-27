@@ -4,37 +4,37 @@ namespace Palladium\Entity;
 
 use RuntimeException;
 
-class EmailIdentity extends Identity
+class StandardIdentity extends Identity
 {
 
     const HASH_ALGO = PASSWORD_BCRYPT;
     const HASH_COST = 12;
 
-    private $emailAddress;
+    private $identifier;
     private $password;
     private $hash;
 
     protected $type = Identity::TYPE_EMAIL;
 
 
-    public function setEmailAddress(string $emailAddress)
+    public function setIdentifier(string $identifier)
     {
-        $this->emailAddress = strtolower($emailAddress);
+        $this->identifier = strtolower($identifier);
     }
 
 
     /**
      * @codeCoverageIgnore
      */
-    public function getEmailAddress()
+    public function getIdentifier()
     {
-        return $this->emailAddress;
+        return $this->identifier;
     }
 
 
     public function getFingerprint(): string
     {
-        return hash('sha384', $this->emailAddress);
+        return hash('sha384', $this->identifier);
     }
 
 

@@ -11,13 +11,13 @@ use Palladium\Entity as Entity;
 use PDOStatement;
 use PDO;
 
-class EmailIdentity extends DataMapper
+class StandardIdentity extends DataMapper
 {
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\StandardIdentity $entity
      */
-    public function exists(Entity\EmailIdentity $entity)
+    public function exists(Entity\StandardIdentity $entity)
     {
         $sql = "SELECT 1
                   FROM {$this->table}
@@ -28,9 +28,9 @@ class EmailIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
+        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
-        $statement->bindValue(':email', $entity->getEmailAddress());
+        $statement->bindValue(':email', $entity->getIdentifier());
         $statement->bindValue(':now', time());
 
         $statement->execute();
@@ -41,20 +41,20 @@ class EmailIdentity extends DataMapper
 
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\StandardIdentity $entity
      */
-    public function fetch(Entity\EmailIdentity $entity)
+    public function fetch(Entity\StandardIdentity $entity)
     {
         if ($entity->getId()) {
             $this->fetchById($entity);
             return;
         }
 
-        $this->fetchByEmailAddress($entity);
+        $this->fetchByIdentifier($entity);
     }
 
 
-    private function fetchByEmailAddress(Entity\EmailIdentity $entity)
+    private function fetchByIdentifier(Entity\StandardIdentity $entity)
     {
         $sql = "SELECT identity_id      AS id,
                        account_id       AS accountId,
@@ -63,7 +63,8 @@ class EmailIdentity extends DataMapper
                        used_on          AS lastUsed,
                        token            AS token,
                        token_action     AS tokenAction,
-                       token_expires_on AS tokenEndOfLife
+                       token_expires_on AS tokenEndOfLife,
+                       token_payload    AS tokenPayload
                   FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
@@ -72,7 +73,7 @@ class EmailIdentity extends DataMapper
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':email', $entity->getEmailAddress());
+        $statement->bindValue(':email', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
 
         $statement->execute();
@@ -85,17 +86,18 @@ class EmailIdentity extends DataMapper
     }
 
 
-    private function fetchById(Entity\EmailIdentity $entity)
+    private function fetchById(Entity\StandardIdentity $entity)
     {
         $sql = "SELECT identity_id      AS id,
-                       identifier       AS emailAddress,
+                       identifier       AS identifier,
                        account_id       AS accountId,
                        hash             AS hash,
                        status           AS status,
                        used_on          AS lastUsed,
                        token            AS token,
                        token_action     AS tokenAction,
-                       token_expires_on AS tokenEndOfLife
+                       token_expires_on AS tokenEndOfLife,
+                       token_payload    AS tokenPayload
                   FROM {$this->table}
                  WHERE type = :type
                    AND identity_id = :id";
@@ -116,9 +118,9 @@ class EmailIdentity extends DataMapper
 
 
     /**
-     * @param Entity\EmailIdentity $entity
+     * @param Entity\StandardIdentity $entity
      */
-    public function store(Entity\EmailIdentity $entity)
+    public function store(Entity\StandardIdentity $entity)
     {
         if ($entity->getId() === null) {
             $this->createIdentity($entity);
@@ -129,17 +131,17 @@ class EmailIdentity extends DataMapper
     }
 
 
-    private function createIdentity(Entity\EmailIdentity $entity)
+    private function createIdentity(Entity\StandardIdentity $entity)
     {
         $sql = "INSERT INTO {$this->table}
-                       (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on )
-                VALUES (:type, :status, :email, :fingerprint, :hash, :created, :token, :action, :token_eol)";
+                       (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on, token_payload)
+                VALUES (:type, :status, :email, :fingerprint, :hash, :created, :token, :action, :token_eol, :payload)";
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\EmailIdentity::TYPE_EMAIL);
-        $statement->bindValue(':status', Entity\EmailIdentity::STATUS_NEW);
-        $statement->bindValue(':email', $entity->getEmailAddress());
+        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
+        $statement->bindValue(':status', Entity\StandardIdentity::STATUS_NEW);
+        $statement->bindValue(':email', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':created', time());
@@ -152,7 +154,7 @@ class EmailIdentity extends DataMapper
     }
 
 
-    private function updateIdentity(Entity\EmailIdentity $entity)
+    private function updateIdentity(Entity\StandardIdentity $entity)
     {
         $sql = "UPDATE {$this->table}
                    SET hash = :hash,
@@ -161,7 +163,8 @@ class EmailIdentity extends DataMapper
                        expires_on = :expires,
                        token = :token,
                        token_action = :action,
-                       token_expires_on = :token_eol
+                       token_expires_on = :token_eol,
+                       token_payload = :payload
                  WHERE identity_id = :id";
 
         $statement = $this->connection->prepare($sql);
@@ -178,10 +181,11 @@ class EmailIdentity extends DataMapper
     }
 
 
-    private function bindToken(PDOStatement $statement, Entity\EmailIdentity $entity)
+    private function bindToken(PDOStatement $statement, Entity\StandardIdentity $entity)
     {
         $statement->bindValue(':token', $entity->getToken());
         $statement->bindValue(':action', $entity->getTokenAction());
         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
+        $statement->bindValue(':payload', $entity->getTokenPayload());
     }
 }

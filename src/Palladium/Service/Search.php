@@ -65,23 +65,23 @@ class Search
     /**
      * Locates identity based on email address
      *
-     * @param string $emailAddress
+     * @param string $identifier
      *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
      *
-     * @return Palladium\Entity\EmailIdentity
+     * @return Palladium\Entity\StandardIdentity
      */
-    public function findEmailIdentityByEmailAddress(string $emailAddress)
+    public function findStandardIdentityByIdentifier(string $identifier)
     {
-        $identity = new Entity\EmailIdentity;
-        $identity->setEmailAddress($emailAddress);
+        $identity = new Entity\StandardIdentity;
+        $identity->setIdentifier($identifier);
 
         $this->repository->load($identity);
 
         if ($identity->getId() === null) {
             $this->logger->notice('identity not found', [
                 'input' => [
-                    'email' => $emailAddress,
+                    'identifier' => $identifier,
                 ],
             ]);
 
@@ -119,11 +119,11 @@ class Search
      *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
      *
-     * @return Palladium\Entity\EmailIdentity
+     * @return Palladium\Entity\StandardIdentity
      */
-    public function findEmailIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE)
+    public function findStandardIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE)
     {
-        $identity = new Entity\EmailIdentity;
+        $identity = new Entity\StandardIdentity;
 
         $identity->setToken($token);
         $identity->setTokenAction($action);
@@ -150,11 +150,11 @@ class Search
      *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
      *
-     * @return Palladium\Entity\EmailIdentity
+     * @return Palladium\Entity\StandardIdentity
      */
-    public function findEmailIdentityById(int $identityId)
+    public function findStandardIdentityById(int $identityId)
     {
-        $identity = new Entity\EmailIdentity;
+        $identity = new Entity\StandardIdentity;
         $identity->setId($identityId);
 
         $this->repository->load($identity);

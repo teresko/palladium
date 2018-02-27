@@ -93,7 +93,8 @@ class Identity extends DataMapper
                        account_id       AS accountId,
                        status           AS status,
                        hash             AS hash,
-                       token_expires_on AS tokenEndOfLife
+                       token_expires_on AS tokenEndOfLife,
+                       token_payload    AS tokenPayload
                   FROM {$this->table}
                  WHERE token = :token
                    AND token_action = :action

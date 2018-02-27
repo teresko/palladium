@@ -34,7 +34,7 @@ final class IdentificationTest extends TestCase
                     ->getMock();
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
@@ -53,7 +53,7 @@ final class IdentificationTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
@@ -75,7 +75,7 @@ final class IdentificationTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
@@ -208,7 +208,7 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('info');
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setId(99);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
@@ -231,7 +231,7 @@ final class IdentificationTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('notice');
 
-        $affected = new Entity\EmailIdentity;
+        $affected = new Entity\StandardIdentity;
         $affected->setId(99);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
 
