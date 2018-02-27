@@ -46,9 +46,10 @@ final class CombinedTest extends TestCase
 
         $factory = new MapperFactory($connection, 'identities');
         $repository = new Repository($factory);
+        $mapper = $factory->create(\Palladium\Mapper\IdentityAccount::class);
 
         $this->identification = new Identification($repository, $logger);
-        $this->registration = new Registration($repository, $logger);
+        $this->registration = new Registration($repository, $mapper, $logger);
         $this->search = new Search($repository, $logger);
         $this->recovery = new Recovery($repository, $logger);
     }

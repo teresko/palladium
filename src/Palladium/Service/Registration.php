@@ -7,6 +7,7 @@ namespace Palladium\Service;
  */
 
 use Palladium\Entity as Entity;
+use Palladium\Component\DataMapper;
 use Palladium\Exception\IdentityConflict;
 
 use Palladium\Repository\Identity as Repository;
@@ -29,9 +30,10 @@ class Registration
      * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
      * @param int $hashCost Optional value for setting the cost of hashing algorythm (default: 12)
      */
-    public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
+    public function __construct(Repository $repository, DataMapper $accountMapper, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
     {
         $this->repository = $repository;
+        $this->accountMapper = $accountMapper;
         $this->logger = $logger;
         $this->hashCost = $hashCost;
     }
@@ -104,7 +106,7 @@ class Registration
     public function bindAccountToIdentity(int $accountId, Entity\Identity $identity)
     {
         $identity->setAccountId($accountId);
-        $this->repository->save($identity, 'IdentityAccount');
+        $this->accountMapper->store($identity);
 
         $this->logger->info('new email identity registered', [
             'user' => [

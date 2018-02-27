@@ -182,7 +182,7 @@ final class IdentityTest extends TestCase
         $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
         $instance->setTokenAction(Identity::ACTION_NONE);
-        $this->assertNull(Identity::ACTION_NONE, $instance->getTokenAction());
+        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
     }
 
 
