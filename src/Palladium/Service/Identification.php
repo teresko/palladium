@@ -51,7 +51,9 @@ class Identification
         if ($identity->matchPassword($password) === false) {
             $this->logWrongPasswordNotice($identity, [
                 'identifier' => $identity->getIdentifier(),
-                'key' => $password, // this is the wrong password
+                'key' => $password,
+                // this is the wrong password, if you store it in plain-text
+                // then it becomes your responsibility
             ]);
 
             throw new PasswordMismatch;
