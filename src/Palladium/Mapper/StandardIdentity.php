@@ -164,6 +164,8 @@ class StandardIdentity extends DataMapper
     {
         $sql = "UPDATE {$this->table}
                    SET hash = :hash,
+                       identifier = :identifier,
+                       fingerprint = :fingerprint,
                        status = :status,
                        used_on = :used,
                        expires_on = :expires,
@@ -177,6 +179,8 @@ class StandardIdentity extends DataMapper
 
         $statement->bindValue(':id', $entity->getId());
         $statement->bindValue(':hash', $entity->getHash());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
+        $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':status', $entity->getStatus());
         $statement->bindValue(':used', $entity->getLastUsed());
         $statement->bindValue(':expires', $entity->getExpiresOn());

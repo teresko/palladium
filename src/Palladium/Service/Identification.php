@@ -18,6 +18,7 @@ class Identification
 {
 
     const DEFAULT_COOKIE_LIFESPAN = 14400; // 4 hours
+    const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
     const DEFAULT_HASH_COST = 12;
 
     private $repository;
@@ -318,4 +319,29 @@ class Identification
         ];
     }
 
+
+    public function markForUpdate(Entity\Identity $identity, array $payload, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    {
+        $identity->generateToken();
+        $identity->setTokenAction(Entity\Identity::ACTION_UPDATE);
+        $identity->setTokenEndOfLife(time() + $tokenLifespan);
+        $identity->setTokenPayload($payload);
+
+        $this->repository->save($identity);
+
+        $this->logger->info('request identity update', [
+            'input' => [
+                'id' => $identity->getId(),
+            ],
+        ]);
+
+        return $identity->getToken();
+    }
+
+
+    public function updateStandardIdentity(Entity\StandardIdentity $identity)
+    {
+        $identity->clearToken();
+        $this->repository->save($identity);
+    }
 }
