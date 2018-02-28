@@ -23,14 +23,14 @@ class StandardIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
-                   AND identifier = :email
+                   AND identifier = :identifier
                    AND (expires_on IS NULL OR expires_on > :now)";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
-        $statement->bindValue(':email', $entity->getIdentifier());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':now', time());
 
         $statement->execute();
@@ -68,12 +68,12 @@ class StandardIdentity extends DataMapper
                   FROM {$this->table}
                  WHERE type = :type
                    AND fingerprint = :fingerprint
-                   AND identifier = :email";
+                   AND identifier = :identifier";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', $entity->getType());
-        $statement->bindValue(':email', $entity->getIdentifier());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
 
         $statement->execute();
@@ -141,13 +141,13 @@ class StandardIdentity extends DataMapper
     {
         $sql = "INSERT INTO {$this->table}
                        (type, status, identifier, fingerprint, hash, created_on, token, token_action, token_expires_on, token_payload)
-                VALUES (:type, :status, :email, :fingerprint, :hash, :created, :token, :action, :token_eol, :payload)";
+                VALUES (:type, :status, :identifier, :fingerprint, :hash, :created, :token, :action, :token_eol, :payload)";
 
         $statement = $this->connection->prepare($sql);
 
         $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
         $statement->bindValue(':status', Entity\StandardIdentity::STATUS_NEW);
-        $statement->bindValue(':email', $entity->getIdentifier());
+        $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':hash', $entity->getHash());
         $statement->bindValue(':created', time());
