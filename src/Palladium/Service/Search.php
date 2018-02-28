@@ -141,6 +141,8 @@ class Search
             throw new IdentityNotFound;
         }
 
+        $this->repository->load($identity);    
+
         return $identity;
     }
 
