@@ -121,17 +121,11 @@ class Search
      *
      * @return Palladium\Entity\StandardIdentity
      */
-    public function findStandardIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE)
+    public function findStandardIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE): Entity\StandardIdentity
     {
-        $identity = new Entity\StandardIdentity;
+        $entry = $this->findIdentityByToken($token, $action);
 
-        $identity->setToken($token);
-        $identity->setTokenAction($action);
-        $identity->setTokenEndOfLife(time());
-
-        $this->repository->load($identity, Entity\Identity::class);
-
-        if ($identity->getId() === null) {
+        if ($entry->getId() === null) {
             $this->logger->notice('identity not found', [
                 'input' => [
                     'token' => $token,
@@ -141,11 +135,36 @@ class Search
             throw new IdentityNotFound;
         }
 
-        $this->repository->load($identity);    
+
+        $identity = new Entity\StandardIdentity;
+        $identity->setId($entry->getId());
+
+        $this->repository->load($identity);
 
         return $identity;
     }
 
+
+    /**
+     * @param string $token
+     * @param int $action
+     *
+     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     *
+     * @return Palladium\Entity\Identity
+     */
+     public function findIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE): Entity\Identity
+     {
+         $identity = new Entity\Identity;
+
+         $identity->setToken($token);
+         $identity->setTokenAction($action);
+         $identity->setTokenEndOfLife(time());
+
+         $this->repository->load($identity);
+
+         return $identity;
+     }
 
     /**
      * @param int $identityId
