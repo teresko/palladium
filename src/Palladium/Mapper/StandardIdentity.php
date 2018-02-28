@@ -81,6 +81,9 @@ class StandardIdentity extends DataMapper
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            if ($data['tokenPayload'] !== null) {
+                $data['tokenPayload'] = json_decode($data['tokenPayload'], true);
+            }
             $this->applyValues($entity, $data);
         }
     }
@@ -112,6 +115,9 @@ class StandardIdentity extends DataMapper
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            if ($data['tokenPayload'] !== null) {
+                $data['tokenPayload'] = json_decode($data['tokenPayload'], true);
+            }
             $this->applyValues($entity, $data);
         }
     }
@@ -186,6 +192,12 @@ class StandardIdentity extends DataMapper
         $statement->bindValue(':token', $entity->getToken());
         $statement->bindValue(':action', $entity->getTokenAction());
         $statement->bindValue(':token_eol', $entity->getTokenEndOfLife());
-        $statement->bindValue(':payload', $entity->getTokenPayload());
+
+        $payload = $entity->getTokenPayload();
+        if ($payload !== null) {
+            $payload = json_encode($payload);
+        }
+
+        $statement->bindValue(':payload', $payload);
     }
 }

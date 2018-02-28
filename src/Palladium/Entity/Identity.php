@@ -18,7 +18,7 @@ class Identity implements HasId
     const ACTION_NONE = null;
     const ACTION_VERIFY = 1;
     const ACTION_RESET = 2;
-    const ACTION_MODIFY = 4;
+    const ACTION_UPDATE = 4;
 
     const STATUS_ANY = null;
     const STATUS_NEW = 1; // not verified user
@@ -242,7 +242,7 @@ class Identity implements HasId
     /**
      * @codeCoverageIgnore
      */
-    public function setTokenPayload(string $tokenPayload = null)
+    public function setTokenPayload(array $tokenPayload = null)
     {
         $this->tokenPayload = $tokenPayload;
     }

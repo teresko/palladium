@@ -111,6 +111,9 @@ class Identity extends DataMapper
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            if ($data['tokenPayload'] !== null) {
+                $data['tokenPayload'] = json_decode($data['tokenPayload'], true);
+            }
             $this->applyValues($entity, $data);
         }
     }
