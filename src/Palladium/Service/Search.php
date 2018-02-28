@@ -10,7 +10,6 @@ namespace Palladium\Service;
 use Palladium\Entity as Entity;
 use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
-
 use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
 
@@ -22,8 +21,8 @@ class Search
     private $logger;
 
     /**
-     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
-     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param Repository $repository Repository for abstracting persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
      */
     public function __construct(Repository $repository, LoggerInterface $logger)
     {
@@ -35,13 +34,9 @@ class Search
     /**
      * Locates identity based on ID
      *
-     * @param int $identityId
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\Identity
      */
-    public function findIdentityById(int $identityId)
+    public function findIdentityById(int $identityId): Entity\Identity
     {
         $identity = new Entity\Identity;
         $identity->setId($identityId);
@@ -114,14 +109,9 @@ class Search
 
 
     /**
-     * @param string $token
-     * @param int $action
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\StandardIdentity
      */
-    public function findStandardIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE): Entity\StandardIdentity
+    public function findStandardIdentityByToken(string $token, int $action = Entity\Identity::ACTION_NONE): Entity\StandardIdentity
     {
         $entry = $this->findIdentityByToken($token, $action);
 
@@ -146,14 +136,9 @@ class Search
 
 
     /**
-     * @param string $token
-     * @param int $action
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\Identity
      */
-     public function findIdentityByToken(string $token, $action = Entity\Identity::ACTION_NONE): Entity\Identity
+     public function findIdentityByToken(string $token, int $action = Entity\Identity::ACTION_NONE): Entity\Identity
      {
          $identity = new Entity\Identity;
 
@@ -167,13 +152,9 @@ class Search
      }
 
     /**
-     * @param int $identityId
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\StandardIdentity
      */
-    public function findStandardIdentityById(int $identityId)
+    public function findStandardIdentityById(int $identityId): Entity\StandardIdentity
     {
         $identity = new Entity\StandardIdentity;
         $identity->setId($identityId);
@@ -195,14 +176,9 @@ class Search
 
 
     /**
-     * @param int $accountId
-     * @param string $series
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\CookieIdentity
      */
-    public function findCookieIdentity($accountId, $series)
+    public function findCookieIdentity(int $accountId, string $series): Entity\CookieIdentity
     {
         $cookie = new Entity\CookieIdentity;
         $cookie->setStatus(Entity\Identity::STATUS_ACTIVE);
@@ -226,10 +202,7 @@ class Search
     }
 
 
-    /**
-     * @return Palladium\Entity\IdentityCollection
-     */
-    public function findIdentitiesByAccountId($accountId, $type = Entity\Identity::TYPE_ANY, $status = Entity\Identity::STATUS_ACTIVE)
+    public function findIdentitiesByAccountId(int $accountId, int $type = Entity\Identity::TYPE_ANY, int $status = Entity\Identity::STATUS_ACTIVE): Entity\IdentityCollection
     {
         $collection = new Entity\IdentityCollection;
         $collection->forAccountId($accountId);
@@ -239,10 +212,7 @@ class Search
     }
 
 
-    /**
-     * @return Palladium\Entity\IdentityCollection
-     */
-    public function findIdentitiesByParentId($parentId, $status = Entity\Identity::STATUS_ACTIVE)
+    public function findIdentitiesByParentId(int $parentId, int $status = Entity\Identity::STATUS_ACTIVE): Entity\IdentityCollection
     {
         $collection = new Entity\IdentityCollection;
         $collection->forParentId($parentId);
@@ -251,10 +221,7 @@ class Search
     }
 
 
-    /**
-     * @return Palladium\Entity\IdentityCollection
-     */
-    private function fetchIdentitiesWithStatus(Entity\IdentityCollection $collection, $status)
+    private function fetchIdentitiesWithStatus(Entity\IdentityCollection $collection, int $status): Entity\IdentityCollection
     {
         $collection->forStatus($status);
         $this->repository->load($collection);

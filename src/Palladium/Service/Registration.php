@@ -9,9 +9,7 @@ namespace Palladium\Service;
 use Palladium\Entity as Entity;
 use Palladium\Component\DataMapper;
 use Palladium\Exception\IdentityConflict;
-
 use Palladium\Repository\Identity as Repository;
-use Palladium\Contract\HasId;
 use Psr\Log\LoggerInterface;
 
 class Registration
@@ -26,8 +24,8 @@ class Registration
     private $hashCost;
 
     /**
-     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
-     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param Repository $repository Repository for abstracting persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $hashCost Optional value for setting the cost of hashing algorythm (default: 12)
      */
     public function __construct(Repository $repository, DataMapper $accountMapper, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
@@ -39,14 +37,7 @@ class Registration
     }
 
 
-    /**
-     * @param string $identifier
-     * @param string $password
-     * @param int $tokenLifespan
-     *
-     * @return Palladium\Entity\StandardIdentity
-     */
-    public function createStandardIdentity(string $identifier, string $password, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function createStandardIdentity(string $identifier, string $password, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): Entity\StandardIdentity
     {
         $identity = new Entity\StandardIdentity;
 

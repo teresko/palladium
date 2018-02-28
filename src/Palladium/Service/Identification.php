@@ -28,8 +28,8 @@ class Identification
     private $hashCost;
 
     /**
-     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
-     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param Repository $repository Repository for abstracting persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $cookieLifespan Lifespan of the authentication cookie in seconds (default: 4 hours)
      * @param int $hashCost Cost of the bcrypt hashing function (default: 12)
      */
@@ -178,10 +178,9 @@ class Identification
      * Verify that the cookie based identity matches the key and,
      * if verification is failed, disable this given identity
      *
-     * @param string $key
      * @throws \Palladium\Exception\CompromisedCookie if key does not match
      */
-    private function checkCookieKey(Entity\CookieIdentity $identity, $key)
+    private function checkCookieKey(Entity\CookieIdentity $identity, string $key)
     {
         if ($identity->matchKey($key) === true) {
             return;
@@ -236,11 +235,7 @@ class Identification
     }
 
 
-    /**
-     * @param string $oldPassword
-     * @param string $newPassword
-     */
-    public function changePassword(Entity\StandardIdentity $identity, $oldPassword, $newPassword)
+    public function changePassword(Entity\StandardIdentity $identity, string $oldPassword, string $newPassword)
     {
 
         if ($identity->matchPassword($oldPassword) === false) {
@@ -260,10 +255,7 @@ class Identification
     }
 
 
-    /**
-     * @param array $input
-     */
-    private function logWrongPasswordNotice(Entity\StandardIdentity $identity, $input)
+    private function logWrongPasswordNotice(Entity\StandardIdentity $identity, array $input)
     {
         $this->logger->notice('wrong password', [
             'input' => $input,
@@ -275,10 +267,7 @@ class Identification
     }
 
 
-    /**
-     * @param string $message logged text
-     */
-    private function logExpectedBehaviour(Entity\Identity $identity, $message)
+    private function logExpectedBehaviour(Entity\Identity $identity, string $message)
     {
         $this->logger->info($message, [
             'user' => [
@@ -320,7 +309,7 @@ class Identification
     }
 
 
-    public function markForUpdate(Entity\Identity $identity, array $payload, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function markForUpdate(Entity\Identity $identity, array $payload, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
     {
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_UPDATE);

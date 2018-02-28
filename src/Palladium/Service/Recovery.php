@@ -21,8 +21,8 @@ class Recovery
     private $logger;
 
     /**
-     * @param Palladium\Repository\Identity $repository Repository for abstracting persistence layer structures
-     * @param Psr\Log\LoggerInterface $logger PSR-3 compatible logger
+     * @param Repository $repository Repository for abstracting persistence layer structures
+     * @param LoggerInterface $logger PSR-3 compatible logger
      */
     public function __construct(Repository $repository, LoggerInterface $logger)
     {
@@ -33,12 +33,8 @@ class Recovery
 
     /**
      * @throws Palladium\Exception\IdentityNotVerified if attempting to reset password for unverified identity
-     *
-     * @param int $tokenLifespan Lifespan of the password recovery token in seconds (default: 8 hours)
-     *
-     * @return string token, that can be use to reset password
      */
-    public function markForReset(Entity\StandardIdentity $identity, $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function markForReset(Entity\StandardIdentity $identity, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): string
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
             $this->logger->notice('identity not verified', [
@@ -70,10 +66,7 @@ class Recovery
     }
 
 
-    /**
-     * @param string $password
-     */
-    public function resetIdentityPassword(Entity\StandardIdentity $identity, $password)
+    public function resetIdentityPassword(Entity\StandardIdentity $identity, string $password)
     {
         $token = $identity->getToken();
 

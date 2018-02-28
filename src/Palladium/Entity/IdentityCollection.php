@@ -26,9 +26,9 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    public function forAccountId($accountId)
+    public function forAccountId(int $accountId)
     {
-        $this->accountId = (int) $accountId;
+        $this->accountId = $accountId;
     }
 
 
@@ -44,9 +44,9 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    public function forParentId($parentId)
+    public function forParentId(int $parentId)
     {
-        $this->parentId = (int) $parentId;
+        $this->parentId = $parentId;
     }
 
 
@@ -62,9 +62,9 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    public function forType($type)
+    public function forType(int $type = null)
     {
-        $this->type = (int) $type;
+        $this->type = $type;
     }
 
 
@@ -80,9 +80,9 @@ class IdentityCollection extends Collection
     /**
      * @codeCoverageIgnore
      */
-    public function forStatus($status)
+    public function forStatus(int $status)
     {
-        $this->status = (int) $status;
+        $this->status = $status;
     }
 
 

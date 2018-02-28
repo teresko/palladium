@@ -64,7 +64,7 @@ class NonceIdentity extends Identity
     /**
      * @param string $key
      */
-    private function makeHash($key, $cost): string
+    private function makeHash($key, int $cost): string
     {
         return password_hash($key, self::HASH_ALGO, ['cost' => $cost]);
     }

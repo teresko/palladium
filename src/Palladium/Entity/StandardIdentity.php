@@ -38,14 +38,14 @@ class StandardIdentity extends Identity
     }
 
 
-    public function setPassword($password, $cost = self::HASH_COST)
+    public function setPassword($password, int $cost = self::HASH_COST)
     {
         $this->password = (string) $password;
         $this->hash = $this->createHash($password, $cost);
     }
 
 
-    public function rehashPassword($cost = self::HASH_COST)
+    public function rehashPassword(int $cost = self::HASH_COST)
     {
         $this->hash = $this->createHash($this->password, $cost);
     }
@@ -81,7 +81,7 @@ class StandardIdentity extends Identity
     }
 
 
-    public function hasOldHash($cost = self::HASH_COST): bool
+    public function hasOldHash(int $cost = self::HASH_COST): bool
     {
         return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => $cost]);
     }
