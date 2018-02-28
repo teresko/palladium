@@ -14,16 +14,27 @@
         }
     ],
 
+    "autoload": {
+        "psr-4": { "": "src/" }
+    },
+
     "require": {
         "php": ">=7.0",
         "ext-pdo": "*",
         "psr/log": "1.*"
     },
-    "autoload": {
-        "psr-4": { "": "src/" }
-    },
     "require-dev": {
+        "php": ">=7.0",
         "ext-pdo_sqlite": "*",
         "phpunit/phpunit": "^6.5"
+    },
+
+    "config": {
+        "platform": {
+            "php": "7.0"
+        },
+        "platform-dev": {
+            "php": "7.0"
+        }
     }
 }
