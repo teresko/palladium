@@ -108,4 +108,38 @@ final class IdentityTest extends TestCase
         $instance = new Identity($pdo, 'table');
         $instance->fetch($identity);
     }
+
+
+    public function test_Retrieving_Identity_by_Token_withg_Payload()
+    {
+        $statement = $this
+            ->getMockBuilder(PDOStatement::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $statement
+            ->method('bindValue')
+            ->withConsecutive(
+                [$this->equalTo(':token'), $this->equalTo('12345678901234567890123456789012'), null],
+                [$this->equalTo(':action'), $this->equalTo(Entity\Identity::ACTION_VERIFY), null],
+                [$this->equalTo(':expires'), $this->equalTo(1493377286), null]
+            );
+        $statement
+            ->expects($this->once())->method('fetch')
+            ->will($this->returnValue(['id' => '8', 'tokenPayload' => '[]']));
+
+        $pdo = $this
+                ->getMockBuilder(PDO::class)
+                ->disableOriginalConstructor()
+                ->getMock();
+        $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
+
+
+        $identity = new Entity\Identity;
+        $identity->setToken('12345678901234567890123456789012');
+        $identity->setTokenAction(Entity\Identity::ACTION_VERIFY);
+        $identity->setTokenEndOfLife(1493377286);
+
+        $instance = new Identity($pdo, 'table');
+        $instance->fetch($identity);
+    }
 }
