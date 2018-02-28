@@ -326,7 +326,37 @@ final class CombinedTest extends TestCase
 
 
     /**
+     * @test
      * @depends test_Finding_Identity_By_Id
+     */
+    public function initialize_Modification_of_Standard_Identity()
+    {
+        $repository = new Repository(new MapperFactory($this->connection, 'identities'));
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+
+        $identity = $this->search->findStandardIdentityById(2);
+        $token = $identification->markForUpdate($identity, [
+            'identifier' => 'new@example.com'
+        ]);
+
+        $identity = $this->search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_UPDATE);
+        $this->assertSame('test@example.com', $identity->getIdentifier());
+
+        $cookie = $this->identification->loginWithPassword($identity, 'password');
+        $payload = $identity->getTokenPayload();
+        $identity->setIdentifier($payload['identifier']);
+        $identification->updateStandardIdentity($identity);
+
+        $identity = $this->search->findStandardIdentityById(2);
+        $this->assertSame('new@example.com', $identity->getIdentifier());
+    }
+
+
+
+    /**
+     * @depends initialize_Modification_of_Standard_Identity
      */
     public function test_Removing_Existing_Identity()
     {
@@ -357,5 +387,4 @@ final class CombinedTest extends TestCase
 
         $this->assertSame(4, $cookie->getAccountId());
     }
-
 }
