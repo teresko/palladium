@@ -18,6 +18,7 @@ class Identity
         Entity\IdentityCollection::class    => Mapper\IdentityCollection::class,
     ];
 
+    private $mapperFactory;
 
     public function __construct(CanCreateMapper $mapperFactory)
     {
@@ -77,8 +78,6 @@ class Identity
         if ($override !== null) {
             $key = $override;
         }
-
-        // var_dump([$key, $this->list]);
 
         if (array_key_exists($key, $this->list) === false) {
             throw new RuntimeException("No mapper for class '{$key}' has been defined!");
