@@ -20,6 +20,7 @@ class Registration
     const DEFAULT_HASH_COST = 12;
 
     private $repository;
+    private $accountMapper;
     private $logger;
     private $hashCost;
 
@@ -63,7 +64,7 @@ class Registration
     }
 
 
-    public function createNonceIdentity($accountId, $identityLifespan = self::DEFAULT_NONCE_LIFESPAN)
+    public function createNonceIdentity($accountId, $identityLifespan = self::DEFAULT_NONCE_LIFESPAN): Entity\NonceIdentity
     {
         $identity = new Entity\NonceIdentity;
 
