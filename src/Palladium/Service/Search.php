@@ -8,7 +8,6 @@ namespace Palladium\Service;
  */
 
 use Palladium\Entity as Entity;
-use Palladium\Exception\UserNotFound;
 use Palladium\Exception\IdentityNotFound;
 use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
@@ -60,13 +59,9 @@ class Search
     /**
      * Locates identity based on email address
      *
-     * @param string $identifier
-     *
      * @throws Palladium\Exception\IdentityNotFound if identity was not found
-     *
-     * @return Palladium\Entity\StandardIdentity
      */
-    public function findStandardIdentityByIdentifier(string $identifier)
+    public function findStandardIdentityByIdentifier(string $identifier): Entity\StandardIdentity
     {
         $identity = new Entity\StandardIdentity;
         $identity->setIdentifier($identifier);
@@ -87,7 +82,7 @@ class Search
     }
 
 
-    public function findNonceIdentityByIdentifier(string $identifier)
+    public function findNonceIdentityByIdentifier(string $identifier): Entity\NonceIdentity
     {
         $identity = new Entity\NonceIdentity;
         $identity->setIdentifier($identifier);
