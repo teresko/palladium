@@ -91,7 +91,7 @@ final class IdentityTest extends TestCase
             );
         $statement
             ->expects($this->once())->method('fetch')
-            ->will($this->returnValue(['id' => '8']));
+            ->will($this->returnValue(['id' => '8', 'tokenPayload' => null]));
 
         $pdo = $this
                 ->getMockBuilder(PDO::class)
