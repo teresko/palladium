@@ -118,12 +118,10 @@ class Identification
 
 
     /**
-     * @param string @key
-     *
      * @throws \Palladium\Exception\CompromisedCookie if key does not match
      * @throws \Palladium\Exception\IdentityExpired if cookie is too old
      */
-    public function loginWithCookie(Entity\CookieIdentity $identity, $key): Entity\CookieIdentity
+    public function loginWithCookie(Entity\CookieIdentity $identity, string $key): Entity\CookieIdentity
     {
         $this->checkIdentityExpireTime($identity, $this->assembleCookieLogDetails($identity));
         $this->checkCookieKey($identity, $key);

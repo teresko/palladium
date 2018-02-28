@@ -38,6 +38,9 @@ class Registration
     }
 
 
+    /**
+     * @throws IdentityConflict if attempting to register a new identity, with the same identifier
+     */
     public function createStandardIdentity(string $identifier, string $password, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): Entity\StandardIdentity
     {
         $identity = new Entity\StandardIdentity;

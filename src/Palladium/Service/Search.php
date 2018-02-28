@@ -33,7 +33,7 @@ class Search
     /**
      * Locates identity based on ID
      *
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
     public function findIdentityById(int $identityId): Entity\Identity
     {
@@ -59,7 +59,7 @@ class Search
     /**
      * Locates identity based on email address
      *
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
     public function findStandardIdentityByIdentifier(string $identifier): Entity\StandardIdentity
     {
@@ -104,7 +104,7 @@ class Search
 
 
     /**
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
     public function findStandardIdentityByToken(string $token, int $action = Entity\Identity::ACTION_NONE): Entity\StandardIdentity
     {
@@ -131,7 +131,7 @@ class Search
 
 
     /**
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
      public function findIdentityByToken(string $token, int $action = Entity\Identity::ACTION_NONE): Entity\Identity
      {
@@ -147,7 +147,7 @@ class Search
      }
 
     /**
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
     public function findStandardIdentityById(int $identityId): Entity\StandardIdentity
     {
@@ -171,7 +171,7 @@ class Search
 
 
     /**
-     * @throws Palladium\Exception\IdentityNotFound if identity was not found
+     * @throws IdentityNotFound if identity was not found
      */
     public function findCookieIdentity(int $accountId, string $series): Entity\CookieIdentity
     {

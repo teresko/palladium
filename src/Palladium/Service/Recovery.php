@@ -7,7 +7,6 @@ namespace Palladium\Service;
  */
 
 use Palladium\Entity as Entity;
-use Palladium\Exception\IdentityNotFound;
 use Palladium\Exception\IdentityNotVerified;
 use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
@@ -32,7 +31,7 @@ class Recovery
 
 
     /**
-     * @throws Palladium\Exception\IdentityNotVerified if attempting to reset password for unverified identity
+     * @throws IdentityNotVerified if attempting to reset password for unverified identity
      */
     public function markForReset(Entity\StandardIdentity $identity, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): string
     {
