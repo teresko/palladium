@@ -239,12 +239,18 @@ class Identity implements HasId
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function setTokenPayload(string $tokenPayload = null)
     {
         $this->tokenPayload = $tokenPayload;
     }
 
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getTokenPayload()
     {
         return $this->tokenPayload;

@@ -204,6 +204,22 @@ class CollectionTest extends TestCase
     }
 
 
+    public function test_Removing_Entity_by_Id()
+    {
+        $instance = $this->getMockForAbstractClass(Collection::class);
+        $instance->method('buildEntity');
+
+        $instance[] = $this->buildItem(5);
+        $instance[] = $this->buildItem(2);
+        $instance[] = $this->buildItem(8);
+        $instance[] = $this->buildItem(9);
+
+        $instance->removeEntityById(8);
+
+        $this->assertSame([2, 5, 9], $instance->getIds());
+    }
+
+
     public function test_Purge_of_Data()
     {
         $instance = $this->getMockForAbstractClass(Collection::class);
