@@ -117,7 +117,7 @@ final class SearchTest extends TestCase
                     ->disableOriginalConstructor()
                     ->getMock();
         $repository
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('load')
             ->will($this->returnCallback(function(HasId $entity) {
                 $entity->setId(1);
