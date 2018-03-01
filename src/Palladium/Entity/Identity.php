@@ -28,7 +28,7 @@ class Identity implements HasId
     const STATUS_EXPIRED = 16;
 
     const TYPE_ANY = null;
-    const TYPE_EMAIL = 1;
+    const TYPE_STANDARD = 1;
     const TYPE_COOKIE = 2;
     const TYPE_NONCE = 4;
 

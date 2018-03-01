@@ -14,7 +14,7 @@ class StandardIdentity extends Identity
     private $password;
     private $hash;
 
-    protected $type = Identity::TYPE_EMAIL;
+    protected $type = Identity::TYPE_STANDARD;
 
 
     public function setIdentifier(string $identifier)

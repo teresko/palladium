@@ -28,7 +28,7 @@ class StandardIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
+        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_STANDARD);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':now', time());
@@ -145,7 +145,7 @@ class StandardIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
-        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_EMAIL);
+        $statement->bindValue(':type', Entity\StandardIdentity::TYPE_STANDARD);
         $statement->bindValue(':status', Entity\StandardIdentity::STATUS_NEW);
         $statement->bindValue(':identifier', $entity->getIdentifier());
         $statement->bindValue(':fingerprint', $entity->getFingerprint());

@@ -12,7 +12,7 @@ use Palladium\Entity;
  * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-final class EmailIdentityTest extends TestCase
+final class StandardIdentityTest extends TestCase
 {
 
     public function test_Creating_One_Time_Identity()
@@ -24,7 +24,7 @@ final class EmailIdentityTest extends TestCase
         $statement
             ->method('bindValue')
             ->withConsecutive(
-                [$this->equalTo(':type'), $this->equalTo(Entity\Identity::TYPE_EMAIL), null]
+                [$this->equalTo(':type'), $this->equalTo(Entity\Identity::TYPE_STANDARD), null]
             );
 
         $pdo = $this
