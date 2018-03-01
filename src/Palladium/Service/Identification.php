@@ -326,7 +326,7 @@ class Identification
     }
 
 
-    public function updateStandardIdentity(Entity\StandardIdentity $identity)
+    public function clearIdentityToken(Entity\Identity $identity)
     {
         $identity->clearToken();
         $this->repository->save($identity);

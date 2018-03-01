@@ -304,4 +304,58 @@ final class SearchTest extends TestCase
             $instance->findNonceIdentityByIdentifier('qwerty')
         );
     }
+
+
+    /**
+     * @test
+     */
+    public function locate_Standard_Identity_by_Id()
+    {
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $repository
+            ->expects($this->once())
+            ->method('load')
+            ->will($this->returnCallback(function(HasId $entity) {
+                $entity->setAccountId(2);
+            }));
+
+        $instance = new Search(
+            $repository,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $identity = $instance->findStandardIdentityById(4);
+
+
+        $this->assertInstanceOf(Entity\StandardIdentity::class, $identity);
+        $this->assertSame(2, $identity->getAccountId());
+    }
+
+
+    /**
+     * @test
+     */
+    public function exception_on_Failure_to_find_Standard_identity_by_Id()
+    {
+        $this->expectException(IdentityNotFound::class);
+
+        $repository = $this
+                    ->getMockBuilder(Repository::class)
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $repository
+            ->expects($this->once())
+            ->method('load')
+            ->will($this->returnCallback(function() {}));
+
+        $instance = new Search(
+            $repository,
+            $this->getMockBuilder(LoggerInterface::class)->getMock()
+        );
+
+        $identity = $instance->findStandardIdentityById(4);
+    }
 }

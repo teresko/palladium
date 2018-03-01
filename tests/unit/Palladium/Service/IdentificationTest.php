@@ -304,9 +304,9 @@ final class IdentificationTest extends TestCase
         $this->expectException(KeyMismatch::class);
 
         $repository = $this
-                    ->getMockBuilder(Repository::class)
-                    ->disableOriginalConstructor()
-                    ->getMock();
+            ->getMockBuilder(Repository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('notice');
@@ -319,4 +319,48 @@ final class IdentificationTest extends TestCase
         $instance->useNonceIdentity($affected, 'wrong');
     }
 
+
+    /**
+     * @test
+     */
+    public function get_Token_when_Identity_Marked_for_Update()
+    {
+        $repository = $this
+            ->getMockBuilder(Repository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $repository->expects($this->once())->method('save');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('info');
+
+        $identity = new Entity\StandardIdentity;
+        $instance = new Identification($repository, $logger);
+
+        $this->assertNotNull($instance->markForUpdate($identity, []));
+    }
+
+
+    /**
+     * @test
+     */
+    public function remove_Identity_Tokens_and_Clear_from_DB()
+    {
+        $repository = $this
+            ->getMockBuilder(Repository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $repository->expects($this->once())->method('save');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identity = $this
+            ->getMockBuilder(Entity\Identity::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $identity->expects($this->once())->method('clearToken');
+
+        $instance = new Identification($repository, $logger);
+        $instance->clearIdentityToken($identity);
+    }
 }

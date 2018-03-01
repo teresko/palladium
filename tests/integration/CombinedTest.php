@@ -347,7 +347,7 @@ final class CombinedTest extends TestCase
         $cookie = $this->identification->loginWithPassword($identity, 'password');
         $payload = $identity->getTokenPayload();
         $identity->setIdentifier($payload['identifier']);
-        $identification->updateStandardIdentity($identity);
+        $identification->clearIdentityToken($identity);
 
         $identity = $this->search->findStandardIdentityById(2);
         $this->assertSame('new@example.com', $identity->getIdentifier());
