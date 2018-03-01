@@ -31,10 +31,10 @@ class NonceIdentity extends DataMapper
 
         $statement = $this->connection->prepare($sql);
 
+        $statement->bindValue(':type', $entity->getType());
+        $statement->bindValue(':status', Entity\Identity::STATUS_ACTIVE);
         $statement->bindValue(':fingerprint', $entity->getFingerprint());
         $statement->bindValue(':identifier', $entity->getIdentifier());
-        $statement->bindValue(':status', Entity\Identity::STATUS_ACTIVE);
-        $statement->bindValue(':type', $entity->getType());
 
         $statement->execute();
 
