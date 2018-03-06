@@ -342,6 +342,12 @@ class Identification
             }
         }
 
+        $this->discardTokenPayload($identity);
+    }
+
+
+    public function discardTokenPayload(Entity\Identity $identity)
+    {
         $identity->clearToken();
         $this->repository->save($identity);
     }
