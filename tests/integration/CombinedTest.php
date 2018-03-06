@@ -344,10 +344,8 @@ final class CombinedTest extends TestCase
         $identity = $this->search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_UPDATE);
         $this->assertSame('test@example.com', $identity->getIdentifier());
 
-        $cookie = $this->identification->loginWithPassword($identity, 'password');
-        $payload = $identity->getTokenPayload();
-        $identity->setIdentifier($payload['identifier']);
-        $identification->clearIdentityToken($identity);
+        $identification->loginWithPassword($identity, 'password');
+        $identification->applyTokenPayload($identity);
 
         $identity = $this->search->findStandardIdentityById(2);
         $this->assertSame('new@example.com', $identity->getIdentifier());

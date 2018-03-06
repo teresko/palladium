@@ -11,6 +11,7 @@ use Palladium\Exception\PasswordMismatch;
 use Palladium\Exception\KeyMismatch;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\IdentityExpired;
+use Palladium\Exception\PayloadNotFound;
 use Palladium\Repository\Identity as Repository;
 use Psr\Log\LoggerInterface;
 
@@ -326,8 +327,21 @@ class Identification
     }
 
 
-    public function clearIdentityToken(Entity\Identity $identity)
+    public function applyTokenPayload(Entity\Identity $identity)
     {
+        $payload = $identity->getTokenPayload();
+
+        if (null === $payload) {
+            throw new PayloadNotFound;
+        }
+
+        foreach ($payload as $key => $value) {
+            $method = 'set' . str_replace('_', '', $key);
+            if (method_exists($identity, $method)) {
+                $identity->{$method}($value);
+            }
+        }
+
         $identity->clearToken();
         $this->repository->save($identity);
     }

@@ -359,8 +359,9 @@ final class IdentificationTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $identity->expects($this->once())->method('clearToken');
+        $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue([]));
 
         $instance = new Identification($repository, $logger);
-        $instance->clearIdentityToken($identity);
+        $instance->applyTokenPayload($identity);
     }
 }
