@@ -14,6 +14,7 @@ use Palladium\Exception\IdentityExpired;
 use Palladium\Exception\CompromisedCookie;
 use Palladium\Exception\PasswordMismatch;
 use Palladium\Exception\KeyMismatch;
+use Palladium\Exception\PayloadNotFound;
 
 /**
  * @covers Palladium\Service\Identification
@@ -360,6 +361,59 @@ final class IdentificationTest extends TestCase
             ->getMock();
         $identity->expects($this->once())->method('clearToken');
         $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue([]));
+
+        $instance = new Identification($repository, $logger);
+        $instance->applyTokenPayload($identity);
+    }
+
+
+    /**
+     * @test
+     */
+    public function apply_Data_from_Payload_to_the_Identity_before_Saving()
+    {
+        $repository = $this
+            ->getMockBuilder(Repository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $repository->expects($this->once())->method('save');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identity = $this
+            ->getMockBuilder(Entity\Identity::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue([
+            'accountId' => 5,
+        ]));
+        $identity->expects($this->once())->method('setAccountId')->with($this->equalTo(5));
+
+        $instance = new Identification($repository, $logger);
+        $instance->applyTokenPayload($identity);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function failure_if_no_Payload_to_Apply()
+    {
+        $this->expectException(PayloadNotFound::class);
+
+        $repository = $this
+            ->getMockBuilder(Repository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $identity = $this
+            ->getMockBuilder(Entity\Identity::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue(null));
 
         $instance = new Identification($repository, $logger);
         $instance->applyTokenPayload($identity);
