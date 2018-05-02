@@ -17,7 +17,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function use_assigned_mapper_for_loading_entity()
+    public function use_Assigned_by_ClassName_Mapper_for_Loading_Entity()
     {
         $instance = new Identity(new \Mock\Factory([
             \Mock\RepoMapper::class => new \Mock\RepoMapper,
@@ -34,7 +34,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function use_assigned_mapper_for_storing_entity()
+    public function use_Assigned_by_ClassName_Mapper_for_Storing_Entity()
     {
         $instance = new Identity(new \Mock\Factory([
             \Mock\RepoMapper::class => new \Mock\RepoMapper,
@@ -51,7 +51,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function use_assigned_mapper_for_deleting_entity()
+    public function use_Assigned_by_ClassName_Mapper_for_Deleting_Entity()
     {
         $instance = new Identity(new \Mock\Factory([
             \Mock\RepoMapper::class => new \Mock\RepoMapper,
@@ -68,7 +68,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function use_assigned_mapper_for_checking_whether_entity_exists()
+    public function use_Assigned_by_ClassName_Mapper_for_Checking_whether_Entity_Exists()
     {
         $instance = new Identity(new \Mock\Factory([
             \Mock\RepoMapper::class => new \Mock\RepoMapper(true),
@@ -83,7 +83,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function deny_definition_of_fake_entity_in_repo()
+    public function deny_Definition_of_Fake_Entity_in_Repo()
     {
         $this->expectException(\RuntimeException::class);
 
@@ -95,7 +95,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function deny_definition_of_fake_mapper_in_repo()
+    public function deny_Definition_of_Fake_Mapper_in_Repo()
     {
         $this->expectException(\RuntimeException::class);
 
@@ -107,7 +107,7 @@ final class IdentityTest extends TestCase
     /**
      * @test
      */
-    public function deny_override_with_undefined_mapper()
+    public function deny_Override_with_Undefined_Mapper()
     {
         $this->expectException(\RuntimeException::class);
 
