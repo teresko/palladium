@@ -77,35 +77,35 @@ In every other example, where you see `$factory` variable used, you can assume, 
 
 ## Usage
 
-#### Registration of new email identity
+#### Registration of new identity
 
 ```php
 <?php
 
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
-$identity = $registration->createEmailIdentity('foo@bar.com', 'password');
+$identity = $registration->createStandardIdentity('foo@bar.com', 'password');
 $registration->bindAccountToIdentity($accountId, $identity);
 ```
 
-If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
+If operation is completed successfully, the `$identity` variable will contain an instance of unverified [`StandardIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/StandardIdentity.php). To complete verification, you will have to use the token, that the identity contains. In the give example, this token can be assessed using&nbsp;`$instance->getToken()`.
 
-The `createEmailIdentity()` method can throw  [`IdentityConflict`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityConflict.php) exception, if email has already used for a another&nbsp;identity.
+The `createStandardIdentity()` method can throw  [`IdentityConflict`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityConflict.php) exception, if email has already used for a another&nbsp;identity.
 
-The `createEmailIdentity()` method has an optional third parameter, that defines the lifespan on the email verification token in seconds. When applied, the previous example looks as following:
+The `createStandardIdentity()` method has an optional third parameter, that defines the lifespan on the email verification token in seconds. When applied, the previous example looks as following:
 
 ```php
 <?php
 
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
-$identity = $registration->createEmailIdentity('foo@bar.com', 'password', 3600);
+$identity = $registration->createStandardIdentity('foo@bar.com', 'password', 3600);
 $registration->bindAccountToIdentity($accountId, $identity);
 ```
 
-This will make the verification token usable for 1 hour after this user's identity has been registered. After that given time passes, you won't be able to find this identity using the `findEmailIdentityByToken()` in the `Search` service.
+This will make the verification token usable for 1 hour after this user's identity has been registered. After that given time passes, you won't be able to find this identity using the `findStandardIdentityByToken()` in the `Search` service.
 
-#### Verification of email identity
+#### Verification of an identity
 
 ```php
 <?php
@@ -113,11 +113,11 @@ This will make the verification token usable for 1 hour after this user's identi
 $search = new \Palladium\Service\Search($factory, $logger);
 $registration = new \Palladium\Service\Registration($factory, $logger);
 
-$identity = $search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
+$identity = $search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
 $registration->verifyEmailIdentity($identity);
 ```
 
-The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/EmailIdentity.php), which then gets verified. If the identity is not found, the `findEmailIdentityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/StandardIdentity.php), which then gets verified. If the identity is not found, the `findStandardIdentityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 #### Login with email and password
 
