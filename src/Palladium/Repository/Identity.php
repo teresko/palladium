@@ -40,40 +40,35 @@ class Identity
     }
 
 
-
     public function load($identity, string $override = null)
     {
-        $key = $this->computeKey(get_class($identity), $override);
-        $mapper = $this->mapperFactory->create($this->list[$key]);
+        $mapper = $this->retrieveMapper(get_class($identity), $override);
         $mapper->fetch($identity);
     }
 
 
     public function save($identity, string $override = null)
     {
-        $key = $this->computeKey(get_class($identity), $override);
-        $mapper = $this->mapperFactory->create($this->list[$key]);
+        $mapper = $this->retrieveMapper(get_class($identity), $override);
         $mapper->store($identity);
     }
 
 
     public function delete($identity, string $override = null)
     {
-        $key = $this->computeKey(get_class($identity), $override);
-        $mapper = $this->mapperFactory->create($this->list[$key]);
+        $mapper = $this->retrieveMapper(get_class($identity), $override);
         $mapper->remove($identity);
     }
 
 
     public function has($identity, string $override = null)
     {
-        $key = $this->computeKey(get_class($identity), $override);
-        $mapper = $this->mapperFactory->create($this->list[$key]);
+        $mapper = $this->retrieveMapper(get_class($identity), $override);
         return $mapper->exists($identity);
     }
 
 
-    private function computeKey(string $key, string $override = null)
+    private function computeKey(string $key, string $override = null): string
     {
         if ($override !== null) {
             $key = $override;
@@ -84,5 +79,14 @@ class Identity
         }
 
         return $key;
+    }
+
+
+    private function retrieveMapper(string $name, string $override = null)
+    {
+        $key = $this->computeKey($name, $override);
+        $entry = $this->list[$key];
+
+        return $this->mapperFactory->create($entry);
     }
 }
