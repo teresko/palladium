@@ -7,7 +7,6 @@ use Palladium\Mapper;
 use Palladium\Contract\CanCreateMapper;
 use RuntimeException;
 
-
 class Identity
 {
     private $list = [
@@ -20,6 +19,7 @@ class Identity
 
     private $mapperFactory;
 
+
     public function __construct(CanCreateMapper $mapperFactory)
     {
         $this->mapperFactory = $mapperFactory;
@@ -29,11 +29,11 @@ class Identity
     public function define(string $entity, string $mapper)
     {
         if (class_exists($entity) === false) {
-            throw new RuntimeException("Class '{$entity}' was not found!");
+            throw new RuntimeException("Entity class '{$entity}' was not found!");
         }
 
         if (class_exists($mapper) === false) {
-            throw new RuntimeException("Class '{$mapper}' was not found!");
+            throw new RuntimeException("Mapper class '{$mapper}' was not found!");
         }
 
         $this->list[$entity] = $mapper;
