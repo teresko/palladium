@@ -4,10 +4,10 @@ namespace Palladium\Repository;
 
 use Palladium\Entity;
 use Palladium\Mapper;
-use Palladium\Contract\CanCreateMapper;
+use Palladium\Contract;
 use RuntimeException;
 
-class Identity
+class Identity implements Contract\CanPersistIdenity
 {
     private $list = [
         Entity\Identity::class              => Mapper\Identity::class,
@@ -20,7 +20,7 @@ class Identity
     private $mapperFactory;
 
 
-    public function __construct(CanCreateMapper $mapperFactory)
+    public function __construct(Contract\CanCreateMapper $mapperFactory)
     {
         $this->mapperFactory = $mapperFactory;
     }
