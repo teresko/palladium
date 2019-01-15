@@ -1,5 +1,7 @@
 # Palladium
 
+**(work-in-progress: docs for 2.0)**
+
 [![Build Status](https://travis-ci.org/teresko/palladium.svg?branch=master)](https://travis-ci.org/teresko/palladium)
 [![Packagist Version](https://img.shields.io/packagist/v/teresko/palladium.svg)](https://packagist.org/packages/teresko/palladium)
 [![License](https://img.shields.io/packagist/l/teresko/palladium.svg)](https://github.com/teresko/palladium/blob/master/LICENSE.md)
@@ -19,13 +21,15 @@ The primary goal of any authentication system is to verify the ownership of an a
 
 Palladium does not restrict you to any specific approach of defining user accounts. To use your existing account management system with it, the only requirement is for the account entity to implement the [`HasId`](https://github.com/teresko/palladium/blob/master/src/Palladium/Contract/HasId.php) interface. This interface is used to link one or more user identities with user's&nbsp;account.
 
+Currenly there is no support for use of UUID (if you following the DDD approach) as identifier of `Account` entities.
+
 #### Identity
 
 In context of this library, an `Identity` is a named resource, that you can claim to own by providing a secret, which has been associated with this identity. At any given moment a user account can have multiple active identities (same account can have multiple ways to log in). And you have an ability to deactivate any specific identity or all identities, that have been associated with a specific&nbsp;account.
 
-The current version of the library contains 3 different identity types:
+The current version of the library comes with 3 existing identity types:
 
- - **EmailIdentity**: your basic form of email + password authentication approach
+ - **StandardIdentity**: your basic form of resource + password authentication approach (where examples of a resource would be can be email, phone number or domain)
  - **NonceIdentity**: single-use authentication
  - **CookieIdentity**: used for "relogin" and always contains a parent identity's id (either one-time or email)
 
@@ -41,15 +45,20 @@ To use this package, it require PHP version 7.0+ and PDO.
 
 You will also need to create a table, where to store the **identities**. The example schema is available [here](https://github.com/teresko/palladium/blob/master/resources/schema.sql). It currently contains only table definition for MySQL/MariaDB, but the library can be used with any RDBMS, that has a PDO driver.
 
+
 ## Initialization
+
 
 Palladium contains 4 services: `Registration`, `Identification`, `Search` and `Recovery`. Each of these services has two&nbsp;mandatory&nbsp;dependencies:  
 
- - mapper factory (that implements `Palladium\Contract\CanCreateMapper`)
+ - repository (that implements `Palladium\Contract\CanPersistIdenity`)
  - logger (that implements `Psr\Log\LoggerInterface`)
 
 
- This gives you an option to replace the default  [`MapperFactory`](https://github.com/teresko/palladium/blob/master/src/Palladium/Component/MapperFactory.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
+ This gives you an option to replace the default  [repository](https://github.com/teresko/palladium/blob/master/src/Palladium/Repository/Identity.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
+
+
+The default repository also comes with functionality for adding **custom identity types** and data mappers, that are used for either your or the built-in itentity types. For usage details see %TODO% secion.
 
 #### Optional parameters
 
@@ -62,27 +71,35 @@ In the constructor of `Registration` service there is an optional third paramete
 
 - hash cost (for BCrypt), which defaults to 12
 
+#### Setting up the repository
 
-#### Setting up mapper factory
+As noted above, all 4 of the services expect a repository as a constructor dependency. If you are not replacing the bundled repository with your custome version, then you will need to initialize `Palladium\Repository\Identity` and pass it to the services.
 
-To start using any of the services, you will need to pass a `MapperFactory` instance as a dependency. The included factory itself has two dependencies: `PDO` instance and the name of table, where the **identities** will be stored.
+The bundled repository itself has a single dependency: instance, that implements `Palladium\Contract\CanCreateMapper`. This contract (interface) is implemented by `Palladium\Component\MapperFactory`. And this factory has two dependencies: `PDO` instance and the name of table, where the **identities** will be stored.
 
 ```php
 <?php
 
 $factory = new \Palladium\Component\MapperFactory(new \PDO(...$config), $tableName);
+$repository = new \Palladium\Repository\Identity($factory);
 ```
 
-In every other example, where you see `$factory` variable used, you can assume, that it has been initialized using this code sample.
+In every other code example, where you see `$repository` variable used, you can assume, that it has been initialized using this code sample.
+
+#### Use with DI containers
+
+For users of Symfony's [DependencyInjection Component](https://symfony.com/doc/current/components/dependency_injection.html) (version: 3.4+), there is a sample configuration file: %TODO%
+
 
 ## Usage
+
 
 #### Registration of new identity
 
 ```php
 <?php
 
-$registration = new \Palladium\Service\Registration($factory, $logger);
+$registration = new \Palladium\Service\Registration($repository, $logger);
 
 $identity = $registration->createStandardIdentity('foo@bar.com', 'password');
 $registration->bindAccountToIdentity($accountId, $identity);
@@ -97,7 +114,7 @@ The `createStandardIdentity()` method has an optional third parameter, that defi
 ```php
 <?php
 
-$registration = new \Palladium\Service\Registration($factory, $logger);
+$registration = new \Palladium\Service\Registration($repository, $logger);
 
 $identity = $registration->createStandardIdentity('foo@bar.com', 'password', 3600);
 $registration->bindAccountToIdentity($accountId, $identity);
@@ -105,16 +122,18 @@ $registration->bindAccountToIdentity($accountId, $identity);
 
 This will make the verification token usable for 1 hour after this user's identity has been registered. After that given time passes, you won't be able to find this identity using the `findStandardIdentityByToken()` in the `Search` service.
 
+> **IMPORTANT**: the `createStandardIdentity()` methods does not validate users email or any other type of identifier. It only checks its uniqueness. Validation of emails, phone numbers, nicknames and other identifiers is beyond the scope of this library.
+
 #### Verification of an identity
 
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$registration = new \Palladium\Service\Registration($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$registration = new \Palladium\Service\Registration($repository, $logger);
 
 $identity = $search->findStandardIdentityByToken($token, \Palladium\Entity\Identity::ACTION_VERIFY);
-$registration->verifyEmailIdentity($identity);
+$registration->verifyStandardIdentity($identity);
 ```
 
 The `$token` value is used to locate the matching [`EmailIdentity`](https://github.com/teresko/palladium/blob/master/src/Palladium/Entity/StandardIdentity.php), which then gets verified. If the identity is not found, the `findStandardIdentityByToken()` will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
@@ -124,14 +143,14 @@ The `$token` value is used to locate the matching [`EmailIdentity`](https://gith
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$identification = new \Palladium\Service\Identification($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$identification = new \Palladium\Service\Identification($repository, $logger);
 
-$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
+$identity = $search->findStandardIdentityByIdentifier($identifier);
 $cookie = $identification->loginWithPassword($identity, $password);
 ```
 
-If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+If there is no matching identity with given idenitifier (like, email address) found, the `findStandardIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 In case, if password does not match, the `loginWithPassword()` method will throw [`PasswordMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordMismatch.php) exception.
 
@@ -164,7 +183,7 @@ $identity = $this->search->findNonceIdentityByIdentifier($identifier);
 $cookie = $this->identification->useNonceIdentity($identity, $key);
 ```
 
-If there is no matching identity with given email address found, the `findNonceIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+If there is no matching identity with given identitifier (email address, nickname, ect.) found, the `findNonceIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 In case, if password does not match, the `useNonceIdentity()` method will throw [`KeyMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/KeyMismatch.php) exception.
 
@@ -174,8 +193,8 @@ In case, if password does not match, the `useNonceIdentity()` method will throw 
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$identification = new \Palladium\Service\Identification($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$identification = new \Palladium\Service\Identification($repository, $logger);
 
 $identity = $search->findCookieIdentity($accountId, $series);
 $cookie = $identification->loginWithCookie($identity, $key);
@@ -193,8 +212,8 @@ But the `loginWithCookie()` method can also produce [`CompromisedCookie`](https:
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$identification = new \Palladium\Service\Identification($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$identification = new \Palladium\Service\Identification($repository, $logger);
 
 $identity = $search->findCookieIdentity($accountId, $series);
 $identification->blockIdentity($identity);
@@ -207,8 +226,8 @@ This is the recommended way for dealing with suspicious cookies, that might or m
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$identification = new \Palladium\Service\Identification($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$identification = new \Palladium\Service\Identification($repository, $logger);
 
 $identity = $search->findCookieIdentity($accountId, $series);
 $identification->logout($identity, $key);
@@ -221,26 +240,26 @@ This operation marks the cookie as "discarded". The list of exception, that can 
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$recovery = new \Palladium\Service\Recovery($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$recovery = new \Palladium\Service\Recovery($repository, $logger);
 
-$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
+$identity = $search->findStandardIdentityByIdentifier($identifier);
 $token = $recovery->markForReset($identity);
 ```
 
-If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+If there is no matching identity with given email address found, the `findStandardIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
-When `markForReset()` is called, it must be provided with an email identity, that has already been verified (otherwise, it has a potential to leak user's private information from your application). If that is not the case, the method will throw [`IdentityNotVerified`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotVerified.php) exception.
+When `markForReset()` is called, it must be provided with an instance of `StandardIdentity`, that has already been verified (otherwise, it has a potential to leak user's private information from your application). If that is not the case, the method will throw [`IdentityNotVerified`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotVerified.php) exception.
 
 The `markForReset()` method was an optional second parameter, that defines the lifespan on the password reset token in seconds. When applied, the previous example looks as following:
 
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$recovery = new \Palladium\Service\Recovery($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$recovery = new \Palladium\Service\Recovery($repository, $logger);
 
-$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
+$identity = $search->findStandardIdentityByIdentifier($identifier);
 $token = $recovery->markForReset($identity, 7200);
 ```
 
@@ -251,8 +270,8 @@ This will make the password reset token usable for two hours after this user's i
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$recovery = new \Palladium\Service\Recovery($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$recovery = new \Palladium\Service\Recovery($repository, $logger);
 
 $identity = $search->findEmailIdentityByToken($token, \Palladium\Entity\Identity::ACTION_RESET);
 $recovery->resetIdentityPassword($identity, 'foobar');
@@ -265,14 +284,14 @@ If there is no matching identity with given token found, the `findEmailIdentityB
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
-$identification = new \Palladium\Service\Identification($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
+$identification = new \Palladium\Service\Identification($repository, $logger);
 
-$identity = $search->findEmailIdentityByEmailAddress($emailAddress);
+$identity = $search->findStandardIdentityByIdentifier($identifier);
 $identification->changePassword($identity, $oldPassword, $newPassword);
 ```
 
-If there is no matching identity with given email address found, the `findEmailIdentityByEmailAddress()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
+If there is no matching identity with given email address (or any other type of identifier) found, the `findStandardIdentityByIdentifier()` method will throw [`IdentityNotFound`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/IdentityNotFound.php) exception.
 
 In case, if the password does not match, the `changePassword()` method will throw [`PasswordMismatch`](https://github.com/teresko/palladium/blob/master/src/Palladium/Exception/PasswordMismatch.php) exception.
 
@@ -281,7 +300,7 @@ In case, if the password does not match, the `changePassword()` method will thro
 ```php
 <?php
 
-$search = new \Palladium\Service\Search($factory, $logger);
+$search = new \Palladium\Service\Search($repository, $logger);
 $identification = new \Palladium\Service\Identification($factory, $logger);
 
 $list = $search->findIdentitiesByParentId($identity->getId());
@@ -300,7 +319,7 @@ This log-level is used for tracking ordinary operations, that user would perform
 
  - successful registration
  - successful password recover
- - successful login (with email or cookie) or logout
+ - successful login (with email/username or cookie) or logout
  - successful email verification
  - use of expired cookie or nonce
 
@@ -310,7 +329,7 @@ Logs with this level will be recorded, if user attempted an unsuccessful operati
 
  - all cases, when identity was not found
  - incorrect password was entered
- - email already used for different identity
+ - identifier already used for different identity
  - attempt to recover password using unverified email
 
 #### `LogLevel::WARNING`
