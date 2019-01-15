@@ -28,17 +28,35 @@ final class IdentityTest extends TestCase
     public function provide_Assignment_of_Numeric()
     {
         return [
-            [null, null],
-            ['', null],
             [234, 234],
             ['1234', 1234],
-            ['9test', 9],
-            [0, null],
-            ['0', null],
-            ['alpha', null],
+            [0, 0],
+            ['0', 0],
         ];
     }
 
+
+    /**
+     * @test
+     * @dataProvider provide_Invalid_Numeric_Value
+     */
+    public function fail_Assigning_nonInt_as_Id($param)
+    {
+        $this->expectException(\TypeError::class);
+
+        $instance = new Identity;
+        $instance->setId($param);
+    }
+
+
+    public function provide_Invalid_Numeric_Value()
+    {
+        return [
+            [null],
+            [''],
+            ['alpha'],
+        ];
+    }
 
     /**
      * @dataProvider provide_Assignment_of_Numeric
@@ -176,9 +194,6 @@ final class IdentityTest extends TestCase
         $this->assertSame(42, $instance->getTokenAction());
 
         $instance->setTokenAction(-100);
-        $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
-
-        $instance->setTokenAction('foobar');
         $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
 
         $instance->setTokenAction(Identity::ACTION_NONE);

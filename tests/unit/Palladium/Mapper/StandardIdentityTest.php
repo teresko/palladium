@@ -34,6 +34,7 @@ final class StandardIdentityTest extends TestCase
                 ->disableOriginalConstructor()
                 ->getMock();
         $pdo->expects($this->once())->method('prepare')->will($this->returnValue($statement));
+        $pdo->expects($this->once())->method('lastInsertId')->will($this->returnValue(1));
 
 
         $identity = new Entity\StandardIdentity;

@@ -268,6 +268,7 @@ final class IdentificationTest extends TestCase
         $logger->expects($this->once())->method('info');
 
         $affected = new Entity\NonceIdentity;
+        $affected->setAccountId(1);
         $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
         $affected->setExpiresOn(time() + 1000);
 

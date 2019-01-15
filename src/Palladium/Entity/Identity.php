@@ -50,13 +50,9 @@ class Identity implements HasId
     private $tokenPayload;
 
 
-    public function setId($identityId)
+    public function setId(int $identityId)
     {
-        $data = (int) $identityId;
-
-        if ($data > 0) {
-            $this->identityId = $data;
-        }
+        $this->identityId = $identityId;
     }
 
 
@@ -69,13 +65,9 @@ class Identity implements HasId
     }
 
 
-    public function setParentId($parentId)
+    public function setParentId(int $parentId = null)
     {
-        $data = (int) $parentId;
-
-        if ($data > 0) {
-            $this->parentId = $data;
-        }
+        $this->parentId = $parentId;
     }
 
 
@@ -88,13 +80,9 @@ class Identity implements HasId
     }
 
 
-    public function setAccountId($accountId)
+    public function setAccountId(int $accountId)
     {
-        $data = (int) $accountId;
-
-        if ($data > 0) {
-            $this->accountId = $data;
-        }
+        $this->accountId = $accountId;
     }
 
 
@@ -116,13 +104,9 @@ class Identity implements HasId
     }
 
 
-    public function setExpiresOn($expiresOn)
+    public function setExpiresOn(int $expiresOn)
     {
-        $data = (int) $expiresOn;
-
-        if ($data > 0) {
-            $this->expiresOn = $data;
-        }
+        $this->expiresOn = $expiresOn;
     }
 
 
@@ -154,13 +138,9 @@ class Identity implements HasId
     }
 
 
-    public function setStatusChangedOn($timestamp)
+    public function setStatusChangedOn(int $timestamp)
     {
-        $data = (int) $timestamp;
-
-        if ($data > 0) {
-            $this->statusChangedOn = $data;
-        }
+        $this->statusChangedOn = $timestamp;
     }
 
 
@@ -198,16 +178,13 @@ class Identity implements HasId
     }
 
 
-    public function setTokenAction($tokenAction)
+    public function setTokenAction(int $tokenAction = null)
     {
-        $data = (int) $tokenAction;
-
-        if ($data > 0) {
-            $this->tokenAction = $data;
-            return;
+        if ($tokenAction < 0) {
+            $tokenAction = Identity::ACTION_NONE;
         }
-
-        $this->tokenAction = null;
+        
+        $this->tokenAction = $tokenAction;
     }
 
 
@@ -220,13 +197,9 @@ class Identity implements HasId
     }
 
 
-    public function setTokenEndOfLife($timestamp)
+    public function setTokenEndOfLife(int $timestamp = null)
     {
-        $data = (int) $timestamp;
-
-        if ($data > 0) {
-            $this->tokenExpiresOn = $data;
-        }
+        $this->tokenExpiresOn = $timestamp;
     }
 
 
@@ -266,13 +239,9 @@ class Identity implements HasId
     }
 
 
-    public function setLastUsed($timestamp)
+    public function setLastUsed(int $timestamp = null)
     {
-        $data = (int) $timestamp;
-
-        if ($data > 0) {
-            $this->usedOn = $data;
-        }
+        $this->usedOn = $timestamp;
     }
 
 
