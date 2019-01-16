@@ -12,26 +12,8 @@
 
 Library for handling the user identification.
 
-## Concepts
+The purpose of this library is to locate user's [account](https://github.com/teresko/palladium/blob/master/docs/Concept/Account.md) (to be precise - its unique id) for a given proof of [identity](https://github.com/teresko/palladium/blob/master/docs/Concept/Identity.md) and to manage various types of identities. It consists of 4 different [services](https://github.com/teresko/palladium/blob/master/docs/Concept/Service.md): Identification, Registration, Search and Recovery.
 
-
-#### Account
-
-The primary goal of any authentication system is to verify the ownership of an account. User's account is the structure in your application to which you associate information about said user. This association can be direct (when the `Account` entity contains all you know about the user) or implemented using composition (when `Account` entity contains other entities, like `Profile`&nbsp;and&nbsp;`History`).
-
-Palladium does not restrict you to any specific approach of defining user accounts. To use your existing account management system with it, the only requirement is for the account entity to implement the [`HasId`](https://github.com/teresko/palladium/blob/master/src/Palladium/Contract/HasId.php) interface. This interface is used to link one or more user identities with user's&nbsp;account.
-
-Currenly there is no support for use of UUID (if you following the DDD approach) as identifier of `Account` entities.
-
-#### Identity
-
-In context of this library, an `Identity` is a named resource, that you can claim to own by providing a secret, which has been associated with this identity. At any given moment a user account can have multiple active identities (same account can have multiple ways to log in). And you have an ability to deactivate any specific identity or all identities, that have been associated with a specific&nbsp;account.
-
-The current version of the library comes with 3 existing identity types:
-
- - **StandardIdentity**: your basic form of resource + password authentication approach (where examples of a resource would be can be email, phone number or domain)
- - **NonceIdentity**: single-use authentication
- - **CookieIdentity**: used for "relogin" and always contains a parent identity's id (either one-time or email)
 
 ## Installation
 
@@ -58,7 +40,7 @@ Palladium contains 4 services: `Registration`, `Identification`, `Search` and `R
  This gives you an option to replace the default  [repository](https://github.com/teresko/palladium/blob/master/src/Palladium/Repository/Identity.php), if you want to alter or replace parts of persistence abstraction&nbsp;layer. As for logger - the recommended approach is to use [Monolog](https://packagist.org/packages/monolog/monolog), but it would work with any compatible logging&nbsp;system.
 
 
-The default repository also comes with functionality for adding **custom identity types** and data mappers, that are used for either your or the built-in itentity types. For usage details see %TODO% secion.
+The default repository also comes with functionality for adding **custom identity types** and data mappers, that are used for either your or the built-in identity types. For usage details see %TODO% section.
 
 #### Optional parameters
 
