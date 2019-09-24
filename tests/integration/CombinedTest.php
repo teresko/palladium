@@ -26,14 +26,12 @@ final class CombinedTest extends TestCase
     private $recovery;
 
     private static $hold; // for passing data to the next test
-
     private $connection;
 
     public static function setUpBeforeClass()
     {
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
     }
-
 
     protected function setUp()
     {
@@ -54,8 +52,8 @@ final class CombinedTest extends TestCase
         $this->recovery = new Recovery($repository, $logger);
     }
 
-
-    public function test_Account_Registration()
+    /** @test */
+    public function Account_Registration()
     {
         $identity = $this->registration->createStandardIdentity('test@example.com', 'password');
         $this->registration->bindAccountToIdentity(4, $identity);
@@ -65,11 +63,11 @@ final class CombinedTest extends TestCase
         self::$hold = $identity->getToken();
     }
 
-
     /**
-     * @depends test_Account_Registration
+     * @test
+     * @depends Account_Registration
      */
-    public function test_Identify_Verification()
+    public function Identify_Verification()
     {
         $token = self::$hold;
 
@@ -82,11 +80,11 @@ final class CombinedTest extends TestCase
         self::$hold = null;
     }
 
-
     /**
-     * @depends test_Identify_Verification
+     * @test
+     * @depends Identify_Verification
      */
-    public function test_User_Login_with_Password()
+    public function User_Login_with_Password()
     {
         $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $cookie = $this->identification->loginWithPassword($identity, 'password');
@@ -100,11 +98,11 @@ final class CombinedTest extends TestCase
         ];
     }
 
-
     /**
-     * @depends test_User_Login_with_Password
+     * @test
+     * @depends User_Login_with_Password
      */
-    public function test_User_Login_with_Cookie()
+    public function User_Login_with_Cookie()
     {
         $parts = self::$hold;
 
@@ -121,11 +119,11 @@ final class CombinedTest extends TestCase
         ];
     }
 
-
     /**
-     * @depends test_User_Login_with_Cookie
+     * @test
+     * @depends User_Login_with_Cookie
      */
-    public function test_User_Logout()
+    public function User_Logout()
     {
         $parts = self::$hold;
 
@@ -135,11 +133,11 @@ final class CombinedTest extends TestCase
         $this->assertSame(4, $identity->getAccountId()); // from Registration phase
     }
 
-
     /**
-     * @depends test_User_Logout
+     * @test
+     * @depends User_Logout
      */
-    public function test_User_Logout_Again()
+    public function User_Logout_Again()
     {
         $parts = self::$hold;
 
@@ -151,11 +149,11 @@ final class CombinedTest extends TestCase
         self::$hold = null;
     }
 
-
     /**
-     * @depends test_Identify_Verification
+     * @test
+     * @depends Identify_Verification
      */
-    public function test_Requesting_New_Password()
+    public function Requesting_New_Password()
     {
         $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $token = $this->recovery->markForReset($identity);
@@ -166,11 +164,11 @@ final class CombinedTest extends TestCase
         self::$hold = $token;
     }
 
-
     /**
-     * @depends test_Requesting_New_Password
+     * @test
+     * @depends Requesting_New_Password
      */
-    public function test_Setting_New_Password()
+    public function Setting_New_Password()
     {
         $token = self::$hold;
 
@@ -186,11 +184,11 @@ final class CombinedTest extends TestCase
         self::$hold = null;
     }
 
-
     /**
-     * @depends test_Setting_New_Password
+     * @test
+     * @depends Setting_New_Password
      */
-    public function test_Changing_Password_for_Identity()
+    public function Changing_Password_for_Identity()
     {
         $identity = $this->search->findStandardIdentityByIdentifier('test@example.com');
         $this->identification->changePassword($identity, 'foobar', 'foobuz');
@@ -199,13 +197,11 @@ final class CombinedTest extends TestCase
         $this->assertSame(4, $cookie->getAccountId());
     }
 
-
-
-
     /**
-     * @depends test_Changing_Password_for_Identity
+     * @test
+     * @depends Changing_Password_for_Identity
      */
-    public function test_Changing_Password_for_Identity_By_Id()
+    public function Changing_Password_for_Identity_By_Id()
     {
         $identity = $this->search->findStandardIdentityById(2);
         $this->identification->changePassword($identity, 'foobuz', 'password');
@@ -215,7 +211,8 @@ final class CombinedTest extends TestCase
     }
 
 
-    public function test_Creating_One_Time_Use_Identity()
+    /** @test */
+    public function Creating_One_Time_Use_Identity()
     {
         $identity = $this->registration->createNonceIdentity(4);
         $this->assertSame(4, $identity->getAccountId());
@@ -226,11 +223,11 @@ final class CombinedTest extends TestCase
         ];
     }
 
-
     /**
-     * @depends test_Creating_One_Time_Use_Identity
+     * @test
+     * @depends Creating_One_Time_Use_Identity
      */
-    public function test_Using_the_One_Time_Identity()
+    public function Using_the_One_Time_Identity()
     {
         $parts = self::$hold;
 
@@ -240,11 +237,11 @@ final class CombinedTest extends TestCase
         $this->assertSame(4, $cookie->getAccountId());
     }
 
-
     /**
-     * @depends test_Using_the_One_Time_Identity
+     * @test
+     * @depends Using_the_One_Time_Identity
      */
-    public function test_Failure_to_Use_Same_One_Time_Identity_Twice()
+    public function Failure_to_Use_Same_One_Time_Identity_Twice()
     {
         $parts = self::$hold;
 
@@ -253,12 +250,12 @@ final class CombinedTest extends TestCase
         $this->search->findNonceIdentityByIdentifier($parts['identifier']);
     }
 
-
     /**
-     * @depends test_Using_the_One_Time_Identity
-     * @depends test_Identify_Verification
+     * @test
+     * @depends Using_the_One_Time_Identity
+     * @depends Identify_Verification
      */
-    public function test_FetchMode_Changed_for_PDO()
+    public function FetchMode_Changed_for_PDO()
     {
         $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
@@ -274,8 +271,8 @@ final class CombinedTest extends TestCase
         ];
     }
 
-
-    public function test_Rehashing_of_Outdated_Password_on_Login()
+    /** @test */
+    public function Rehashing_of_Outdated_Password_on_Login()
     {
         // using preexisting entry in sqlite database
 
@@ -295,9 +292,10 @@ final class CombinedTest extends TestCase
     }
 
     /**
-     * @depends test_Rehashing_of_Outdated_Password_on_Login
+     * @test
+     * @depends Rehashing_of_Outdated_Password_on_Login
      */
-    public function test_Logging_in_After_Password_has_been_Updated()
+    public function Logging_in_After_Password_has_been_Updated()
     {
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -309,11 +307,11 @@ final class CombinedTest extends TestCase
         $this->assertSame(9, $cookie->getAccountId());
     }
 
-
     /**
-     * @depends test_Account_Registration
+     * @test
+     * @depends Account_Registration
      */
-    public function test_Finding_Identity_By_Id()
+    public function Finding_Identity_By_Id()
     {
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -324,12 +322,11 @@ final class CombinedTest extends TestCase
         $this->assertSame('test@example.com', $identity->getIdentifier());
     }
 
-
     /**
      * @test
-     * @depends test_Finding_Identity_By_Id
+     * @depends Finding_Identity_By_Id
      */
-    public function initialize_Modification_of_Standard_Identity()
+    public function Initialize_Modification_of_Standard_Identity()
     {
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -351,12 +348,11 @@ final class CombinedTest extends TestCase
         $this->assertSame('new@example.com', $identity->getIdentifier());
     }
 
-
-
     /**
-     * @depends initialize_Modification_of_Standard_Identity
+     * @test
+     * @depends Initialize_Modification_of_Standard_Identity
      */
-    public function test_Removing_Existing_Identity()
+    public function Removing_Existing_Identity()
     {
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
@@ -371,11 +367,11 @@ final class CombinedTest extends TestCase
         $this->search->findIdentityById(2);
     }
 
-
     /**
-     * @depends test_Removing_Existing_Identity
+     * @test
+     * @depends Removing_Existing_Identity
      */
-    public function test_Account_with_Case_Insensitive_Identifier()
+    public function Account_with_Case_Insensitive_Identifier()
     {
         $identity = $this->registration->createStandardIdentity('foo.BaR@example.com', 'password');
         $this->registration->bindAccountToIdentity(4, $identity);
