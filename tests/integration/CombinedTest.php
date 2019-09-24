@@ -29,13 +29,13 @@ final class CombinedTest extends TestCase
 
     private $connection;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         copy(FIXTURE_PATH . '/integration.sqlite', FIXTURE_PATH . '/live.sqlite');
     }
 
 
-    protected function setUp(): void
+    protected function setUp()
     {
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
