@@ -2,8 +2,6 @@
 
 namespace Palladium\Entity;
 
-use RuntimeException;
-
 class StandardIdentity extends Identity
 {
 
