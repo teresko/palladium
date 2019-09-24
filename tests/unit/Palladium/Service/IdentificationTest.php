@@ -37,9 +37,9 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->loginWithPassword($affected, 'beta');
     }
 
@@ -56,12 +56,12 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 10);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 5);
         $instance->loginWithPassword($affected, 'alpha');
 
-        $this->assertStringStartsWith('$2y$10', $affected->getHash());
+        $this->assertStringStartsWith('$2y$05', $affected->getHash());
 
     }
 
@@ -78,9 +78,9 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\StandardIdentity;
         $affected->setAccountId(3);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $result = $instance->loginWithPassword($affected, 'alpha');
         $this->assertInstanceOf(Entity\CookieIdentity::class, $result);
         $this->assertSame(3, $result->getAccountId());
@@ -103,7 +103,7 @@ final class IdentificationTest extends TestCase
         $affected->setId(432);
         $affected->setExpiresOn(time() - 10000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->loginWithCookie($affected, 'alpha');
     }
 
@@ -124,7 +124,7 @@ final class IdentificationTest extends TestCase
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
         $affected->setExpiresOn(time() + 10000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $result = $instance->loginWithCookie($affected, 'alpha');
         $this->assertInstanceOf(Entity\CookieIdentity::class, $result);
         $this->assertSame(3, $result->getAccountId());
@@ -149,7 +149,7 @@ final class IdentificationTest extends TestCase
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
         $affected->setExpiresOn(time() + 10000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->loginWithCookie($affected, 'beta');
     }
 
@@ -170,7 +170,7 @@ final class IdentificationTest extends TestCase
         $affected->setExpiresOn(time() + 10000);
         $affected->setHash('9cc3c0f06e170b14d7c52a8cbfc31bf9e4cc491e2aa9b79a385bcffa62f6bc619fcc95b5c1eb933dfad9c281c77208af');
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->logout($affected, 'alpha');
     }
 
@@ -191,7 +191,7 @@ final class IdentificationTest extends TestCase
         $list = new Entity\IdentityCollection;
         $list->addEntity($entity);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->discardIdentityCollection($list);
 
         $this->assertNotNull($entity->getStatus());
@@ -211,9 +211,9 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\StandardIdentity;
         $affected->setId(99);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->changePassword($affected, 'alpha', 'password');
 
         $this->assertTrue($affected->matchPassword('password'));
@@ -234,9 +234,9 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\StandardIdentity;
         $affected->setId(99);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->changePassword($affected, 'wrong', 'password');
     }
 
@@ -251,7 +251,7 @@ final class IdentificationTest extends TestCase
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->blockIdentity(new Entity\Identity);
     }
 
@@ -269,10 +269,10 @@ final class IdentificationTest extends TestCase
 
         $affected = new Entity\NonceIdentity;
         $affected->setAccountId(1);
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
         $affected->setExpiresOn(time() + 1000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $this->assertInstanceOf(
             Entity\CookieIdentity::class,
             $instance->useNonceIdentity($affected, 'alpha')
@@ -296,7 +296,7 @@ final class IdentificationTest extends TestCase
         $affected = new Entity\NonceIdentity;
         $affected->setExpiresOn(1000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->useNonceIdentity($affected, 'wrong');
     }
 
@@ -314,10 +314,10 @@ final class IdentificationTest extends TestCase
         $logger->expects($this->once())->method('notice');
 
         $affected = new Entity\NonceIdentity;
-        $affected->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $affected->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
         $affected->setExpiresOn(time() + 1000);
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->useNonceIdentity($affected, 'wrong');
     }
 
@@ -337,7 +337,7 @@ final class IdentificationTest extends TestCase
         $logger->expects($this->once())->method('info');
 
         $identity = new Entity\StandardIdentity;
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
 
         $this->assertNotNull($instance->markForUpdate($identity, []));
     }
@@ -363,15 +363,12 @@ final class IdentificationTest extends TestCase
         $identity->expects($this->once())->method('clearToken');
         $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue([]));
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->applyTokenPayload($identity);
     }
 
-
-    /**
-     * @test
-     */
-    public function apply_Data_from_Payload_to_the_Identity_before_Saving()
+    /** @test */
+    public function Apply_Data_from_Payload_to_the_Identity_before_Saving()
     {
         $repository = $this
             ->getMockBuilder(Repository::class)
@@ -390,16 +387,12 @@ final class IdentificationTest extends TestCase
         ]));
         $identity->expects($this->once())->method('setAccountId')->with($this->equalTo(5));
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->applyTokenPayload($identity);
     }
 
-
-
-    /**
-     * @test
-     */
-    public function failure_if_no_Payload_to_Apply()
+    /** @test */
+    public function Throw_Exception_if_no_Payload_to_Apply()
     {
         $this->expectException(PayloadNotFound::class);
 
@@ -416,7 +409,7 @@ final class IdentificationTest extends TestCase
             ->getMock();
         $identity->expects($this->once())->method('getTokenPayload')->will($this->returnValue(null));
 
-        $instance = new Identification($repository, $logger);
+        $instance = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 4);
         $instance->applyTokenPayload($identity);
     }
 }

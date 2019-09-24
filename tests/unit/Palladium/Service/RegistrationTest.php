@@ -40,7 +40,7 @@ final class RegistrationTest extends TestCase
             ->getMock();
 
 
-        $instance = new Registration($repository, $mapper, $logger);
+        $instance = new Registration($repository, $mapper, $logger, 4);
         $instance->createStandardIdentity('foo@example.com', 'password');
     }
 
@@ -63,7 +63,8 @@ final class RegistrationTest extends TestCase
         $instance = new Registration(
             $repository,
             $mapper,
-            $this->getMockBuilder(LoggerInterface::class)->getMock()
+            $this->getMockBuilder(LoggerInterface::class)->getMock(),
+            4
         );
 
         $this->assertInstanceOf(Entity\Identity::class, $instance->createStandardIdentity('foo@example.com', 'password'));
@@ -87,7 +88,7 @@ final class RegistrationTest extends TestCase
         $mapper->expects($this->once())->method('store')->will($this->returnValue(true));
 
 
-        $instance = new Registration($repository, $mapper, $logger);
+        $instance = new Registration($repository, $mapper, $logger, 4);
         $affected = new Entity\Identity;
         $instance->bindAccountToIdentity(42, $affected);
         $this->assertSame(42, $affected->getAccountId());
@@ -111,7 +112,7 @@ final class RegistrationTest extends TestCase
             ->getMock();
 
 
-        $instance = new Registration($repository, $mapper, $logger);
+        $instance = new Registration($repository, $mapper, $logger, 4);
         $affected = new Entity\StandardIdentity;
         $affected->setId(2);
         $affected->setStatus(Entity\Identity::STATUS_NEW);
@@ -138,7 +139,8 @@ final class RegistrationTest extends TestCase
         $instance = new Registration(
             $repository,
             $mapper,
-            $this->getMockBuilder(LoggerInterface::class)->getMock()
+            $this->getMockBuilder(LoggerInterface::class)->getMock(),
+            4
         );
 
         $this->assertInstanceOf(Entity\Identity::class, $instance->createNonceIdentity(3));

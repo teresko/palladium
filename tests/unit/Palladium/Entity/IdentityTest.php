@@ -14,9 +14,10 @@ final class IdentityTest extends TestCase
 {
 
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_Id($number, $expected)
+    public function Assignment_of_Id($number, $expected)
     {
         $instance = new Identity;
         $instance->setId($number);
@@ -25,7 +26,7 @@ final class IdentityTest extends TestCase
     }
 
 
-    public function provide_Assignment_of_Numeric()
+    public function Provide_Assignment_of_Numeric()
     {
         return [
             [234, 234],
@@ -38,9 +39,9 @@ final class IdentityTest extends TestCase
 
     /**
      * @test
-     * @dataProvider provide_Invalid_Numeric_Value
+     * @dataProvider Provide_Invalid_Numeric_Value
      */
-    public function fail_Assigning_nonInt_as_Id($param)
+    public function Fail_Assigning_nonInt_as_Id($param)
     {
         $this->expectException(\TypeError::class);
 
@@ -48,8 +49,7 @@ final class IdentityTest extends TestCase
         $instance->setId($param);
     }
 
-
-    public function provide_Invalid_Numeric_Value()
+    public function Provide_Invalid_Numeric_Value()
     {
         return [
             [null],
@@ -59,9 +59,10 @@ final class IdentityTest extends TestCase
     }
 
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_ParentId($number, $expected)
+    public function Assignment_of_ParentId($number, $expected)
     {
         $instance = new Identity;
         $instance->setParentId($number);
@@ -69,11 +70,11 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getParentId());
     }
 
-
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_AccountId($number, $expected)
+    public function Assignment_of_AccountId($number, $expected)
     {
         $instance = new Identity;
         $instance->setAccountId($number);
@@ -81,11 +82,11 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getAccountId());
     }
 
-
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_Status_Change_Timestamp($number, $expected)
+    public function Assignment_of_Status_Change_Timestamp($number, $expected)
     {
         $instance = new Identity;
         $instance->setStatusChangedOn($number);
@@ -93,11 +94,11 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getStatusChangedOn());
     }
 
-
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_ExpiresOn_Timestamp($number, $expected)
+    public function Assignment_of_ExpiresOn_Timestamp($number, $expected)
     {
         $instance = new Identity;
         $instance->setExpiresOn($number);
@@ -105,11 +106,11 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getExpiresOn());
     }
 
-
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_Token_EoL_Timestamp($number, $expected)
+    public function Assignment_of_Token_EoL_Timestamp($number, $expected)
     {
         $instance = new Identity;
         $instance->setTokenEndOfLife($number);
@@ -117,11 +118,11 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getTokenEndOfLife());
     }
 
-
     /**
-     * @dataProvider provide_Assignment_of_Numeric
+     * @test
+     * @dataProvider Provide_Assignment_of_Numeric
      */
-    public function test_Assignment_of_LastUsed_Timestamp($number, $expected)
+    public function Assignment_of_LastUsed_Timestamp($number, $expected)
     {
         $instance = new Identity;
         $instance->setLastUsed($number);
@@ -129,16 +130,16 @@ final class IdentityTest extends TestCase
         $this->assertSame($expected, $instance->getLastUsed());
     }
 
-
-    public function test_Assignment_of_Invalid_Token()
+    /** @test */
+    public function Assignment_of_Invalid_Token()
     {
         $this->expectException(\Palladium\Exception\InvalidToken::class);
         $instance = new Identity;
         $instance->setToken('alpha');
     }
 
-
-    public function test_Assignment_of_Token()
+    /** @test */
+    public function Assignment_of_Token()
     {
         $instance = new Identity;
 
@@ -151,8 +152,8 @@ final class IdentityTest extends TestCase
         $this->assertNull($instance->getToken());
     }
 
-
-    public function test_Generation_of_New_Random_Token()
+    /** @test */
+    public function Generation_of_New_Random_Token()
     {
         $instance = new Identity;
 
@@ -160,8 +161,8 @@ final class IdentityTest extends TestCase
         $this->assertNotNull($instance->getToken());
     }
 
-
-    public function test_Initialization_of_Status_Change_Timestamp()
+    /** @test */
+    public function Initialization_of_Status_Change_Timestamp()
     {
         $instance = new Identity;
         $this->assertNull($instance->getStatusChangedOn());
@@ -177,8 +178,8 @@ final class IdentityTest extends TestCase
         $this->assertNotSame(1234, $instance->getStatusChangedOn());
     }
 
-
-    public function test_Assignment_of_Token_Action()
+    /** @test */
+    public function Assignment_of_Token_Action()
     {
         $instance = new Identity;
 
@@ -200,8 +201,8 @@ final class IdentityTest extends TestCase
         $this->assertSame(Identity::ACTION_NONE, $instance->getTokenAction());
     }
 
-
-    public function test_Clearing_of_Token()
+    /** @test */
+    public function Clearing_of_Token()
     {
         $instance = new Identity;
         $instance->generateToken();

@@ -14,9 +14,10 @@ final class CookieIdentityTest extends TestCase
 {
 
     /**
-     * @dataProvider provide_Assignment_of_Params
+     * @test
+     * @dataProvider Provide_Assignment_of_Params
      */
-    public function test_Assignment_of_Series($param, $expected)
+    public function Assignment_of_Series($param, $expected)
     {
         $instance = new CookieIdentity;
 
@@ -25,7 +26,7 @@ final class CookieIdentityTest extends TestCase
     }
 
 
-    public function provide_Assignment_of_Params()
+    public function Provide_Assignment_of_Params()
     {
         return [
             ['', null],
@@ -37,9 +38,10 @@ final class CookieIdentityTest extends TestCase
 
 
     /**
-     * @dataProvider provide_Assignment_of_Params
+     * @test
+     * @dataProvider Provide_Assignment_of_Params
      */
-    public function test_Assignment_of_Key($param, $expected)
+    public function Assignment_of_Key($param, $expected)
     {
         $instance = new CookieIdentity;
 
@@ -49,9 +51,10 @@ final class CookieIdentityTest extends TestCase
 
 
     /**
-     * @dataProvider provide_Assignment_of_Params
+     * @test
+     * @dataProvider Provide_Assignment_of_Params
      */
-    public function test_Assignment_of_Hash($param, $expected)
+    public function Assignment_of_Hash($param, $expected)
     {
         $instance = new CookieIdentity;
 
@@ -59,8 +62,8 @@ final class CookieIdentityTest extends TestCase
         $this->assertSame($expected, $instance->getHash());
     }
 
-
-    public function test_Retrieval_of_Fingerprint()
+    /** @test */
+    public function Retrieval_of_Fingerprint()
     {
         $instance = new CookieIdentity;
         $instance->setSeries('alpha');
@@ -71,8 +74,8 @@ final class CookieIdentityTest extends TestCase
         );
     }
 
-
-    public function test_hash_Creation_and_Verification_Integriety()
+    /** @test */
+    public function Hash_Creation_and_Verification_Integriety()
     {
         $instance = new CookieIdentity;
         $instance->setKey('alpha');
@@ -85,8 +88,8 @@ final class CookieIdentityTest extends TestCase
         $this->assertTrue($instance->matchKey('alpha'));
     }
 
-
-    public function test_Generation_of_New_Random_Key()
+    /** @test */
+    public function Generation_of_New_Random_Key()
     {
         $instance = new CookieIdentity;
         $this->assertNull($instance->getKey());
@@ -97,8 +100,8 @@ final class CookieIdentityTest extends TestCase
         $this->assertNotNull($instance->getHash());
     }
 
-
-    public function test_Generation_of_New_Random_Series()
+    /** @test */
+    public function Generation_of_New_Random_Series()
     {
         $instance = new CookieIdentity;
         $this->assertNull($instance->getSeries());

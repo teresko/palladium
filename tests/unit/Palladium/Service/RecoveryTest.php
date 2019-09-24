@@ -76,7 +76,7 @@ final class RecoveryTest extends TestCase
         $affected = new Entity\StandardIdentity;
         $affected->setToken('12345678901234567890123456789012');
 
-        $instance = new Recovery($repository, $logger);
+        $instance = new Recovery($repository, $logger, 4);
         $instance->resetIdentityPassword($affected, 'password');
 
         $this->assertNull($affected->getToken());

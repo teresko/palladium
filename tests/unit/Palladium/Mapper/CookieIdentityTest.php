@@ -14,10 +14,8 @@ use Palladium\Entity;
  */
 final class CookieIdentityTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function creating_Cookie_Identity()
+    /** @test */
+    public function Creating_Cookie_Identity()
     {
         $statement = $this
             ->getMockBuilder(PDOStatement::class)
@@ -44,11 +42,8 @@ final class CookieIdentityTest extends TestCase
         $instance->store($identity);
     }
 
-
-    /**
-     * @test
-     */
-    public function updating_Cookie_Identity()
+    /** @test */
+    public function Updating_Cookie_Identity()
     {
         $statement = $this
             ->getMockBuilder(PDOStatement::class)
@@ -75,10 +70,8 @@ final class CookieIdentityTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
-    public function retrieving_Cookie_Identity_Details()
+    /** @test */
+    public function Retrieving_Cookie_Identity_Details()
     {
         $statement = $this
             ->getMockBuilder(PDOStatement::class)

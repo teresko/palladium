@@ -13,7 +13,8 @@ use Palladium\Exception\InvalidCookieToken;
 final class NonceIdentityTest extends TestCase
 {
 
-    public function  test_Gerneration_of_Nonce()
+    /** @test */
+    public function  Gerneration_of_Nonce()
     {
         $instance = new NonceIdentity;
         $this->assertNull($instance->getIdentifier());
@@ -22,7 +23,8 @@ final class NonceIdentityTest extends TestCase
     }
 
 
-    public function  test_Gerneration_of_Key()
+    /** @test */
+    public function  Gerneration_of_Key()
     {
         $instance = new NonceIdentity;
         $this->assertNull($instance->getKey());
@@ -32,9 +34,10 @@ final class NonceIdentityTest extends TestCase
 
 
     /**
-     * @dataProvider provide_Setting_of_a_Key
+     * @test
+     * @dataProvider Provide_Setting_of_a_Key
      */
-    public function test_Setting_of_a_Key($input, $expected)
+    public function Setting_of_a_Key($input, $expected)
     {
         $instance = new NonceIdentity;
         $instance->setKey($input);
@@ -42,7 +45,7 @@ final class NonceIdentityTest extends TestCase
     }
 
 
-    public function provide_Setting_of_a_Key()
+    public function Provide_Setting_of_a_Key()
     {
         return [
             [
@@ -65,10 +68,11 @@ final class NonceIdentityTest extends TestCase
     }
 
 
-    public function test_Key_Matching()
+    /** @test */
+    public function Key_Matching()
     {
         $instance = new NonceIdentity;
-        $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $instance->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
         $this->assertTrue($instance->matchKey('alpha'));
     }

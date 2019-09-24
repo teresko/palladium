@@ -11,7 +11,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class StandardIdentityTest extends TestCase
 {
-    public function test_Identifier_Assignment_Type_Cast()
+    /** @test */
+    public function Identifier_Assignment_Type_Cast()
     {
         $instance = new StandardIdentity;
 
@@ -23,7 +24,8 @@ final class StandardIdentityTest extends TestCase
     }
 
 
-    public function test_Retrieval_of_Fingerprint()
+    /** @test */
+    public function Retrieval_of_Fingerprint()
     {
         $instance = new StandardIdentity;
         $instance->setIdentifier('alpha');
@@ -35,16 +37,18 @@ final class StandardIdentityTest extends TestCase
     }
 
 
-    public function test_Hash_Retrieval_for_a_Given_Key()
+    /** @test */
+    public function Hash_Retrieval_for_a_Given_Key()
     {
         $instance = new StandardIdentity;
 
-        $instance->setPassword('alpha', 12);
+        $instance->setPassword('alpha', 4);
         $this->assertTrue(password_verify('alpha', $instance->getHash()));
     }
 
 
-    public function test_Hash_Assignment()
+    /** @test */
+    public function Hash_Assignment()
     {
         $instance = new StandardIdentity;
         $this->assertNull($instance->getHash());
@@ -60,7 +64,8 @@ final class StandardIdentityTest extends TestCase
     }
 
 
-    public function test_for_Old_Hash()
+    /** @test */
+    public function Check_for_Old_Hash()
     {
         $instance = new StandardIdentity;
         $instance->setHash('$1$beta$ocWFwI6Cax/SdMiwWXYoQ/');
@@ -68,27 +73,28 @@ final class StandardIdentityTest extends TestCase
         $this->assertTrue($instance->hasOldHash());
 
 
-        $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
-        $this->assertFalse($instance->hasOldHash());
+        $instance->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
+        $this->assertFalse($instance->hasOldHash(4));
     }
 
-    public function test_Key_Matching()
+    public function Key_Matching()
     {
         $instance = new StandardIdentity;
-        $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $instance->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
         $this->assertTrue($instance->matchPassword('alpha'));
     }
 
 
-    public function test_Rehashing_of_a_Password()
+    /** @test */
+    public function Rehashing_of_a_Password()
     {
         $instance = new StandardIdentity;
         $instance->setPassword('alpha');
-        $instance->setHash('$2y$12$P.92J1DVk8LXbTahB58QiOsyDg5Oj/PX0Mqa7t/Qx1Epuk0a4SehK');
+        $instance->setHash('$2y$04$GPkwNpMWg6LguYHNuNUJSOQlpfdNKHfwu3HpkvyxkDfcIACifMOBu');
 
-        $instance->rehashPassword(10);
+        $instance->rehashPassword(5);
 
-        $this->assertStringStartsWith('$2y$10', $instance->getHash());
+        $this->assertStringStartsWith('$2y$05', $instance->getHash());
     }
 }
