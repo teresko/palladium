@@ -39,7 +39,7 @@ final class StandardIdentityTest extends TestCase
     {
         $instance = new StandardIdentity;
 
-        $instance->setPassword('alpha');
+        $instance->setPassword('alpha', 12);
         $this->assertTrue(password_verify('alpha', $instance->getHash()));
     }
 

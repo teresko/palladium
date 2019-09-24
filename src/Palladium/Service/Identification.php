@@ -247,7 +247,7 @@ class Identification
             throw new PasswordMismatch;
         }
 
-        $identity->setPassword($newPassword);
+        $identity->setPassword($newPassword, $this->hashCost);
         $this->repository->save($identity);
 
         $this->logExpectedBehaviour($identity, 'password changed');

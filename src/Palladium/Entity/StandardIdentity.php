@@ -38,10 +38,12 @@ class StandardIdentity extends Identity
     }
 
 
-    public function setPassword($password, int $cost = self::HASH_COST)
+    public function setPassword($password, int $cost = null)
     {
         $this->password = (string) $password;
-        $this->hash = $this->createHash($password, $cost);
+        if ($cost) {
+            $this->hash = $this->createHash($password, $cost);
+        }
     }
 
 

@@ -15,18 +15,22 @@ class Recovery
 {
 
     const DEFAULT_TOKEN_LIFESPAN = 28800; // 8 hours
+    const DEFAULT_HASH_COST = 12;
 
     private $repository;
     private $logger;
+    private $hashCost;
 
     /**
      * @param Repository $repository Repository for abstracting persistence layer structures
      * @param LoggerInterface $logger PSR-3 compatible logger
+     * @param int $hashCost Cost of the bcrypt hashing function (default: 12)
      */
-    public function __construct(Repository $repository, LoggerInterface $logger)
+    public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
     {
         $this->repository = $repository;
         $this->logger = $logger;
+        $this->hashCost = $hashCost;
     }
 
 
@@ -69,8 +73,8 @@ class Recovery
     {
         $token = $identity->getToken();
 
-        $identity->setPassword($password);
         $identity->clearToken();
+        $identity->setPassword($password, $this->hashCost);
 
         $this->repository->save($identity);
 
