@@ -8,6 +8,7 @@
 [![Code Climate](https://codeclimate.com/github/teresko/palladium/badges/gpa.svg)](https://codeclimate.com/github/teresko/palladium)
 [![Code Coverage](https://scrutinizer-ci.com/g/teresko/palladium/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/teresko/palladium/?branch=master)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/teresko/palladium.svg)](https://scrutinizer-ci.com/g/teresko/palladium/?branch=master)
+[![Infection MSI](https://badge.stryker-mutator.io/github.com/teresko/palladium/master)](https://infection.github.io)
 
 
 Library for handling the user identification.
