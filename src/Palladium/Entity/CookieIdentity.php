@@ -2,8 +2,6 @@
 
 namespace Palladium\Entity;
 
-use Palladium\Exception\InvalidCookieToken;
-
 class CookieIdentity extends Identity
 {
 

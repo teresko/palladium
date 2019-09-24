@@ -26,6 +26,7 @@
     "require-dev": {
         "php": ">=7.0",
         "ext-pdo_sqlite": "*",
+        "infection/infection": "*",
         "phpunit/phpunit": "^6.5"
     },
 

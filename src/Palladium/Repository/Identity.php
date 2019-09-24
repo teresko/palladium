@@ -7,7 +7,7 @@ use Palladium\Mapper;
 use Palladium\Contract;
 use RuntimeException;
 
-class Identity implements Contract\CanPersistIdenity
+class Identity implements Contract\CanPersistIdentity
 {
     private $list = [
         Entity\Identity::class              => Mapper\Identity::class,

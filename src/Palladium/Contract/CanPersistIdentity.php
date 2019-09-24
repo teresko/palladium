@@ -2,7 +2,7 @@
 
 namespace Palladium\Contract;
 
-interface CanPersistIdenity
+interface CanPersistIdentity
 {
     public function load($identity, string $override = null);
     public function save($identity, string $override = null);
