@@ -46,10 +46,12 @@ final class CombinedTest extends TestCase
         $repository = new Repository($factory);
         $mapper = $factory->create(\Palladium\Mapper\IdentityAccount::class);
 
-        $this->identification = new Identification($repository, $logger);
-        $this->registration = new Registration($repository, $mapper, $logger);
+        $cost = 4;
+
+        $this->identification = new Identification($repository, $logger, 60, $cost);
+        $this->recovery = new Recovery($repository, $logger, $cost);
+        $this->registration = new Registration($repository, $mapper, $logger, $cost);
         $this->search = new Search($repository, $logger);
-        $this->recovery = new Recovery($repository, $logger);
     }
 
     /** @test */
@@ -279,16 +281,16 @@ final class CombinedTest extends TestCase
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 5);
 
         $identity = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
-        $this->assertStringStartsWith('$2y$12', $identity->getHash());
+        $this->assertStringStartsWith('$2y$04', $identity->getHash());
 
         $identification->loginWithPassword($identity, 'qwerty');
 
         $affected = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
         $this->assertGreaterThan(1496353300, $affected->getLastUsed());
-        $this->assertStringStartsWith('$2y$11', $affected->getHash());
+        $this->assertStringStartsWith('$2y$05', $affected->getHash());
     }
 
     /**
@@ -300,7 +302,7 @@ final class CombinedTest extends TestCase
         $repository = new Repository(new MapperFactory($this->connection, 'identities'));
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN,  11);
+        $identification = new Identification($repository, $logger, Identification::DEFAULT_COOKIE_LIFESPAN, 5);
 
         $identity = $this->search->findStandardIdentityByIdentifier('foobar@who.cares');
         $cookie = $this->identification->loginWithPassword($identity, 'qwerty');
