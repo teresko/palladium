@@ -46,7 +46,7 @@ class CookieIdentity extends Identity
 
     public function generateNewSeries()
     {
-        $this->series = bin2hex(random_bytes(self::SERIES_SIZE));
+        $this->series = bin2hex(random_bytes(CookieIdentity::SERIES_SIZE));
     }
 
 
@@ -84,7 +84,7 @@ class CookieIdentity extends Identity
      */
     public function generateNewKey()
     {
-        $key = bin2hex(random_bytes(self::KEY_SIZE));
+        $key = bin2hex(random_bytes(CookieIdentity::KEY_SIZE));
         $this->key = $key;
         $this->hash = $this->makeHash($key);
     }

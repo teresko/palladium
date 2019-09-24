@@ -29,7 +29,7 @@ class Registration
      * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $hashCost Optional value for setting the cost of hashing algorythm (default: 12)
      */
-    public function __construct(Repository $repository, DataMapper $accountMapper, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
+    public function __construct(Repository $repository, DataMapper $accountMapper, LoggerInterface $logger, $hashCost = Registration::DEFAULT_HASH_COST)
     {
         $this->repository = $repository;
         $this->accountMapper = $accountMapper;
@@ -41,7 +41,7 @@ class Registration
     /**
      * @throws IdentityConflict if attempting to register a new identity, with the same identifier
      */
-    public function createStandardIdentity(string $identifier, string $password, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): Entity\StandardIdentity
+    public function createStandardIdentity(string $identifier, string $password, int $tokenLifespan = Registration::DEFAULT_TOKEN_LIFESPAN): Entity\StandardIdentity
     {
         $identity = new Entity\StandardIdentity;
 
@@ -67,7 +67,7 @@ class Registration
     }
 
 
-    public function createNonceIdentity($accountId, $identityLifespan = self::DEFAULT_NONCE_LIFESPAN): Entity\NonceIdentity
+    public function createNonceIdentity($accountId, $identityLifespan = Registration::DEFAULT_NONCE_LIFESPAN): Entity\NonceIdentity
     {
         $identity = new Entity\NonceIdentity;
 

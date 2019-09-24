@@ -45,7 +45,7 @@ class StandardIdentity extends Identity
     }
 
 
-    public function rehashPassword(int $cost = self::HASH_COST)
+    public function rehashPassword(int $cost = StandardIdentity::HASH_COST)
     {
         $this->hash = $this->createHash($this->password, $cost);
     }
@@ -61,7 +61,7 @@ class StandardIdentity extends Identity
 
     private function createHash($password, int $cost): string
     {
-        return password_hash($password, self::HASH_ALGO, ['cost' => $cost]);
+        return password_hash($password, StandardIdentity::HASH_ALGO, ['cost' => $cost]);
     }
 
 
@@ -81,8 +81,8 @@ class StandardIdentity extends Identity
     }
 
 
-    public function hasOldHash(int $cost = self::HASH_COST): bool
+    public function hasOldHash(int $cost = StandardIdentity::HASH_COST): bool
     {
-        return password_needs_rehash($this->hash, self::HASH_ALGO, ['cost' => $cost]);
+        return password_needs_rehash($this->hash, StandardIdentity::HASH_ALGO, ['cost' => $cost]);
     }
 }

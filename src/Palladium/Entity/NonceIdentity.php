@@ -38,7 +38,7 @@ class NonceIdentity extends Identity
 
     public function generateNewNonce()
     {
-        $this->identifier = bin2hex(random_bytes(self::NONCE_SIZE));
+        $this->identifier = bin2hex(random_bytes(NonceIdentity::NONCE_SIZE));
     }
 
 
@@ -54,9 +54,9 @@ class NonceIdentity extends Identity
     /**
      * Sets a new key and resets the hash.
      */
-    public function generateNewKey(int $cost = self::HASH_COST)
+    public function generateNewKey(int $cost = NonceIdentity::HASH_COST)
     {
-        $this->key = bin2hex(random_bytes(self::KEY_SIZE));
+        $this->key = bin2hex(random_bytes(NonceIdentity::KEY_SIZE));
         $this->hash = $this->makeHash($this->key, $cost);
     }
 
@@ -66,7 +66,7 @@ class NonceIdentity extends Identity
      */
     private function makeHash($key, int $cost): string
     {
-        return password_hash($key, self::HASH_ALGO, ['cost' => $cost]);
+        return password_hash($key, NonceIdentity::HASH_ALGO, ['cost' => $cost]);
     }
 
 
@@ -84,7 +84,7 @@ class NonceIdentity extends Identity
      *
      * @param string $key
      */
-    public function setKey($key, int $cost = self::HASH_COST)
+    public function setKey($key, int $cost = NonceIdentity::HASH_COST)
     {
         $this->hash = null;
 

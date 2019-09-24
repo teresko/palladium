@@ -36,7 +36,7 @@ class Identity implements HasId
     private $identityId;
     private $parentId;
     private $accountId;
-    protected $type = self::TYPE_ANY;
+    protected $type = Identity::TYPE_ANY;
 
     private $status;
     private $statusChangedOn;
@@ -183,7 +183,7 @@ class Identity implements HasId
         if ($tokenAction < 0) {
             $tokenAction = Identity::ACTION_NONE;
         }
-        
+
         $this->tokenAction = $tokenAction;
     }
 

@@ -37,8 +37,8 @@ class Identification
     public function __construct(
         Repository $repository,
         LoggerInterface $logger,
-        int $cookieLifespan = self::DEFAULT_COOKIE_LIFESPAN,
-        int $hashCost = self::DEFAULT_HASH_COST
+        int $cookieLifespan = Identification::DEFAULT_COOKIE_LIFESPAN,
+        int $hashCost = Identification::DEFAULT_HASH_COST
         )
     {
         $this->repository = $repository;
@@ -308,7 +308,7 @@ class Identification
     }
 
 
-    public function markForUpdate(Entity\Identity $identity, array $payload, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN)
+    public function markForUpdate(Entity\Identity $identity, array $payload, int $tokenLifespan = Identification::DEFAULT_TOKEN_LIFESPAN)
     {
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_UPDATE);

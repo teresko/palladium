@@ -26,7 +26,7 @@ class Recovery
      * @param LoggerInterface $logger PSR-3 compatible logger
      * @param int $hashCost Cost of the bcrypt hashing function (default: 12)
      */
-    public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = self::DEFAULT_HASH_COST)
+    public function __construct(Repository $repository, LoggerInterface $logger, $hashCost = Recovery::DEFAULT_HASH_COST)
     {
         $this->repository = $repository;
         $this->logger = $logger;
@@ -37,7 +37,7 @@ class Recovery
     /**
      * @throws IdentityNotVerified if attempting to reset password for unverified identity
      */
-    public function markForReset(Entity\StandardIdentity $identity, int $tokenLifespan = self::DEFAULT_TOKEN_LIFESPAN): string
+    public function markForReset(Entity\StandardIdentity $identity, int $tokenLifespan = Recovery::DEFAULT_TOKEN_LIFESPAN): string
     {
         if ($identity->getStatus() === Entity\Identity::STATUS_NEW) {
             $this->logger->notice('identity not verified', [
