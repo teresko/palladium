@@ -3,6 +3,7 @@ php:
   - "7.0"
   - "7.1"
   - "7.2"
+  - "7.3"
 
 
 before_script:
@@ -19,7 +20,7 @@ before_script:
 
 script:
   - mkdir -p build/logs
-  - ventor/bin/phpunit --configuration ./phpunit.xml --coverage-clover build/logs/clover.xml ./tests
+  - vendor/bin/phpunit --configuration ./phpunit.xml --coverage-clover build/logs/clover.xml ./tests
   - ./infection.phar --min-msi=48 --threads=4
 
 after_script:
