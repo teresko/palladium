@@ -77,6 +77,7 @@ final class StandardIdentityTest extends TestCase
         $this->assertFalse($instance->hasOldHash(4));
     }
 
+    /** @test */
     public function Key_Matching()
     {
         $instance = new StandardIdentity;

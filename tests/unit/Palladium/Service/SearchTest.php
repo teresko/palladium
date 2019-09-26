@@ -20,8 +20,8 @@ use Palladium\Exception\IdentityNotFound;
  */
 final class SearchTest extends TestCase
 {
-
-    public function test_Looking_for_Identity_by_Id()
+    /** @test */
+    public function Looking_for_Identity_by_Id()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -45,9 +45,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-
-    public function test_Failure_to_Find_Identity_by_Id()
+    /** @test */
+    public function Failure_to_Find_Identity_by_Id()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -65,8 +64,8 @@ final class SearchTest extends TestCase
         $instance->findIdentityById(42);
     }
 
-
-    public function test_Looking_for_Email_Identity_by_Identifier()
+    /** @test */
+    public function Looking_for_Email_Identity_by_Identifier()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -90,8 +89,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    public function test_Failure_to_Find_Email_Identity_by_Identifier()
+    /** @test */
+    public function Failure_to_Find_Email_Identity_by_Identifier()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -109,8 +108,8 @@ final class SearchTest extends TestCase
         $instance->findStandardIdentityByIdentifier('foo@example.com');
     }
 
-
-    public function test_Looking_for_Email_Identity_by_Token()
+    /** @test */
+    public function Looking_for_Email_Identity_by_Token()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -134,8 +133,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    public function test_Failure_to_Find_Email_Identity_by_Token()
+    /** @test */
+    public function Failure_to_Find_Email_Identity_by_Token()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -157,7 +156,8 @@ final class SearchTest extends TestCase
     }
 
 
-    public function test_Looking_for_Cookie_Identity()
+    /** @test */
+    public function Looking_for_Cookie_Identity()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -181,8 +181,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    public function test_Failure_to_Find_Cookie_Identity()
+    /** @test */
+    public function Failure_to_Find_Cookie_Identity()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -206,8 +206,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    public function test_Looking_for_Identity_with_Given_Account_Id()
+    /** @test */
+    public function Looking_for_Identity_with_Given_Account_Id()
     {
 
         $repository = $this
@@ -231,8 +231,8 @@ final class SearchTest extends TestCase
         $this->assertSame([1, 2], $list->getIds());
     }
 
-
-    public function test_Looking_for_Identity_with_Given_Parent_Id()
+    /** @test */
+    public function Looking_for_Identity_with_Given_Parent_Id()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -255,8 +255,8 @@ final class SearchTest extends TestCase
         $this->assertSame([3, 7], $list->getIds());
     }
 
-
-    public function test_Looking_for_OneTime_Identity()
+    /** @test */
+    public function Looking_for_OneTime_Identity()
     {
         $repository = $this
                     ->getMockBuilder(Repository::class)
@@ -280,8 +280,8 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    public function test_Failure_to_Find_OneTime_Identity()
+    /** @test */
+    public function Failure_to_Find_OneTime_Identity()
     {
         $this->expectException(IdentityNotFound::class);
 
@@ -305,10 +305,7 @@ final class SearchTest extends TestCase
         );
     }
 
-
-    /**
-     * @test
-     */
+    /** @test */
     public function locate_Standard_Identity_by_Id()
     {
         $repository = $this
@@ -334,10 +331,7 @@ final class SearchTest extends TestCase
         $this->assertSame(2, $identity->getAccountId());
     }
 
-
-    /**
-     * @test
-     */
+    /** @test */
     public function exception_on_Failure_to_find_Standard_identity_by_Id()
     {
         $this->expectException(IdentityNotFound::class);
