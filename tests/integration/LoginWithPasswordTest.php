@@ -53,7 +53,7 @@ final class LoginWithPasswordTest extends TestCase
     public function Using_Nonexistent_Identity_will_Cause_an_Exception()
     {
         $this->expectException(Exception\IdentityNotFound::class);
-        $identity = $this->search->findStandardIdentityByIdentifier('fake@example.com');
+        $this->search->findStandardIdentityByIdentifier('fake@example.com');
     }
 
     /** @test */
@@ -62,6 +62,6 @@ final class LoginWithPasswordTest extends TestCase
         $this->expectException(Exception\PasswordMismatch::class);
 
         $identity = $this->search->findStandardIdentityByIdentifier('user.02@domain.tld');
-        $cookie = $this->identification->loginWithPassword($identity, 'wrong password');
+        $this->identification->loginWithPassword($identity, 'wrong password');
     }
 }
