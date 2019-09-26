@@ -2,7 +2,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-define('FIXTURE_PATH', __DIR__ . '/fixture');
+copy(__DIR__ . '/fixture/integration.sqlite', sys_get_temp_dir() . '/db.sqlite');
+chmod(sys_get_temp_dir() . '/db.sqlite', 0777);
 
 spl_autoload_register(function ($class) {
     if (strpos($class, 'Mock') !== 0) {
