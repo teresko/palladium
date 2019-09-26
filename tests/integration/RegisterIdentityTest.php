@@ -39,5 +39,22 @@ final class RegisterIdentityTest extends TestCase
 
         $result = $this->search->findStandardIdentityByIdentifier('test.01@example.com');
         $this->assertSame(4, $result->getAccountId());
+        $this->assertSame(\Palladium\Entity\Identity::STATUS_NEW, $result->getStatus());
+    }
+
+    /** @test */
+    public function Attempting_to_Create_a_Standard_Identity_with_Same_Identifier_will_Cause_Exception()
+    {
+        $this->expectException(Exception\IdentityConflict::class);
+
+        $identity = $this->registration->createStandardIdentity('test.01@example.com', 'password');
+    }
+
+    /** @test */
+    public function Attempting_to_Bypass_Identifier_Uniqueness_Check_will_Cause_Exception()
+    {
+        $this->expectException(Exception\IdentityConflict::class);
+
+        $identity = $this->registration->createStandardIdentity('TEST.01@example.com', 'password');
     }
 }
