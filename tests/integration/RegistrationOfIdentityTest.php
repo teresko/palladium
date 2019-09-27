@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use PDO;
 use Mock;
 
-final class RegisterIdentityTest extends TestCase
+final class RegistrationOfIdentityTest extends TestCase
 {
     private $registration;
 
