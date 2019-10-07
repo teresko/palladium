@@ -64,4 +64,15 @@ final class LoginWithPasswordTest extends TestCase
         $identity = $this->search->findStandardIdentityByIdentifier('user.02@domain.tld');
         $this->identification->loginWithPassword($identity, 'wrong password');
     }
+
+    /** @test */
+    public function Login_with_Unverified_Identity_and_Password()
+    {
+        $identity = $this->search->findStandardIdentityByIdentifier('user.03@domain.tld');
+        $cookie = $this->identification->loginWithPassword($identity, 'password');
+
+        $this->assertSame(\Palladium\Entity\Identity::STATUS_NEW, $identity->getStatus());
+        $this->assertFalse($identity->isVerified());
+        $this->assertSame(3, $cookie->getAccountId());
+    }
 }

@@ -85,4 +85,9 @@ class StandardIdentity extends Identity
     {
         return password_needs_rehash($this->hash, StandardIdentity::HASH_ALGO, ['cost' => $cost]);
     }
+
+    public function isVerified(): bool
+    {
+        return $this->getStatus() === Identity::STATUS_ACTIVE;
+    }
 }
