@@ -21,9 +21,9 @@ class NonceIdentity extends Identity
     /**
      * @codeCoverageIgnore
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier(string $identifier)
     {
-        $this->identifier = (string) $identifier;
+        $this->identifier = $identifier;
     }
 
 
@@ -84,16 +84,10 @@ class NonceIdentity extends Identity
      *
      * @param string $key
      */
-    public function setKey($key, int $cost = NonceIdentity::HASH_COST)
+    public function setKey(string $key = null, int $cost = NonceIdentity::HASH_COST)
     {
         $this->hash = null;
-
-        if (empty($key)) {
-            $this->key = null;
-            return;
-        }
-
-        $this->key = (string) $key;
+        $this->key = $key;
         $this->hash = $this->makeHash($key, $cost);
     }
 
@@ -109,11 +103,10 @@ class NonceIdentity extends Identity
 
     /**
      * @codeCoverageIgnore
-     * @param string $hash
      */
-    public function setHash($hash)
+    public function setHash(string $hash)
     {
-        $this->hash = (string) $hash;
+        $this->hash = $hash;
     }
 
     /**

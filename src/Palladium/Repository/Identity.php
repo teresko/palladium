@@ -61,7 +61,7 @@ class Identity implements Contract\CanPersistIdentity
     }
 
 
-    public function has($identity, string $override = null)
+    public function has($identity, string $override = null): bool
     {
         $mapper = $this->retrieveMapper(get_class($identity), $override);
         return $mapper->exists($identity);

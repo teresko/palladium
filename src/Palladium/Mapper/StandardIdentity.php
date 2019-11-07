@@ -17,7 +17,7 @@ class StandardIdentity extends DataMapper
     /**
      * @param Entity\StandardIdentity $entity
      */
-    public function exists(Entity\StandardIdentity $entity)
+    public function exists(Entity\StandardIdentity $entity): bool
     {
         $sql = "SELECT 1
                   FROM {$this->table}

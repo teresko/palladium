@@ -53,8 +53,8 @@ final class NonceIdentityTest extends TestCase
                 'expected' => null,
             ],
             [
-                'input' => '',
-                'expected' => null,
+                'input' => 'null',
+                'expected' => 'null',
             ],
             [
                 'input' => 234,

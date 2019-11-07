@@ -15,6 +15,7 @@ use Mock;
 final class RegistrationOfIdentityTest extends TestCase
 {
     private $registration;
+    private $search;
 
     protected function setUp(): void
     {

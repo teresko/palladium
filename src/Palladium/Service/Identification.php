@@ -308,7 +308,7 @@ class Identification
     }
 
 
-    public function markForUpdate(Entity\Identity $identity, array $payload, int $tokenLifespan = Identification::DEFAULT_TOKEN_LIFESPAN)
+    public function markForUpdate(Entity\Identity $identity, array $payload, int $tokenLifespan = Identification::DEFAULT_TOKEN_LIFESPAN): string
     {
         $identity->generateToken();
         $identity->setTokenAction(Entity\Identity::ACTION_UPDATE);

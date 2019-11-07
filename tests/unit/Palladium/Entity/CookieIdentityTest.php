@@ -29,9 +29,9 @@ final class CookieIdentityTest extends TestCase
     public function Provide_Assignment_of_Params()
     {
         return [
-            ['', null],
+            [null, null],
             [234, '234'],
-            [0, null],
+            [0, '0'],
             ['alpha', 'alpha'],
         ];
     }

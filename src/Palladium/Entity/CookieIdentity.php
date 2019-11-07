@@ -15,14 +15,9 @@ class CookieIdentity extends Identity
     protected $type = Identity::TYPE_COOKIE;
 
 
-    public function setSeries($series)
+    public function setSeries(string $series = null)
     {
-        if (empty($series)) {
-            $this->series = null;
-            return;
-        }
-
-        $this->series = (string) $series;
+        $this->series = $series;
     }
 
 
@@ -55,16 +50,10 @@ class CookieIdentity extends Identity
      *
      * @param string $key
      */
-    public function setKey($key)
+    public function setKey(string $key = null)
     {
         $this->hash = null;
-
-        if (empty($key)) {
-            $this->key = null;
-            return;
-        }
-
-        $this->key = (string) $key;
+        $this->key = $key;
         $this->hash = $this->makeHash($key);
     }
 
@@ -108,14 +97,9 @@ class CookieIdentity extends Identity
     /**
      * @param string $hash
      */
-    public function setHash($hash)
+    public function setHash(string $hash = null)
     {
-        if (empty($hash)) {
-            $this->hash = null;
-            return;
-        }
-
-        $this->hash = (string) $hash;
+        $this->hash = $hash;
     }
 
 

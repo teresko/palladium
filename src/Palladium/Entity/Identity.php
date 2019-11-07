@@ -153,7 +153,7 @@ class Identity implements HasId
     }
 
 
-    public function setToken($token)
+    public function setToken(string $token = null)
     {
         if ($token !== null && strlen($token) !== 2 * Identity::TOKEN_SIZE) {
             throw new InvalidToken;

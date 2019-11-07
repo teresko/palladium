@@ -36,9 +36,9 @@ class StandardIdentity extends Identity
     }
 
 
-    public function setPassword($password, int $cost = null)
+    public function setPassword(string $password, int $cost = null)
     {
-        $this->password = (string) $password;
+        $this->password = $password;
         if ($cost) {
             $this->hash = $this->createHash($password, $cost);
         }
@@ -59,23 +59,19 @@ class StandardIdentity extends Identity
     }
 
 
-    private function createHash($password, int $cost): string
+    private function createHash(string $password, int $cost): string
     {
         return password_hash($password, StandardIdentity::HASH_ALGO, ['cost' => $cost]);
     }
 
 
-    public function setHash($hash)
+    public function setHash(string $hash = null)
     {
-        if (null === $hash) {
-            $this->hash = null;
-            return;
-        }
-        $this->hash = (string) $hash;
+        $this->hash = $hash;
     }
 
 
-    public function matchPassword($password): bool
+    public function matchPassword(string $password): bool
     {
         return password_verify($password, $this->hash);
     }
