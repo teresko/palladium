@@ -132,6 +132,7 @@ class Search
 
     /**
      * @throws IdentityNotFound if identity was not found
+     * @throws \Palladium\Exception\InvalidToken
      */
      public function findIdentityByToken(string $token, int $action = Entity\Identity::ACTION_NONE): Entity\Identity
      {

@@ -7,6 +7,7 @@ namespace Palladium\Entity;
  */
 
 use Palladium\Contract\HasId;
+use Palladium\Exception\FailGenerateToken;
 use Palladium\Exception\InvalidToken;
 
 
@@ -125,7 +126,7 @@ class Identity implements HasId
             $this->setStatusChangedOn(time());
         }
 
-        $this->status = (int) $status;
+        $this->status = (int)$status;
     }
 
 
@@ -165,7 +166,11 @@ class Identity implements HasId
 
     public function generateToken()
     {
-        $this->token = bin2hex(random_bytes(Identity::TOKEN_SIZE));
+        try {
+            $this->token = bin2hex(random_bytes(Identity::TOKEN_SIZE));
+        } catch (\Exception $e) {
+            throw new FailGenerateToken;
+        }
     }
 
 
