@@ -7,7 +7,7 @@ namespace Palladium\Entity;
  */
 
 use Palladium\Contract\HasId;
-use Palladium\Exception\FailGenerateToken;
+use Palladium\Exception\TokenGenerationFailed;
 use Palladium\Exception\InvalidToken;
 
 
@@ -169,7 +169,7 @@ class Identity implements HasId
         try {
             $this->token = bin2hex(random_bytes(Identity::TOKEN_SIZE));
         } catch (\Exception $e) {
-            throw new FailGenerateToken;
+            throw new TokenGenerationFailed;
         }
     }
 
