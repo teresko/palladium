@@ -4,7 +4,6 @@ namespace Palladium\Component;
 
 use RuntimeException;
 use PDO;
-use Palladium\Component\DataMapper;
 use Palladium\Contract\CanCreateMapper;
 
 class MapperFactory implements CanCreateMapper

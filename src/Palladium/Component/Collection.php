@@ -2,7 +2,6 @@
 
 namespace Palladium\Component;
 
-use Palladium\Component\Collection;
 use Palladium\Contract\HasId;
 
 /**
