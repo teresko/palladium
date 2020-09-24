@@ -4,7 +4,7 @@ namespace Palladium\Entity;
 
 class CookieIdentity extends Identity
 {
-
+    const NAME = 'cookie';
     const SERIES_SIZE = 16;
     const KEY_SIZE = 32;
 

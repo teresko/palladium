@@ -4,7 +4,7 @@ namespace Palladium\Entity;
 
 class NonceIdentity extends Identity
 {
-
+    const NAME = 'nonce';
     const HASH_ALGO = PASSWORD_BCRYPT;
     const HASH_COST = 12;
 
