@@ -4,7 +4,7 @@ namespace Palladium\Entity;
 
 class StandardIdentity extends Identity
 {
-
+    const NAME = 'standard';
     const HASH_ALGO = PASSWORD_BCRYPT;
     const HASH_COST = 12;
 
